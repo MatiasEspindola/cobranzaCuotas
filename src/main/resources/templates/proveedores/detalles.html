@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+
+<head th:replace="layout :: head">
+
+</head>
+
+<body>
+
+	<header th:replace="layout :: header">
+
+	</header>
+
+	<div class="container-fluid">
+		<div class="row">
+			<nav th:replace="layout :: nav">
+
+			</nav>
+
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+				<br>
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a th:href="@{/}">Tablero</a></li>
+						<li class="breadcrumb-item"><a th:href="@{/clientes/listar}">Clientes</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Detalles</li>
+					</ol>
+				</nav>
+
+				<h2 class="text-center">Detalle</h2 >
+				
+			</main>
+		</div>
+	</div>
+
+	<div th:replace="layout :: script"></div>
+
+
+
+</body>
+
+</html>

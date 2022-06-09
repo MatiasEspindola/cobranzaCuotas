@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+
+<head th:replace="layout :: head">
+
+</head>
+
+<body>
+
+	<header th:replace="layout :: header">
+
+	</header>
+
+	<div class="container-fluid">
+		<div class="row">
+			<nav th:replace="layout :: nav">
+
+			</nav>
+
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+				<br>
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a
+								th:href="@{/pagos/generar_pago/} + ${cuota.id_plan_pago.id_plan_pago}">Detalles
+								Generar Pago</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Importes</li>
+					</ol>
+				</nav>
+
+				<div class="alert alert-danger" role="alert" th:if="${error != null}" th:text="${error}"
+					style="margin:10px;">
+
+				</div>
+
+				<h2 class="text-center">Generar Importe</h2>
+
+				<br>
+
+				<form th:object="${historial_pago}" 
+				th:action="@{/planes_pagos/cuotas/importes}" method="post">
+
+					<div class="row">
+						<div class="col">
+							<label class="form-label">Nro Cuota:</label >
+							<input class="form-control form-control-lg" type="text" placeholder=".form-control-lg"
+								aria-label=".form-control-lg example" readonly
+								th:value="'Cuota Nro: ' +  ${cuota.nro_cuota}">
+						</div>
+						<div class="col">
+							<label class="form-label">Medio de Pago:</label >
+							<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
+							th:>
+								<option th:each="medio_pago : ${medios_pagos}" th:text="${medio_pago.medio_pago}" 
+								th:value="${medio_pago.id_medio_pago}">Open this select menu</option>
+							</select>
+						</div>
+						<div class="col">
+							<label class="form-label">Importe:</label >
+							<input class="form-control form-control-lg" type="number" step="any" placeholder="Ingrese Importe"
+								aria-label=".form-control-lg example">
+						</div>
+					</div>
+
+				</form >
+
+				
+
+			</main>
+		</div>
+	</div>
+
+	<div th:replace="layout :: script"></div>
+	<script>
+
+		$(document).ready(function () {
+
+
+
+		});
+	</script>
+
+</body>
+
+</html>

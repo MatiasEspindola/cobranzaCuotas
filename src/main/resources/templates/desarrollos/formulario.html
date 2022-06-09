@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head th:replace="layout :: head">
+   
+  </head>
+  <body>
+    
+<header th:replace="layout :: header">
+
+    </header>
+
+<div class="container-fluid">
+  <div class="row">
+    <nav th:replace="layout :: nav">
+
+        </nav>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        
+          <br>
+         <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                   <li class="breadcrumb-item"><a th:href="@{/}">Tablero</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/clientes/listar}">Clientes</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Cliente</li>
+            </ol>
+          </nav>
+     
+      <h2 class="text-center">Formulario Cliente</h2 >
+     
+      	
+      	<form th:action="@{/clientes/formulario}" th:object="${cliente}" class=" row" method="post">
+		
+            
+            <div class="row">
+                <div class="col col-12 col-lg-3 col-md-12 col-sm-12">
+                  <label for="exampleFormControlTextarea1" class="form-label">Cliente</label>
+                  <input type="text" class="form-control" placeholder="Cliente" aria-label="First name"
+                         th:field="*{cliente}" required>
+                     <br>
+                </div>
+                <div class="col col-12 col-lg-3 col-md-12 col-sm-12">
+                  <label for="exampleFormControlTextarea1" class="form-label">Nro de Documento</label>
+                  <input type="text" class="form-control" placeholder="Nro Documento" aria-label="First name"
+                         th:field="*{nro_documento}" required>
+                     <br>
+                </div>
+                 <div class="col col-12 col-lg-3 col-md-12 col-sm-12">
+                 <label for="exampleFormControlTextarea1" class="form-label">Tipo de Documento</label>   
+                 <select class="form-select" aria-label="Default select example"
+                         th:field="*{tipo_documento}" required>
+                    <option th:each="tipo_documento : ${tipos_documentos}" th:text="${tipo_documento.tipo_documento}"
+                            th:value="${tipo_documento.id_tipo_documento}"></option>
+                  </select>
+                       <br>
+                </div>
+                    <div class="col col-12 col-lg-3 col-md-12 col-sm-12">
+                  <label for="exampleFormControlTextarea1" class="form-label">Fecha de Alta</label>
+                  <input type="date" class="form-control" placeholder="Fecha Alta" aria-label="First name"
+                         th:field="*{alta}" required>
+                     <br>
+                </div>
+                
+             </div>
+           
+        
+             
+           <div class="row">
+            <div class="col col-12 col-lg-4 col-md-12 col-sm-12">
+						<label class="form-label">Dirección:</label>
+						<input type="text"  placeholder="Dirección" class="form-control" th:field="*{direccion}"
+							></input>
+							<br>
+					</div>
+						<div class="col col-12 col-lg-4 col-md-12 col-sm-12">
+							<label for="exampleFormControlTextarea1" class="form-label">Provincia:</label>
+							<select class="form-select" aria-label="Default select example" id="id_provincia">
+								<option value="0">Seleccione Provincia</option>
+							</select>
+							<br>
+						</div>
+						<div class="col col-12 col-lg-4 col-md-12 col-sm-12">
+							<label for="exampleFormControlTextarea1" class="form-label">Localidad:</label>
+							<select class="form-select" aria-label="Default select example" id="id_localidad">
+
+							</select>
+							<small style="color:blue;">(*) Se carga al seleccionar provincia</small>
+							<br><br>
+						</div>
+
+					</div>
+					
+					<div class="row">
+						<div class="col">
+								<input onkeydown="return false" type="text" class="form-control" placeholder="Localidad y Provincia Seleccionada"
+								aria-label="First name" id="seleccion"
+								th:value="${cliente.id_localidad1 == null ? '':cliente.id_localidad1.localidad+', '+cliente.id_localidad1.provincia.prov}" required>
+							<input type="hidden" class="form-control" placeholder="Localidad y Provincia Seleccionada"
+								aria-label="First name" id="id_seleccion" th:field="*{id_localidad1}" required>	
+							<small style="color:blue;">(*) Campo autocompletable cuando selecciona provincia y
+								localidad</small>
+						
+							<br><br>
+						</div>
+					</div>
+			
+						<div class="row">
+			
+					<div class="col col-12 col-lg-6 col-md-12 col-sm-12">
+						<label class="form-label">Teléfono Fijo:</label>
+						<input type="text" placeholder="Teléfono Fijo" class="form-control" th:field="*{tel_fijo}"
+							></input>
+							<br>
+					</div>
+					
+						<div class="col col-12 col-lg-6 col-md-12 col-sm-12">
+						<label class="form-label">Teléfono Fijo 2:</label>
+						<input type="text"  placeholder="Teléfono Fijo 2" class="form-control" th:field="*{tel_fijo2}"
+							></input>
+							<br>
+					</div>
+	
+			</div>
+			
+			<div class="row">
+			
+					<div class="col col-12 col-lg-6 col-md-12 col-sm-12">
+						<label class="form-label">Celular:</label>
+						<input type="text"  placeholder="Celular" class="form-control" th:field="*{cel}"
+							></input>
+							<br>
+					</div>
+					
+						<div class="col col-12 col-lg-6 col-sm-12 ">
+						<label class="form-label">Celular 2:</label>
+						<input type="text"  placeholder="Celular 2" class="form-control" th:field="*{cel2}"
+							></input>
+							<br>
+					</div>
+	
+			</div>
+			
+			<div class="row">
+			
+					<div class="col col-12 col-lg-6 col-sm-12 ">
+						<label class="form-label">Correo:</label>
+						<input type="text"  placeholder="Correo" class="form-control" th:field="*{mail}"
+							></input>
+							<br>
+					</div>
+					
+					<div class="col col-12 col-lg-6 col-sm-12 ">
+						<label class="form-label">Correo 2:</label>
+						<input type="text"  placeholder="Correo 2" class="form-control" th:field="*{mail2}"
+							></input>
+							<br>
+					</div>
+	
+			</div>
+			
+			
+
+           
+            <div class="row">
+                 <br>
+                <div class="text-center">
+                    
+                     <input type="submit" class="btn btn-success" value="Guardar"/>
+                     <a th:href="@{/clientes/listar}" class="btn btn-danger">Cancelar</a >
+                    <br><br><br>
+                </div>
+                
+            </div>
+				
+	</form>
+
+    
+    </main>
+  </div>
+</div>
+    
+       <div th:replace="layout :: script"></div>
+       
+       	<script>
+
+		$(document).ready(function () {
+
+			$.get("/clientes/provincias", function (data) {
+
+				data.forEach(function (item, i) {
+					var option = "<option value = " + item.id + ">" + item.prov + "</option>";
+					$("#id_provincia").append(option);
+				});
+			});
+
+			function sendAjaxRequest() {
+				var id_provincia = $("#id_provincia").val();
+				$.get("/clientes/localidades?id_provincia=" + id_provincia, function (data) {
+					$("#id_localidad").empty();
+					data.forEach(function (item, i) {
+						var option = "<option value = " + item.id + ">" + item.localidad + "</option>";
+						$("#id_localidad").append(option);
+					});
+					if ($("#id_localidad option:selected").val() > 0) {
+						var localidad = $("#id_localidad option:selected").text();
+						var provincia = $("#id_provincia option:selected").text();
+						$("#id_seleccion").val($("#id_localidad").val());
+						$("#seleccion").val(localidad + ", " + provincia);
+					}
+				});
+			};
+
+			$("#id_provincia").change(function () {
+				sendAjaxRequest();
+			});
+
+
+
+			$("#id_localidad").change(function () {
+				if ($("#id_localidad option:selected").val() > 0) {
+					var localidad = $("#id_localidad option:selected").text();
+					var provincia = $("#id_provincia option:selected").text();
+					$("#id_seleccion").val($("#id_localidad").val());
+					$("#seleccion").val(localidad + ", " + provincia);
+				}
+			});
+
+		});
+
+
+
+
+	</script>
+		
+
+  </body>
+</html>

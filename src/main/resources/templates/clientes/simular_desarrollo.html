@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+
+<head th:replace="layout :: head">
+
+</head>
+
+<body>
+
+	<header th:replace="layout :: header">
+
+	</header>
+
+	<div class="container-fluid">
+		<div class="row">
+			<nav th:replace="layout :: nav">
+
+			</nav>
+
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+				<br>
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a th:href="@{/}">Tablero</a></li>
+							<li class="breadcrumb-item"><a th:href="@{/clientes/detalles/}+${cliente.id_cliente}">Detalles Cliente</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Simular Desarrollo</li>
+					</ol>
+				</nav>
+
+				<div class="alert alert-danger" role="alert" th:if="${error != null}" th:text="${error}"
+					style="margin:10px;">
+
+				</div>
+
+
+				<h2 class="text-center">Simular Desarrollo</h2>
+
+
+
+				<form th:action="@{/clientes/simular_desarrollo/formulario}" th:object="${desarrollo}" method="post">
+
+					<div class="row">
+
+						<div class="col col-12 col-lg-4 col-sm-12">
+
+							<label class="form-label">Cliente:</label>
+							<input type="text" class="form-control" th:value="${cliente.cliente}" readonly></input>
+							<br>
+						</div>
+
+						<div class="col col-12 col-lg-4 col-sm-12">
+							<label for="exampleFormControlTextarea1" class="form-label">Proveedor:</label>
+							<select class="form-select" aria-label="Default select example" id="ingresar_proveedor"
+								name="ingresar_proveedor">
+								<option th:each="proveedor : ${proveedores}"
+									th:text="${proveedor.razon_social} + ', (' + ${proveedor.id_localidad4.localidad} + ', ' + ${proveedor.id_localidad4.provincia.prov} + ')'"
+									th:value="${proveedor.id_proveedor}"></option>
+							</select>
+							<br>
+						</div>
+						
+						<div class="col col-12 col-lg-4 col-sm-12">
+
+							<label for="exampleFormControlTextarea1" class="form-label">Abogado Parte Actora</label>
+                  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                            name="pactora" required></textarea>
+							<br>
+						</div>
+
+					</div>
+
+
+					<div class="row">
+
+
+						<div class="col col-12 col-md-12 col-lg-6 col-sm-12">
+							<br>
+							<label class="form-label">Tipo de Desarrollo:</label>
+							<select class="form-select" aria-label="Default select example" required
+								th:field="*{id_tipo_desarrollo}" id="id_tipo_desarrollo">
+
+								<option th:each="tipo_desarrollo : ${tipos_desarrollos}"
+									th:text="${tipo_desarrollo.tipo_desarrollo}"
+									th:value="${tipo_desarrollo.id_tipo_desarrollo}"></option>
+							</select>
+
+						</div>
+						<div class="col col-12 col-md-12 col-lg-6 col-sm-12">
+							<br>
+							<label class="form-label">Deuda Nominal:</label>
+							<input required type="number" min="1" step="any" class="form-control"
+								th:field="*{deuda_nominal}" name="deuda_nominal" id="deuda_nominal"></input>
+
+						</div>
+
+
+					</div>
+
+					<div class="row">
+						<div class="col col-12 col-md-12 col-lg-4 col-sm-12">
+							<br>
+							<label class="form-label">Interés Mensual:</label>
+							<input required type="number" min="1" step="any" class="form-control"
+								th:field="*{interes_mensual}" name="interes_mensual" id="interes_mensual"></input>
+
+						</div>
+
+						<div class="col col-12 col-md-12 col-lg-4 col-sm-12">
+							<br>
+							<label class="form-label">Nro Cuotas:</label>
+							<input required min="1" type="number" class="form-control" name="nro_cuotas"
+								th:field="*{nro_cuotas}" id="nro_cuotas"></input>
+						</div>
+						<div class="col col-12 col-md-12 col-lg-4 col-sm-12">
+							<br>
+							<label class="form-label">Fecha de Inicio:</label>
+							<input required type="date" class="form-control" name="fecha_inicio"
+								th:field="*{fecha_inicio}" id="fecha_inicio"></input>
+						</div>
+
+					</div>
+
+					<div class="row">
+
+						<div class="col col-12 col-md-12 col-lg-6 col-sm-12">
+							<br>
+							<label class="form-label">Gastos:</label>
+							<input required type="number" min="1" step="any" class="form-control" th:field="*{gasto}"
+								name="gasto" id="gastos"></input>
+						</div>
+						<div class="col col-12 col-md-12 col-lg-6 col-sm-12">
+							<br>
+							<label class="form-label">Honorarios (%):</label>
+							<input required type="number" min="1" step="any" class="form-control"
+								th:field="*{honorarios}" name="honorarios" id="honorarios"></input>
+						</div>
+
+					</div>
+
+					<div class="row">
+
+						<div class="col col-12 col-md-12 col-lg-6 col-sm-12">
+							<br>
+							<label class="form-label">IVA sobre interés (%):</label>
+							<input required type="number" class="form-control" th:field="*{iva_interes}"
+								name="iva_interes" id="iva_interes"></input>
+						</div>
+						<div class="col col-12 col-md-12 col-lg-6 col-sm-12">
+							<br>
+							<label class="form-label">IVA sobre honorarios (%):</label>
+							<input required type="number" class="form-control" th:field="*{iva_honorarios}"
+								name="iva_honorarios" id="iva_honorarios"></input>
+						</div>
+						<br>
+					</div>
+					<br> <br>
+					<div class="row">
+
+						<div class="text-center">
+							<a onclick="generar_desarrollo();" class="btn btn-info">Simular Desarrollo</a>
+
+						</div>
+					</div>
+					<br>
+					<div class="row">
+
+						<h5 class="text-info text-center">Simulador Cuotas</h5>
+
+						<br>
+						<div class="col text-center"><b class="text-primary"
+								style="border:none; font-size:22px;">Total:</b>
+
+							<input style="border:none; font-size:22px;" id="total" name="total" step="any" type="number"
+								min="0.00" readonly>
+						</div>
+						<div class="col text-center"><b class="text-success"
+								style="border:none; font-size:22px;">Cuota:</b>
+							<input style="border:none; font-size:22px;" id="cuota" name="vcuota" step="any"
+								type="number" min="0.00" readonly>
+						</div>
+						<br>
+					</div>
+
+					<div class="table-responsive">
+
+						<table th:replace="desarrollos/plantilla-cuotas :: cuotas"></table>
+					</div>
+
+					<div class="table-responsive">
+						<table id="cargarCuotas" class="table table-sm table-striped table-hover text-center">
+							<thead>
+								<tr>
+									<th>Fecha:</th>
+									<th>Nro.:</th>
+									<th>Cuota Nominal:</th>
+									<th>Interes Cta:</th>
+									<th>Saldo Capital:</th>
+									<th>Iva Int Cta:</th>
+									<th>Honorarios Cta:</th>
+									<th>Iva Hon Cta:</th>
+									<th>Gastos Administrativos:</th>
+									<th>Valor Cta:</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+
+					<br>
+					<div class="row">
+						<br>
+						<div class="text-center">
+							<br>
+
+							<button class="btn btn-primary d-none" id="btn-guardar" type="submit">Guardar</button>
+							<a class="btn btn-danger" th:href="@{/}">Cancelar</a>
+
+						</div>
+
+					</div>
+
+				</form>
+
+
+
+
+
+				<br> <br> <br> <br>
+		</div>
+
+
+
+		</main>
+
+
+
+	</div>
+	</div>
+
+	<div th:replace="layout :: script"></div>
+
+	<div th:replace="desarrollos/autocomplete_desarrollo :: autocomplete"></div>
+
+	<script>
+
+		var cuotas = [];
+
+
+		function Cuota(
+			nro_cuota, deuda_nominal, interes, iva_interes, cuota_nominal,
+			honorarios, iva_honorarios, gastos, valor
+		) {
+			this.nro_cuota = nro_cuota;
+			this.deuda_nominal = deuda_nominal;
+			this.interes = interes;
+			this.iva_interes = iva_interes;
+			this.cuota_nominal = cuota_nominal;
+			this.honorarios = honorarios;
+			this.iva_honorarios = iva_honorarios;
+			this.gastos = gastos;
+			this.valor = valor;
+
+		};
+
+		function generar_desarrollo() {
+
+			$("#cargarCuotas tbody > tr").remove();
+			$("#btn-guardar").removeClass("d-none");
+
+			var id_tipo_desarrollo = parseInt(document.getElementById("id_tipo_desarrollo").value);
+			var deuda_nominal = parseFloat(document.getElementById("deuda_nominal").value);
+			var interes_mensual = parseFloat(document.getElementById("interes_mensual").value);
+			var nro_cuotas = parseInt(document.getElementById("nro_cuotas").value);
+
+			var gastos = parseFloat(document.getElementById("gastos").value);
+			var honorarios = parseFloat(document.getElementById("honorarios").value);
+			var iva_interes = parseFloat(document.getElementById("iva_interes").value);
+			var iva_honorarios = parseFloat(document.getElementById("iva_honorarios").value);
+
+			var cuota_nominal = deuda_nominal / nro_cuotas;
+
+
+			if (id_tipo_desarrollo == 1) {
+
+
+
+				var interes = interes_mensual * deuda_nominal / 100;
+				var iva_s_interes = (cuota_nominal + interes) * iva_interes / 100;
+				var honorarios_c = (cuota_nominal + interes + iva_s_interes) * honorarios / 100;
+				var iva_s_honorarios = (cuota_nominal + interes + iva_s_interes + honorarios_c) * iva_honorarios / 100;
+
+				var aux = deuda_nominal;
+
+				var total = 0;
+				var cuota = 0;
+
+				var fecha_inicio = new Date(document.getElementById("fecha_inicio").value);
+
+				var mes = (fecha_inicio.getMonth());
+				var dia = (fecha_inicio.getDate());
+
+				for (var i = 1; i <= nro_cuotas; i++) {
+
+
+					fecha_inicio = new Date(document.getElementById("fecha_inicio").value);
+					fecha_inicio.setDate(dia + 1);
+					fecha_inicio.setMonth((mes + i));
+
+
+					var cuota = new Cuota(
+						i,
+						aux,
+						interes,
+						iva_s_interes,
+						cuota_nominal,
+						honorarios_c,
+						iva_s_honorarios,
+						gastos,
+						cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos
+					);
+
+					cuotas.push(cuota);
+
+					linea = $("#plantillaCuotas").html();
+
+					linea = linea.replace(/{FECHA}/g, fecha_inicio.getDate() + "/" + (fecha_inicio.getMonth() + 1) + "/" + fecha_inicio.getFullYear());
+					linea = linea.replace(/{NRO_CUOTA}/g, i);
+					linea = linea.replace(/{CUOTA_NOMINAL}/g, cuota_nominal.toFixed(2));
+					linea = linea.replace(/{INTERES_CUOTA}/g, interes.toFixed(2));
+					linea = linea.replace(/{SALDO_CAPITAL}/g, aux.toFixed(2));
+					linea = linea.replace(/{IVA_INTERES}/g, iva_s_interes.toFixed(2));
+					linea = linea.replace(/{HONORARIOS}/g, honorarios_c.toFixed(2));
+					linea = linea.replace(/{IVA_HONORARIOS}/g, iva_s_honorarios.toFixed(2));
+					linea = linea.replace(/{GASTOS_ADMINISTRATIVOS}/g, gastos.toFixed(2));
+					linea = linea.replace(/{VALOR_CUOTA}/g, (cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos).toFixed(2));
+
+					$("#cargarCuotas tbody").append(linea);
+
+					aux = aux - cuota_nominal;
+
+					total += cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos;
+
+				}
+
+				cuota = total / nro_cuotas;
+
+				$("#total").val(total.toFixed(2));
+				$("#cuota").val(cuota.toFixed(2));
+
+			} else {
+
+				var aux = deuda_nominal;
+
+				var total = 0;
+				var cuota = 0;
+
+				fecha_inicio = new Date(document.getElementById("fecha_inicio").value);
+
+				var mes = (fecha_inicio.getMonth());
+				var dia = (fecha_inicio.getDate());
+
+				for (var i = 1; i <= nro_cuotas; i++) {
+
+					var interes = interes_mensual * aux / 100;
+					var iva_s_interes = (cuota_nominal + interes) * iva_interes / 100;
+					var honorarios_c = (cuota_nominal + interes + iva_s_interes) * honorarios / 100;
+					var iva_s_honorarios = (cuota_nominal + interes + iva_s_interes + honorarios_c) * iva_honorarios / 100;
+
+
+
+					fecha_inicio = new Date(document.getElementById("fecha_inicio").value);
+					fecha_inicio.setDate(dia + 1);
+					fecha_inicio.setMonth((mes + i));
+
+
+					var cuota = new Cuota(
+						i,
+						aux,
+						interes,
+						iva_s_interes,
+						cuota_nominal,
+						honorarios_c,
+						iva_s_honorarios,
+						gastos,
+						cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos
+					);
+
+					linea = $("#plantillaCuotas").html();
+
+					linea = linea.replace(/{FECHA}/g, fecha_inicio.getDate() + "/" + (fecha_inicio.getMonth() + 1) + "/" + fecha_inicio.getFullYear());
+					linea = linea.replace(/{NRO_CUOTA}/g, i);
+					linea = linea.replace(/{CUOTA_NOMINAL}/g, cuota_nominal.toFixed(2));
+					linea = linea.replace(/{INTERES_CUOTA}/g, interes.toFixed(2));
+					linea = linea.replace(/{SALDO_CAPITAL}/g, aux.toFixed(2));
+					linea = linea.replace(/{IVA_INTERES}/g, iva_s_interes.toFixed(2));
+					linea = linea.replace(/{HONORARIOS}/g, honorarios_c.toFixed(2));
+					linea = linea.replace(/{IVA_HONORARIOS}/g, iva_s_honorarios.toFixed(2));
+					linea = linea.replace(/{GASTOS_ADMINISTRATIVOS}/g, gastos.toFixed(2));
+					linea = linea.replace(/{VALOR_CUOTA}/g, (cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos).toFixed(2));
+
+					$("#cargarCuotas tbody").append(linea);
+
+					cuotas.push(cuota);
+
+					aux = aux - cuota_nominal;
+
+					total += cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos;
+
+				}
+
+				cuota = total / nro_cuotas;
+
+				$("#total").val(total.toFixed(2));
+				$("#cuota").val(cuota.toFixed(2));
+
+			}
+
+
+
+
+
+
+
+		}
+
+
+	</script>
+
+
+</body>
+
+</html>

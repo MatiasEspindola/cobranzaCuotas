@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+
+<head th:replace="layout :: head">
+
+</head>
+
+<body>
+
+	<header th:replace="layout :: header">
+
+	</header>
+
+	<div class="container-fluid">
+		<div class="row">
+			<nav th:replace="layout :: nav">
+
+			</nav>
+
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+				
+
+				<div class="alert alert-success alert-dismissible fade show" role="alert" style="margin:15px;"
+					th:if="${success != null}">
+					¡Bienvenido <strong th:text="${#authentication.getPrincipal().getUsername()}"></strong>, has
+					iniciado sesión con éxito.
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+
+				<div class="alert alert-primary alert-dismissible fade show" role="alert" style="margin:15px;"
+					th:if="${info != null}">
+					<span th:text="${info}"></span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>	
+
+			</main>
+
+		</div>
+	</div>
+
+	<div th:replace="layout :: script"></div>
+
+</body>
+
+</html>

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+
+<head th:replace="layout :: head">
+
+</head>
+
+<body>
+
+	<header th:replace="layout :: header">
+
+	</header>
+
+	<div class="container-fluid">
+		<div class="row">
+			<nav th:replace="layout :: nav">
+
+			</nav>
+
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+				<br>
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a th:href="@{/}">Tablero</a></li>
+						<li class="breadcrumb-item"><a th:href="@{/clientes/listar}">Clientes</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Detalles Cliente</li>
+					</ol>
+				</nav>
+
+				<div
+					class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+
+					<a class="btn btn-success"
+						th:href="@{/planes_pagos/clientes/simular_cuotas/} + ${cliente.id_cliente}">Añadir Plan de
+						Pago</a>
+
+					<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+						Detalles Cta Cte
+					</button>
+
+					<!-- Modal -->
+					<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+						aria-hidden="true">
+						<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">Detalles Cta Cte</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<table class="table">
+										<thead>
+											<tr>
+												<th scope="col">#</th>
+												<th scope="col">Fecha</th>
+												<th scope="col">Debe</th>
+												<th scope="col">Haber</th>
+												<th scope="col">Saldo</th>
+												<th scope="col">Comprobante</th>
+												<th scope="col">Tipo Comprobante</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="cta_cte : ${cliente.ctas_ctes_cliente}">
+												<td th:text="${cta_cte.id_ctactecliente}">Mark</td >
+												<td th:text="${#dates.format(cta_cte.fecha,'dd/M/yyyy')}">Mark</td >
+												<td th:classappend="${cta_cte.debe > 0 }" th:text="'$ ' + ${#numbers.formatDecimal(cta_cte.debe, 1, 'POINT', 2, 'COMMA')}">Mark</td >
+												<td th:text="'$ ' + ${#numbers.formatDecimal(cta_cte.haber, 1, 'POINT', 2, 'COMMA')}">Otto</td >
+												<td th:text="'$ ' + ${#numbers.formatDecimal(cta_cte.saldo, 1, 'POINT', 2, 'COMMA')}">@mdo</td >
+												<td th:text="${cta_cte.comprobante.comprobante}">@mdo</td >
+												<td th:text="${cta_cte.comprobante.tipo_comprobante.tipo_comprobante}">@mdo</td >
+											</tr >
+										</tbody>
+									</table>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary"
+										data-bs-dismiss="modal">Cerrar</button>
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<h2 class="text-center">
+					Cliente: <span th:text="'ID ' + ${cliente.id_cliente} + ', ' + ${cliente.cliente}"></span>
+				</h2>
+				<br>
+
+				<div th:each="plan_pago : ${cliente.planes_pagos}">
+					<div class="list-group">
+						<a th:href="@{/planes_pagos/detalles/} + ${plan_pago.id_plan_pago}"
+							class="list-group-item list-group-item-action" aria-current="true">
+							<div class="d-flex w-100 justify-content-between">
+								<h5 class="mb-1"
+									th:text="'Inicio: ' + ${#dates.format(plan_pago.fecha_inicio,'dd/M/yyyy')}">List
+									group item heading</h5>
+								<small th:text="'Legajo Plan Pago: ' + ${plan_pago.id_plan_pago}">3 days ago</small>
+							</div>
+							<p class="mb-1" th:text="'Tipo Interés: ' + ${plan_pago.id_tipo_interes.tipo_interes}"></p>
+							<p class="mb-1" th:text="'Nro Expediente: ' + ${plan_pago.nro_expediente}"></p>
+							<p class="mb-1" th:text="'Cuotas: ' + ${plan_pago.nro_cuotas}"></p>
+							<p class="mb-1" th:text="'Total: ' + '$ ' + ${#numbers.formatDecimal(plan_pago.total, 0, 'POINT', 2, 'COMMA')}"></p>
+							<p class="mb-1" th:text="'Valor Cuota: ' + '$ ' + ${#numbers.formatDecimal(plan_pago.valor_cuota, 0, 'POINT', 2, 'COMMA')}"></p>
+							<p class="mb-1" th:text="'Proveedor: ' + ${plan_pago.id_proveedor.razon_social}"></p>
+							<p class="mb-1" th:text="'Abogado Parte Actora: ' + ${plan_pago.pactora}"></p>
+							<small class="text-success" th:text="${plan_pago.activo ? 'Activo':'Inactivo'}"></small>
+						</a>
+					</div>
+					<br>
+				</div>
+
+
+			</main>
+		</div>
+	</div>
+
+	<div th:replace="layout :: script"></div>
+
+
+
+</body>
+
+</html>

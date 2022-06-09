@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en">
+
+<head th:replace="layout :: head">
+
+</head>
+
+<body>
+
+	<header th:replace="layout :: header">
+
+	</header>
+
+	<div class="container-fluid">
+		<div class="row">
+			<nav th:replace="layout :: nav">
+
+			</nav>
+
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+				<br>
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a th:href="@{/}">Tablero</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Simular Cuotas</li>
+					</ol>
+				</nav>
+
+				<div class="alert alert-danger" role="alert" th:if="${error != null}" th:text="${error}"
+					style="margin:10px;">
+
+				</div>
+
+				<form th:action="@{/planes_pagos/simular_cuotas}" th:object="${plan_pago}" method="post">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="headingOne">
+							<button class="accordion-button" type="button" data-bs-toggle="collapse"
+								data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+								Simular Cuotas
+							</button>
+						</h2>
+						<div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+							data-bs-parent="#accordionExample">
+							<div class="accordion-body">
+
+
+								<h2 class="text-center">Simular Cuotas</h2>
+
+
+
+
+
+
+								<!--
+         <div class="row">
+      			
+      			<div class="col">
+      			<br>
+						<label class="form-label">Cuota:</label>
+						<input type="number" class="form-control" name="valor_cuota" min="0.00" step="any" id="cuota"
+						value="0.00"></input>
+						
+					</div>
+					<div class="col">
+					<br>
+						<label class="form-label">Total:</label>
+						<input type="number" class="form-control" name="total" min="0.00" step="any" id="total"
+						value="0.00"></input>
+						
+					</div>	
+
+      		</div>
+      		-->
+
+								<div class="row">
+
+
+									<div class="col col-12 col-md-12 col-lg-6 col-sm-12">
+										<br>
+										<label class="form-label">Tipo de Interes:</label>
+										<select class="form-select" aria-label="Default select example" required
+											th:field="*{id_tipo_interes}" id="id_tipo_interes">
+
+											<option th:each="tipo_interes : ${tipos_intereses}"
+												th:text="${tipo_interes.tipo_interes}"
+												th:value="${tipo_interes.id_tipo_interes}"></option>
+										</select>
+
+									</div>
+									<div class="col col-12 col-md-12 col-lg-6 col-sm-12">
+										<br>
+										<label class="form-label">Deuda Nominal:</label>
+										<input required type="number" min="1" step="any" class="form-control"
+											th:field="*{deuda_nominal}" name="deuda_nominal" id="deuda_nominal"></input>
+
+									</div>
+
+
+								</div>
+
+								<div class="row">
+									<div class="col col-12 col-md-12 col-lg-4 col-sm-12">
+										<br>
+										<label class="form-label">Interés Mensual:</label>
+										<input required type="number" min="1" step="any" class="form-control"
+											th:field="*{interes_mensual}" name="interes_mensual"
+											id="interes_mensual"></input>
+
+									</div>
+
+									<div class="col col-12 col-md-12 col-lg-4 col-sm-12">
+										<br>
+										<label class="form-label">Nro Cuotas:</label>
+										<input required type="number" min="1" class="form-control" name="nro_cuotas"
+											th:field="*{nro_cuotas}" id="nro_cuotas"></input>
+									</div>
+									<div class="col col-12 col-md-12 col-lg-4 col-sm-12">
+										<br>
+										<label class="form-label">Fecha de Inicio:</label>
+										<input required type="date" class="form-control" name="fecha_inicio"
+											th:field="*{fecha_inicio}" id="fecha_inicio"></input>
+									</div>
+
+								</div>
+
+								<div class="row">
+
+									<div class="col col-12 col-md-12 col-lg-6 col-sm-12">
+										<br>
+										<label class="form-label">Gastos:</label>
+										<input required type="number" min="1" step="any" class="form-control"
+											th:field="*{gasto}" name="gasto" id="gastos"></input>
+									</div>
+									<div class="col col-12 col-md-12 col-lg-6 col-sm-12">
+										<br>
+										<label class="form-label">Honorarios (%):</label>
+										<input required type="number" min="1" step="any" class="form-control"
+											th:field="*{honorarios}" name="honorarios" id="honorarios"></input>
+									</div>
+
+								</div>
+
+								<div class="row">
+
+									<div class="col col-12 col-md-12 col-lg-6 col-sm-12">
+										<br>
+										<label class="form-label">IVA sobre interés (%):</label>
+										<input required type="number" class="form-control" th:field="*{iva_interes}"
+											name="iva_interes" id="iva_interes"></input>
+									</div>
+									<div class="col col-12 col-md-12 col-lg-6 col-sm-12">
+										<br>
+										<label class="form-label">IVA sobre honorarios (%):</label>
+										<input required type="number" class="form-control" th:field="*{iva_honorarios}"
+											name="iva_honorarios" id="iva_honorarios"></input>
+									</div>
+									<br>
+								</div>
+								<br> <br>
+								<div class="row">
+
+									<div class="text-center">
+										<a onclick="generar_desarrollo();" class="btn btn-info">Simular Cuotas </a>
+									</div>
+								</div>
+								<br>
+								<div class="row">
+
+									<h5 class="text-info text-center">Cuotas</h5>
+
+									<br>
+									<div class="col text-center"><b class="text-primary"
+											style="border:none; font-size:22px;">Total:</b>
+
+										<input style="border:none; font-size:22px;" id="total" name="total" step="any"
+											type="number" min="0.00" readonly>
+									</div>
+									<div class="col text-center"><b class="text-success"
+											style="border:none; font-size:22px;">Cuota:</b>
+										<input style="border:none; font-size:22px;" id="cuota" name="vcuota" step="any"
+											type="number" min="0.00" readonly>
+									</div>
+									<br>
+								</div>
+
+								<div class="table-responsive">
+
+									<table th:replace="planes_pagos/plantilla-cuotas :: cuotas"></table>
+								</div>
+
+								<div class="table-responsive">
+									<table id="cargarCuotas"
+										class="table table-sm table-striped table-hover text-center">
+										<thead>
+											<tr>
+												<th>Fecha:</th>
+												<th>Nro.:</th>
+												<th>Cuota Nominal:</th>
+												<th>Interes Cta:</th>
+												<th>Saldo Capital:</th>
+												<th>Iva Int Cta:</th>
+												<th>Honorarios Cta:</th>
+												<th>Iva Hon Cta:</th>
+												<th>Gastos Administrativos:</th>
+												<th>Valor Cta:</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
+
+							</div>
+						</div>
+					</div>
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="headingTwo">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+								data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+								Datos Cliente
+							</button>
+						</h2>
+						<div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+							data-bs-parent="#accordionExample">
+							<div class="accordion-body">
+
+								<h2 class="text-center">Datos Cliente</h2>
+							
+								<div class="row" >
+									<div class="col col-12 col-lg-3 col-md-12 col-sm-12">
+										<label for="exampleFormControlTextarea1" class="form-label">Cliente:</label>
+										<input type="text" class="form-control" placeholder="Cliente"
+											aria-label="First name" name="cliente" required>
+										<br>
+									</div>
+									<div class="col col-12 col-lg-3 col-md-12 col-sm-12">
+										<label for="exampleFormControlTextarea1" class="form-label">Nro
+											Documento:</label>
+										<input type="text" class="form-control" placeholder="Nro Documento"
+											aria-label="First name" name="nro_documento" required>
+										<br>
+									</div>
+									<div class="col col-12 col-lg-3 col-md-12 col-sm-12">
+										<label for="exampleFormControlTextarea1" class="form-label">Tipo de
+											Documento:</label>
+										<select class="form-select" aria-label="Default select example"
+											name="tipo_documento" required>
+											<option th:each="tipo_documento : ${tipos_documentos}"
+												th:text="${tipo_documento.tipo_documento}"
+												th:value="${tipo_documento.id_tipo_documento}"></option>
+										</select>
+										<br>
+									</div>
+									<div class="col col-12 col-lg-3 col-md-12 col-sm-12">
+										<label for="exampleFormControlTextarea1" class="form-label">Fecha de
+											Alta:</label>
+										<input type="date" class="form-control" placeholder="Fecha Alta"
+											aria-label="First name" name="alta" required>
+										<br>
+									</div>
+
+								</div>
+
+
+
+								<div class="row">
+									<div class="col col-12 col-lg-4 col-md-12 col-sm-12">
+										<label class="form-label">Dirección:</label>
+										<input type="text" placeholder="Dirección" class="form-control"
+											name="direccion"></input>
+										<br>
+									</div>
+									<div class="col col-12 col-lg-4 col-md-12 col-sm-12">
+										<label for="exampleFormControlTextarea1" class="form-label">Provincia:</label>
+										<select class="form-select" aria-label="Default select example"
+											id="id_provincia">
+											<option value="0">Seleccione Provincia</option>
+										</select>
+										<br>
+									</div>
+									<div class="col col-12 col-lg-4 col-md-12 col-sm-12">
+										<label for="exampleFormControlTextarea1" class="form-label">Localidad:</label>
+										<select class="form-select" aria-label="Default select example"
+											id="id_localidad">
+
+										</select>
+										<small style="color:blue;">(*) Se carga al seleccionar provincia</small>
+										<br><br>
+									</div>
+
+								</div>
+
+								<div class="row">
+									<div class="col">
+										<input onkeydown="return false" type="text" class="form-control"
+											placeholder="Localidad y Provincia Seleccionada" aria-label="First name"
+											id="seleccion" required>
+										<input type="hidden" class="form-control"
+											placeholder="Localidad y Provincia Seleccionada" aria-label="First name"
+											name="id_seleccion" id="id_seleccion" required>
+										<small style="color:blue;">(*) Campo autocompletable cuando selecciona provincia
+											y
+											localidad</small>
+
+										<br><br>
+									</div>
+								</div>
+
+								<div class="row">
+
+									<div class="col col-12 col-lg-6 col-md-12 col-sm-12">
+										<label class="form-label">Teléfono Fijo:</label>
+										<input type="text" placeholder="Teléfono Fijo" class="form-control"
+											name="tel_fijo"></input>
+										<br>
+									</div>
+
+									<div class="col col-12 col-lg-6 col-md-12 col-sm-12">
+										<label class="form-label">Teléfono Fijo 2:</label>
+										<input type="text" placeholder="Teléfono Fijo 2" class="form-control"
+											name="tel_fijo2"></input>
+										<br>
+									</div>
+
+								</div>
+
+								<div class="row">
+
+									<div class="col col-12 col-lg-6 col-md-12 col-sm-12">
+										<label class="form-label">Celular:</label>
+										<input type="text" placeholder="Celular" class="form-control"
+											name="cel"></input>
+										<br>
+									</div>
+
+									<div class="col col-12 col-lg-6 col-sm-12 ">
+										<label class="form-label">Celular 2:</label>
+										<input type="text" placeholder="Celular 2" class="form-control"
+											name="cel2"></input>
+										<br>
+									</div>
+
+								</div>
+
+								<div class="row">
+
+									<div class="col col-12 col-lg-4 col-sm-12 ">
+						<label class="form-label">Correo:</label>
+						<input type="text"  placeholder="Correo" class="form-control" name="mail"
+							></input>
+							<br>
+					</div>
+					
+					<div class="col col-12 col-lg-4 col-sm-12 ">
+						<label class="form-label">Correo 2:</label>
+						<input type="text"  placeholder="Correo 2" class="form-control" name="mail2"
+							></input>
+							<br>
+					</div>
+					
+					<div class="col col-12 col-lg-4 col-sm-12">
+							<label for="exampleFormControlTextarea1" class="form-label">Responsable Iva:</label>
+							<select class="form-select" aria-label="Default select example" name="id_responsable"
+								required>
+								<option th:each="responsable : ${responsables_iva}" th:text="${responsable.responsable}"
+									th:value="${responsable.id_responsable}"></option>
+							</select>
+							<br>
+						</div>
+									
+										
+								</div>
+							</div >
+						</div>
+					</div>
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="headingThree">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+								data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+								Datos Plan de Pago
+							</button>
+						</h2>
+						<div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+							data-bs-parent="#accordionExample">
+							<div class="accordion-body">
+								<h3 class="text-center">Datos Plan de Pago:</h3>
+
+								<div class="row">
+									<div class="col col-12 col-lg-6 col-sm-12">
+										<label for="exampleFormControlTextarea1" class="form-label">Proveedor:</label>
+										<select class="form-select" aria-label="Default select example"
+											id="ingresar_proveedor" name="ingresar_proveedor"
+											th:field="*{id_proveedor}">
+											<option th:each="proveedor : ${proveedores}"
+												th:text="${proveedor.razon_social} + ', (' + ${proveedor.id_localidad4.localidad} + ', ' + ${proveedor.id_localidad4.provincia.prov} + ')'"
+												th:value="${proveedor.id_proveedor}"></option>
+										</select>
+										<br>
+									</div>
+									<div class="mb-3 col col-12 col-lg-6 col-sm-12">
+										<label for="exampleFormControlTextarea1" class="form-label">Abogado Parte
+											Actora</label>
+										<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+											name="pactora" th:field="*{pactora}" required></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<br>
+					<div class="row">
+						<br>
+						<div class="text-center">
+							<br>
+
+							<button class="btn btn-primary d-none" id="btn-guardar" type="submit">Guardar</button>
+
+							<a class="btn btn-danger" th:href="@{/}">Cancelar</a>
+
+						</div>
+
+					</div>
+
+		</div>
+
+
+
+
+
+		</form>
+
+
+
+
+
+		<br> <br> <br> <br>
+	</div>
+
+
+
+	</main>
+
+
+
+	</div>
+	</div>
+
+	<div th:replace="layout :: script"></div>
+
+	<script>
+
+		$(document).ready(function () {
+
+			$.get("/planes_pagos/provincias", function (data) {
+
+				data.forEach(function (item, i) {
+					var option = "<option value = " + item.id + ">" + item.prov + "</option>";
+					$("#id_provincia").append(option);
+				});
+			});
+
+			function sendAjaxRequest() {
+				var id_provincia = $("#id_provincia").val();
+				$.get("/planes_pagos/localidades?id_provincia=" + id_provincia, function (data) {
+					$("#id_localidad").empty();
+					data.forEach(function (item, i) {
+						var option = "<option value = " + item.id + ">" + item.localidad + "</option>";
+						$("#id_localidad").append(option);
+					});
+					if ($("#id_localidad option:selected").val() > 0) {
+						var localidad = $("#id_localidad option:selected").text();
+						var provincia = $("#id_provincia option:selected").text();
+						$("#id_seleccion").val($("#id_localidad").val());
+						$("#seleccion").val(localidad + ", " + provincia);
+					}
+				});
+			};
+
+			$("#id_provincia").change(function () {
+				sendAjaxRequest();
+			});
+
+
+
+			$("#id_localidad").change(function () {
+				if ($("#id_localidad option:selected").val() > 0) {
+					var localidad = $("#id_localidad option:selected").text();
+					var provincia = $("#id_provincia option:selected").text();
+					$("#id_seleccion").val($("#id_localidad").val());
+					$("#seleccion").val(localidad + ", " + provincia);
+				}
+			});
+
+		});
+
+
+		var cuotas = [];
+
+
+		function Cuota(
+			nro_cuota, deuda_nominal, interes, iva_interes, cuota_nominal,
+			honorarios, iva_honorarios, gastos, valor
+		) {
+			this.nro_cuota = nro_cuota;
+			this.deuda_nominal = deuda_nominal;
+			this.interes = interes;
+			this.iva_interes = iva_interes;
+			this.cuota_nominal = cuota_nominal;
+			this.honorarios = honorarios;
+			this.iva_honorarios = iva_honorarios;
+			this.gastos = gastos;
+			this.valor = valor;
+
+		};
+
+		function parseDate(input) {
+
+			let parts = input.split('-');
+
+			// new Date(year, month [, day [, hours[, minutes[, seconds[, ms]]]]])
+			return new Date(parts[0], parts[1] - 1, parts[2]); // Note: months are 0-based
+		}
+
+		function generar_desarrollo() {
+
+			$("#cargarCuotas tbody > tr").remove();
+			$("#btn-guardar").removeClass("d-none");
+
+			var id_tipo_interes = parseInt(document.getElementById("id_tipo_interes").value);
+			var deuda_nominal = parseFloat(document.getElementById("deuda_nominal").value);
+			var interes_mensual = parseFloat(document.getElementById("interes_mensual").value);
+			var nro_cuotas = parseInt(document.getElementById("nro_cuotas").value);
+
+			var gastos = parseFloat(document.getElementById("gastos").value);
+			var honorarios = parseFloat(document.getElementById("honorarios").value);
+			var iva_interes = parseFloat(document.getElementById("iva_interes").value);
+			var iva_honorarios = parseFloat(document.getElementById("iva_honorarios").value);
+
+			var cuota_nominal = deuda_nominal / nro_cuotas;
+
+
+			if (id_tipo_interes == 1) {
+
+
+
+				var interes = interes_mensual * deuda_nominal / 100;
+				var iva_s_interes = (cuota_nominal + interes) * iva_interes / 100;
+				var honorarios_c = (cuota_nominal + interes + iva_s_interes) * honorarios / 100;
+				var iva_s_honorarios = (cuota_nominal + interes + iva_s_interes + honorarios_c) * iva_honorarios / 100;
+
+				var aux = deuda_nominal;
+
+				var total = 0;
+				var cuota = 0;
+
+				var fecha_inicio = parseDate(document.getElementById("fecha_inicio").value);
+
+
+
+				var dia = (fecha_inicio.getDate());
+
+
+				var mes = (fecha_inicio.getMonth());
+
+
+
+				for (var i = 1; i <= nro_cuotas; i++) {
+
+
+					fecha_inicio = new Date();
+					fecha_inicio.setDate(dia);
+					fecha_inicio.setMonth((mes + i));
+
+
+					var cuota = new Cuota(
+						i,
+						aux,
+						interes,
+						iva_s_interes,
+						cuota_nominal,
+						honorarios_c,
+						iva_s_honorarios,
+						gastos,
+						cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos
+					);
+
+					cuotas.push(cuota);
+
+					linea = $("#plantillaCuotas").html();
+
+					linea = linea.replace(/{FECHA}/g, fecha_inicio.getDate() + "/" + (fecha_inicio.getMonth() + 1) + "/" + fecha_inicio.getFullYear());
+					linea = linea.replace(/{NRO_CUOTA}/g, i);
+					linea = linea.replace(/{CUOTA_NOMINAL}/g, cuota_nominal.toFixed(2));
+					linea = linea.replace(/{INTERES_CUOTA}/g, interes.toFixed(2));
+					linea = linea.replace(/{SALDO_CAPITAL}/g, aux.toFixed(2));
+					linea = linea.replace(/{IVA_INTERES}/g, iva_s_interes.toFixed(2));
+					linea = linea.replace(/{HONORARIOS}/g, honorarios_c.toFixed(2));
+					linea = linea.replace(/{IVA_HONORARIOS}/g, iva_s_honorarios.toFixed(2));
+					linea = linea.replace(/{GASTOS_ADMINISTRATIVOS}/g, gastos.toFixed(2));
+					linea = linea.replace(/{VALOR_CUOTA}/g, (cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos).toFixed(2));
+
+					$("#cargarCuotas tbody").append(linea);
+
+					aux = aux - cuota_nominal;
+
+					total += cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos;
+
+				}
+
+				cuota = total / nro_cuotas;
+
+				$("#total").val(total.toFixed(2));
+				$("#cuota").val(cuota.toFixed(2));
+
+			} else {
+
+				var aux = deuda_nominal;
+
+				var total = 0;
+				var cuota = 0;
+
+				var fecha_inicio = parseDate(document.getElementById("fecha_inicio").value);
+
+				var mes = (fecha_inicio.getMonth());
+				var dia = (fecha_inicio.getDate());
+
+
+
+				for (var i = 1; i <= nro_cuotas; i++) {
+
+					var interes = interes_mensual * aux / 100;
+					var iva_s_interes = (cuota_nominal + interes) * iva_interes / 100;
+					var honorarios_c = (cuota_nominal + interes + iva_s_interes) * honorarios / 100;
+					var iva_s_honorarios = (cuota_nominal + interes + iva_s_interes + honorarios_c) * iva_honorarios / 100;
+
+
+
+					fecha_inicio = new Date();
+					fecha_inicio.setDate(dia);
+					fecha_inicio.setMonth((mes + i));
+
+
+					var cuota = new Cuota(
+						i,
+						aux,
+						interes,
+						iva_s_interes,
+						cuota_nominal,
+						honorarios_c,
+						iva_s_honorarios,
+						gastos,
+						cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos
+					);
+
+					linea = $("#plantillaCuotas").html();
+
+					linea = linea.replace(/{FECHA}/g, fecha_inicio.getDate() + "/" + (fecha_inicio.getMonth() + 1) + "/" + fecha_inicio.getFullYear());
+					linea = linea.replace(/{NRO_CUOTA}/g, i);
+					linea = linea.replace(/{CUOTA_NOMINAL}/g, cuota_nominal.toFixed(2));
+					linea = linea.replace(/{INTERES_CUOTA}/g, interes.toFixed(2));
+					linea = linea.replace(/{SALDO_CAPITAL}/g, aux.toFixed(2));
+					linea = linea.replace(/{IVA_INTERES}/g, iva_s_interes.toFixed(2));
+					linea = linea.replace(/{HONORARIOS}/g, honorarios_c.toFixed(2));
+					linea = linea.replace(/{IVA_HONORARIOS}/g, iva_s_honorarios.toFixed(2));
+					linea = linea.replace(/{GASTOS_ADMINISTRATIVOS}/g, gastos.toFixed(2));
+					linea = linea.replace(/{VALOR_CUOTA}/g, (cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos).toFixed(2));
+
+					$("#cargarCuotas tbody").append(linea);
+
+					cuotas.push(cuota);
+
+					aux = aux - cuota_nominal;
+
+					total += cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos;
+
+				}
+
+				cuota = total / nro_cuotas;
+
+				$("#total").val(total.toFixed(2));
+				$("#cuota").val(cuota.toFixed(2));
+
+			}
+
+
+
+
+
+
+
+		}
+
+
+	</script>
+
+
+</body>
+
+</html>

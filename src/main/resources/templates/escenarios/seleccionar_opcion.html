@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+
+<head th:replace="layout :: head">
+
+</head>
+
+<body>
+
+	<header th:replace="layout :: header">
+
+	</header>
+
+	<div class="container-fluid">
+		<div class="row">
+			<nav th:replace="layout :: nav">
+
+			</nav>
+
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+				<br>
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a th:href="@{/}">Tablero</a></li>
+						<li class="breadcrumb-item"><a th:href="@{/planes_pagos/listar}">Planes de Pagos</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Detalles Plan de Pago</li>
+					</ol>
+				</nav>
+
+				<div class="alert alert-danger" role="alert" th:if="${error != null}" th:text="${error}"
+					style="margin:10px;">
+
+				</div>
+				
+					<div
+					class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+				
+				<a class="btn btn-danger text-center" th:href="@{/planes_pagos/eliminar/} + ${plan_pago.id_plan_pago}">Eliminar Plan de Pago
+									</a>
+									
+									</div>
+
+				<ul class="list-group">
+					<li class="list-group-item active" aria-current="true">
+						Nuevo Plan de Pago: Nro <span th:text="${plan_pago.id_plan_pago}"></span>
+					</li>
+					<li class="list-group-item" th:text="'Total: ' + ${plan_pago.total}">A second item</li>
+					<li class="list-group-item" th:text="'Valor Cuota: ' + ${plan_pago.valor_cuota}">A second item</li>
+					<li class="list-group-item" th:text="'Tipo Interes: ' + ${plan_pago.id_tipo_interes.tipo_interes}">A
+						second item</li>
+					<li class="list-group-item" th:text="'Fecha Inicio: ' + ${plan_pago.fecha_inicio}">A second item
+					</li>
+
+
+
+					<li class="list-group-item" th:text="'Cuotas: ' + ${plan_pago.nro_cuotas}" data-bs-toggle="modal"
+						data-bs-target="#staticBackdrop">A second item</li>
+
+					<!-- Modal -->
+					<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+						tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+						<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="staticBackdropLabel">Cuotas</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+
+									<div class="row">
+										<div class="col-12 col-md-6 col-lg-6 col-sm-12">
+											<br>
+											<div class="card text-white bg-success mb-3">
+												<div class="card-header"><b>Total</b></div>
+												<div class="card-body">
+
+													<h5 class="card-title"
+														th:text="'$ ' + ${#numbers.formatDecimal(plan_pago.total, 1, 'POINT', 2, 'COMMA')}">
+													</h5>
+													<!-- <h4 class="card-title" th:text="'Valor Cuota: $ ' + ${#numbers.formatDecimal(desarrollo.valor_cuota, 1, 'POINT', 2, 'COMMA')}"></h4>-->
+
+												</div>
+											</div>
+
+										</div>
+										<div class="col-12 col-md-6 col-lg-6 col-sm-12">
+											<br>
+											<div class="card text-white bg-primary mb-3">
+												<div class="card-header"><b>Valor Cuotas</b></div>
+												<div class="card-body">
+													<h5 class="card-title"
+														th:text="'$ ' + ${#numbers.formatDecimal(plan_pago.valor_cuota, 1, 'POINT', 2, 'COMMA')}">
+													</h5>
+									
+												</div>
+											</div>
+
+										</div>
+									</div>
+
+									<div class="table-responsive">
+										<table class="table table-striped table-sm text-center">
+											<thead class="bg-dark text-white">
+												<tr>
+													<th class="border-white" scope="col">#</th>
+													<th class="border-white" scope="col">Vencimiento</th>
+
+													<th class="border-white" scope="col">Deuda Nominal</th>
+													<th class="border-white" scope="col">Cuota Nominal</th>
+													<th class="border-white" scope="col">Hon.</th>
+													<th class="border-white" scope="col">Int.</th>
+													<th class="border-white" scope="col">IVA Int.</th>
+													<th class="border-white" scope="col">IVA Hon.</th>
+													<th class="border-white" scope="col">Gastos</th>
+													<th class="border-white bg-primary text-white" scope="col">Valor
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="cuota : ${plan_pago.cuotas}"
+													th:classappend="|${cuota.pagado ? 'bg-success text-white' : ''} ${cuota.vencida ? 'bg-danger text-white' : ''}|">
+													<td th:text=" ${cuota.nro_cuota}">1,001</td>
+													<td th:text="${#dates.format(cuota.fecha,'dd/M/yyyy')}">1,001</td>
+
+													<td
+														th:text=" '$ ' + ${#numbers.formatDecimal(cuota.deuda_nominal, 0, 'POINT', 2, 'COMMA')} ">
+														1,001</td>
+													<td
+														th:text=" '$ ' + ${#numbers.formatDecimal(cuota.cuota_nominal, 0, 'POINT', 2, 'COMMA')} ">
+														1,001</td>
+													<td
+														th:text=" '$ ' + ${#numbers.formatDecimal(cuota.honorarios, 0, 'POINT', 2, 'COMMA')}">
+														1,001</td>
+													<td
+														th:text=" '$ ' + ${#numbers.formatDecimal(cuota.interes, 0, 'POINT', 2, 'COMMA')}">
+														1,001</td>
+													<td
+														th:text=" ${#numbers.formatDecimal(cuota.iva_interes, 1, 'POINT', 2, 'COMMA')} + '%'">
+														1,001</td>
+													<td
+														th:text=" ${#numbers.formatDecimal(cuota.iva_honorarios, 1, 'POINT', 2, 'COMMA')} + '%'">
+														1,001</td>
+													<td
+														th:text=" '$ ' + ${#numbers.formatDecimal(plan_pago.gasto, 0, 'POINT', 2, 'COMMA')}">
+														1,001</td>
+													<td class="text-white bg-primary"
+														th:id="'valor_cuota_txt_'+${cuota.nro_cuota}"
+														th:text=" '$ ' + ${#numbers.formatDecimal(cuota.valor, 0, 'POINT', 2, 'COMMA')}">
+														1,001</td>
+													<td class="d-none" th:id="'valor_cuota_'+${cuota.nro_cuota}"
+														th:text="${cuota.valor}">
+														1,001</td>
+
+												</tr>
+											</tbody>
+										</table>
+
+
+									</div>
+
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary"
+										data-bs-dismiss="modal">Cerrar</button>
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+				</ul>
+
+				<br>
+				<h2 class="text-center">Seleccionar Opción</h2>
+				<br>
+
+				<div class="row">
+
+					<div class="col col-lg-6 col-md-12 col-sm-12">
+						<div class="card">
+							<div class="card-body text-center">
+								Registrar Cliente
+								<br><br>
+								<a class="btn btn-primary text-center" th:href="@{/escenarios/clientes/formulario/} + ${plan_pago.id_plan_pago}">Registrar
+									Cliente</a>
+							</div>
+						</div>
+					</div>
+
+					<div class="col col-lg-6 col-md-12 col-sm-12">
+						<div class="card">
+							<div class="card-body text-center">
+								Asignar Cliente
+								<br><br>
+								<a class="btn btn-primary text-center">Asignar Cliente</a>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+
+
+
+
+
+
+
+
+			</main>
+
+
+
+		</div>
+	</div>
+
+	<div th:replace="layout :: script"></div>
+
+</body>
