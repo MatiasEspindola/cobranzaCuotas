@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+	<table th:fragment="cuotas" class="d-none">
+		<tbody id="plantillaCuotas">
+			<tr id="cuota_{NRO_CUOTA}" name="columnas-cuotas">
+				<td>
+					<input readonly style="border:none; width: 75px;" type="text" name="fecha[]" value="{FECHA}"
+					></input>			
+				</td >	
+				<td>
+					<input readonly style="border:none; width: 30px;" type="text" name="n_cuota[]" value="{NRO_CUOTA}"
+					></input>
+				</td >
+				<td >
+					<input readonly style="border:none; width: 85px;" type="text" name="cuota_nominal[]" value="{CUOTA_NOMINAL}"
+					></input>
+				</td >
+				<td >
+					<input readonly style="border:none; width: 85px;" type="text" name="interes_cuota[]" value="{INTERES_CUOTA}"
+					></input>
+				</td >
+				<td >
+					<input readonly style="border:none; width: 85px;" type="text" name="saldo_capital[]" value="{SALDO_CAPITAL}"
+					></input>
+				</td >
+				<td >
+					<input readonly style="border:none; width: 85px;" type="text" name="iva_interes[]" value="{IVA_INTERES}"
+					></input>
+				</td >
+				<td>
+					<input readonly style="border:none; width: 85px;" type="text" name="honorarios[]" value="{HONORARIOS}"
+					></input>
+				</td >
+				<td >
+					<input readonly style="border:none; width: 85px;" type="text" name="iva_honorarios[]" value="{IVA_HONORARIOS}"
+					></input>
+				</td >
+				<td >
+					<input readonly style="border:none; width: 85px;" type="text" name="gastos_administrativos[]" value="{GASTOS_ADMINISTRATIVOS}"
+					></input>
+				</td >
+				<td >
+					<input readonly style="border:none; width: 85px;" type="text" name="v_cuota[]" value="{VALOR_CUOTA}"
+					></input>
+				</td>
+			
+			</tr>
+		</tbody>
+	</table>
+	
+
+</body>
+
+</html>

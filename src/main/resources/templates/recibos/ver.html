@@ -78,6 +78,7 @@
 					<!--<h6 class="text-LEFT" th:text="'Cond. IVA: ' + ${cliente.id_responsable.responsable}"></h6>-->
 				</DIV>
 			</div>
+			<h6 class="text-center"><b th:text="DESCRIPCIÓN"></b></h6>
 		</div>
 		<div class="row" style="border: 1px solid black; ">
 			<table class="table ">
@@ -87,7 +88,7 @@
 						<th class="text-center" scope="col">Cuota</th>
 						<th class="text-center" scope="col">Importe</th>
 						<th class="text-center" scope="col">Medio de Pago</th>
-						<th class="text-center" scope="col">Descripción</th>
+						<th class="text-center" scope="col">Detalle</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -108,8 +109,8 @@
 			
 			<br></br>
 			    
-					<h4 class="text-center" th:text="'IMP. TOTAL: $ ' + ${#numbers.formatDecimal(total, 0, 'POINT', 2, 'COMMA')}"></h4  >
-				<h6 class="text-center"><b th:text="${recibo.descripcion} + ', EN CONCEPTO DE ' + ${recibo.concepto.concepto}"></b></h6>
+					<h4 class="text-center" th:text="'TOTAL: $ ' + ${#numbers.formatDecimal(total, 0, 'POINT', 2, 'COMMA')}"></h4  >
+					<h6 class="text-center" th:text="${recibo.descripcion}"></h6  >
 
 			
 		</div>

@@ -41,9 +41,6 @@ public class Usuario {
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fecha_alta;
-
-	private String mail;
-	private String mail2;
 	
 	@JoinColumn(name = "id_empresa_user", referencedColumnName = "id_empresa")
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -59,6 +56,13 @@ public class Usuario {
 	@JoinColumn(name = "id_usuario_auth")
 	@JsonIgnore
 	private List<Authority> authorities;
+	
+	@JoinColumn(name = "id_pregunta", referencedColumnName = "id_pregunta")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonBackReference
+	private Pregunta id_pregunta;
+	
+	private String respuesta;
 
 	public long getId_usuario() {
 		return id_usuario;
@@ -102,18 +106,7 @@ public class Usuario {
 		this.fecha_alta = fecha_alta;
 	}
 
-	public String getMail() {
-		return mail;
-	}
-
-
-	public String getMail2() {
-		return mail2;
-	}
-
-	public void setMail2(String mail2) {
-		this.mail2 = mail2;
-	}
+	
 
 	public Empresa getEmpresa() {
 		return empresa;
@@ -147,10 +140,21 @@ public class Usuario {
 		this.authorities = authorities;
 	}
 
-	public void setMail(String mail) {
-		this.mail = mail;
+	public Pregunta getId_pregunta() {
+		return id_pregunta;
 	}
-	
+
+	public void setId_pregunta(Pregunta id_pregunta) {
+		this.id_pregunta = id_pregunta;
+	}
+
+	public String getRespuesta() {
+		return respuesta;
+	}
+
+	public void setRespuesta(String respuesta) {
+		this.respuesta = respuesta;
+	}
 	
 	
 }

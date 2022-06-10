@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+	<table th:fragment="importes" class="d-none">
+		<tbody id="plantillaImportes">
+			<tr id="importe_{NRO_IMPORTE}" name="columnas-importes">
+			
+				<td>
+					<span>{NRO_IMPORTE}</span>
+				</td>
+				<td>
+					<span>{FECHA_IMPORTE}</span>
+				</td>
+				<td>
+					<span>{MEDIO_PAGO}</span>
+				</td>
+				<td> $
+					<input readonly type="number" step="any" id="importe_{NRO_IMPORTE}"
+					min="0" value="0"
+					/>
+				</td>
+			
+			</tr>
+		</tbody>
+	</table>
+	
+
+</body>
+
+</html>

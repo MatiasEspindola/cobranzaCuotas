@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head th:replace="layout :: head">
+
+</head>
+
+<body>
+
+	<header th:replace="layout :: header">
+
+	</header>
+
+	<div class="container-fluid">
+		<div class="row">
+			<nav th:replace="layout :: nav">
+
+			</nav>
+
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+				<br>
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a th:href="@{/}">Tablero</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Proveedores</li>
+					</ol>
+				</nav>
+
+				<div class="alert alert-danger" role="alert" th:if="${error != null}" th:text="${error}"
+					style="margin:10px;">
+
+				</div>
+
+				<div
+					class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+
+					<a class="btn btn-success" th:href="@{/proveedores/formulario}">Añadir Proveedor</a>
+
+				</div>
+				<h2 class="text-center">Lista de Proveedores</h2 >
+				<div class="table-responsive">
+					<table class="table table-striped table-sm text-center">
+						<thead class="bg-dark text-white">
+							<tr>
+								<th>Id Proveedor</th>
+								<th>Razón Social</th>
+								<th>Nro Documento</th>
+								<th>Tipo Documento</th>
+								<th>Dirección</th>
+								<th>Localidad</th>
+
+								<th>Opciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="proveedor : ${proveedores}">
+								<td th:text="${proveedor.id_proveedor}"></td>
+								<td th:text="${proveedor.razon_social}"></td>
+								<td th:text="${proveedor.nro_documento}"></td>
+								<td th:text="${proveedor.id_tipo_documento1.tipo_documento}"></td>
+								<td th:text="${proveedor.direccion}"></td>
+								<td
+									th:text="${proveedor.id_localidad4.localidad + ', ' + proveedor.id_localidad4.provincia.prov}">
+								</td>
+
+								<td>
+									<a class="btn btn-info" th:href="@{/proveedores/detalles/} + ${proveedor.id_proveedor}">Detalles</a>
+									<a class="btn btn-primary" th:href="@{/proveedores/formulario/} + ${proveedor.id_proveedor}">Editar</a>
+									<a class="btn btn-danger"
+										th:href="@{/proveedores/eliminar/} + ${proveedor.id_proveedor}">Borrar</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</main>
+
+		</div>
+	</div>
+
+	<div th:replace="layout :: script"></div>
+
+
+</body>
+
+</html>

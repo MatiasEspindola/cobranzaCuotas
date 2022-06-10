@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+
+<head th:replace="layout :: head">
+
+</head>
+
+<body>
+
+	<header th:replace="layout :: header">
+
+	</header>
+
+	<div class="container-fluid">
+		<div> class="row">
+			<nav th:replace="layout :: nav">
+
+			</nav>
+
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+				<br>
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a
+								th:href="@{/planes_pagos/detalles/} + ${plan_pago.id_plan_pago}">Detalles
+								Plan de Pago</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Generar Pago</li>
+					</ol>
+				</nav>
+
+				<div class="alert alert-danger" role="alert" th:if="${error != null}" th:text="${error}"
+					style="margin:10px;">
+
+				</div>
+
+
+				<div
+					class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+
+				</div>
+
+				<h2 class="text-center">Generar Pago</h2>
+
+				<ol class="list-group list-group-numbered">
+					<li class="list-group-item d-flex justify-content-between align-items-start"
+						th:each="cuota : ${cuotas}">
+						<div class="ms-2 me-auto">
+							<div class="fw-bold" th:text="'Cuota Nro: ' + ${cuota.nro_cuota}">Subheading</div>
+							<span th:text="'Vencimiento: ' + ${cuota.fecha}"></span>
+						</div>
+						<span class="badge bg-primary rounded-pill"
+							th:text="'Pendiente: $ ' + ${#numbers.formatDecimal(cuota.pendiente, 0, 'POINT', 2, 'COMMA')}">14</span>
+					</li>
+				</ol>
+				<br>
+				<span class="badge bg-primary rounded-pill" style="font-size: 20px;"
+					th:text="'Total: $ ' + ${#numbers.formatDecimal(total, 0, 'POINT', 2, 'COMMA')}">14</span>
+
+				<input required type="number" class="form-control d-none" name="total" id="total"
+					th:value="${total}"></input>
+
+				<br><br>
+
+				<form th:action="@{/pagos/generar_importes}" method="post">
+					<div class="row">
+
+
+						<input required type="number" class="form-control d-none" name="plan_pago" id="plan_pago"
+							th:value="${plan_pago.id_plan_pago}"></input>
+
+
+
+
+						
+
+						<div class="col">
+							<label class="form-label">Medio de Pago:</label>
+							<select class="form-select form-select-md mb-3" aria-label=".form-select-lg example"
+								id="medios_pagos" required>
+								<option value="0">Seleccione Medio de Pago</option>
+								<option th:each="medio_pago : ${medios_pagos}" th:text="${medio_pago.medio_pago}"
+									th:value="${medio_pago.id_medio_pago}">Open this select menu
+								</option>
+							</select>
+						</div>
+
+						<br>
+
+					</div>
+
+					<button type="button" class="btn btn-primary" id="cargar">Cargar</button>
+
+					<br><br>
+
+					<div class="table-responsive">
+
+						<table th:replace="pagos/plantilla-importes :: importes"></table>
+					</div>
+
+					<div class="table-responsive">
+						<table id="cargarImportes" class="table table-sm table-striped table-hover text-center">
+							<thead>
+								<tr>
+									<th class="d-none">Id Importe:</th >
+								
+									<th>Medio de Pago:</th>
+									<th class="d-none">Medio de Pago Value:</th >
+									<th>Importe:</th>
+									<th>Eliminar:</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+					
+					<br>
+					<span class="badge bg-success rounded-pill" style="font-size: 20px;"
+					id="pendiente">Pendiente: $0,00</span>
+					<br><br>
+
+					<button type="submit" class="btn btn-success" id="generar_recibo" disabled>Generar Recibo</button>
+
+				</form>
+
+				<br><br>
+
+
+
+			</main>
+		</div>
+	</div>
+
+	<div th:replace="layout :: script"></div>
+	<script>
+
+		var id = 1;
+		var importes = [];
+		
+		$("#pendiente").html('Pendiente: $ ' + parseFloat($("#total").val()).toFixed(2).replace(".", ","));
+
+
+		function Importe(
+			nro_importe, medio_pago, importe
+		) {
+			this.nro_importe = nro_importe;
+		
+			this.medio_pago = medio_pago;
+			this.importe = importe;
+		};
+
+		
+
+		function eliminarImporte(nro_importe) {
+			$("#importe_" + nro_importe).remove();
+			for (let importe in importes) {
+				if (importes[importe].nro_importe == nro_importe) {
+					importes.splice(importe, 1);
+				}
+			}
+		}
+		
+		function pendiente(){
+			
+			var total = $("#total").val();
+			var importes = 0;
+			$('input[id^="inp_importe_"]').each(function () {
+					importes += parseFloat($(this).val());
+			});
+			
+			var pendiente_ = parseFloat((total - importes)).toFixed(2);
+			$("#pendiente").html('Pendiente: $ ' + pendiente_.replace(".", ","));
+			
+			if(pendiente_ >= 0){
+					$("#generar_recibo").removeAttr('disabled');
+				
+			}else{
+					$("#generar_recibo").prop("disabled", true);
+			}
+			
+		}
+		
+		
+		
+		function cargarMax(){
+			var total = $("#total").val();
+			var num_importes = importes.length;
+			var max = total / num_importes;
+
+			for (let i in importes) {
+
+				$("#inp_importe_" + importes[i].nro_importe).attr('max', total);
+			}
+		}
+
+		$(document).ready(function () {
+
+			$("#cargar").click(function () {
+				if ($("#medios_pagos").val() > 0) {
+
+				
+					var medio_pago = $("#medios_pagos option:selected").text();
+					var medio_pago_value = $("#medios_pagos option:selected").val();
+
+					var existe = false;
+
+					for (let i in importes) {
+						if (importes[i].medio_pago == medio_pago) {
+							existe = true;
+							break;
+						}
+					}
+					
+					if (!existe) {
+
+						var importe = new Importe(
+							id,
+						
+							medio_pago,
+							0,
+						);
+						
+						importes.push(importe);
+
+						linea = $("#plantillaImportes").html();
+
+
+
+						linea = linea.replace(/{NRO_IMPORTE}/g, id);
+						linea = linea.replace(/{MEDIO_PAGO}/g, medio_pago);
+						linea = linea.replace(/{MEDIO_PAGO_VALUE}/g, medio_pago_value);	
+
+					
+
+
+						$("#cargarImportes tbody").append(linea);
+
+						cargarMax();
+						id = id + 1;
+						
+						
+
+					}
+
+				}
+			});
+
+
+		});
+	</script>
+
+</body>
+
+</html>

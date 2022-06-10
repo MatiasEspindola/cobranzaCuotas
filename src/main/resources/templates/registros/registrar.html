@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+
+<head th:replace="layout :: head">
+
+</head>
+
+<body>
+
+	<div class="container-fluid">
+		<div class="row">
+
+			<main class="">
+
+				<br>
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a th:href="@{/login}">Login</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Registrar</li>
+					</ol>
+				</nav>
+
+			</main>
+
+			<h2 class="text-center">Formulario Registro</h2>
+			<br>
+
+			<form class="row" th:object="${usuario}"
+			th:action="@{/registros/registrar}" enctype="multipart/form-data"
+			method="post">
+				<h3 class="text-left">Datos Usuario</h3>
+
+				<div class="row">
+					<div class="col col-12 col-md-12 col-lg-6">
+						<label for="exampleFormControlTextarea1" class="form-label">Usuario:</label>
+						<input type="text" class="form-control" placeholder="Usuario" aria-label="First name"
+							th:field="*{username}" required>
+						<br>
+					</div>
+					<div class="col col-12 col-md-12 col-lg-6">
+						<label for="exampleFormControlTextarea1" class="form-label">Contraseña:</label>
+						<input type="password" class="form-control" placeholder="Contraseña" aria-label="First name"
+							th:field="*{password}" required>
+						<br>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col col-12 col-md-12 col-lg-6">
+						<label for="exampleFormControlTextarea1" class="form-label">Pregunta de Seguridad:</label>
+						<select class="form-select" aria-label="Default select example"
+						th:field="*{id_pregunta}" required>
+							<option th:each="pregunta : ${preguntas}" th:text="${pregunta.pregunta}"
+							th:value="${pregunta.id_pregunta}">Seleccione
+								Pregunta:</option>
+						</select>
+						<br>
+					</div>
+
+					<div class="col col-12 col-md-12 col-lg-6">
+						<label for="exampleFormControlTextarea1" class="form-label">Respuesta:</label>
+						<input type="text" class="form-control" placeholder="Respuesta" aria-label="First name"
+							th:field="*{respuesta}" required>
+					</div>
+				</div>
+				<h3 class="text-left">Datos Empresa</h3>
+				<div class="row">
+					<div class="col">
+
+					</div>
+
+					<div class="col">
+
+						<br><br>
+
+						<div class="imagePreview " style="max-width: 45%;"></div>
+						<label for="file"></label>
+						<input type="file" name="file" class="form-control" id="file"
+							onchange="previewImage(this, [256], 4);">
+
+						<br><br>
+
+					</div>
+
+
+					<div class="col">
+
+					</div>
+				</div>
+				<div class="row">
+					<div class="col col-12 col-md-12 col-lg-6">
+						<label for="exampleFormControlTextarea1" class="form-label">Razón Social:</label>
+						<input type="text" class="form-control" placeholder="Razón Social" aria-label="First name"
+							th:field="*{empresa.razon_social}" required>
+						<br>
+					</div>
+					<div class="col col-12 col-md-12 col-lg-6">
+						<label for="exampleFormControlTextarea1" class="form-label">CUIT:</label>
+						<input type="text" class="form-control" placeholder="CUIT" aria-label="First name"
+							th:field="*{empresa.cuit}" required>
+						<br>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col col-12 col-md-12 col-lg-6">
+						<label for="exampleFormControlTextarea1" class="form-label">Nombre Fantasía:</label>
+						<input type="text" class="form-control" placeholder="Nombre Fantasía" aria-label="First name"
+							th:field="*{empresa.nombre_fantasia}" required>
+						<br>
+					</div>
+					<div class="col col-12 col-md-12 col-lg-6">
+						<label for="exampleFormControlTextarea1" class="form-label">Inicio Actividades:</label>
+						<input type="date" class="form-control" placeholder="Nombre Fantasía" aria-label="First name"
+							th:field="*{empresa.inicio_actividades}" required>
+						<br>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col col-12 col-md-12 col-lg-4">
+						<label for="exampleFormControlTextarea1" class="form-label">Dirección:</label>
+						<input type="text" class="form-control" placeholder="Dirección" aria-label="First name"
+							th:field="*{empresa.direccion}">
+						<br>
+					</div>
+					<div class="col col-12 col-md-12 col-lg-4">
+						<label for="exampleFormControlTextarea1" class="form-label">Provincia:</label>
+						<select class="form-select" aria-label="Default select example" id="id_provincia">
+							<option value="0">Seleccione Provincia</option>
+						</select>
+						<br>
+					</div>
+					<div class="col col-12 col-md-12 col-lg-4">
+						<label for="exampleFormControlTextarea1" class="form-label">Localidad:</label>
+						<select class="form-select" aria-label="Default select example" id="id_localidad">
+
+						</select>
+						<small style="color:blue;">(*) Se carga al seleccionar provincia</small>
+						<br><br>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<input onkeydown="return false" type="text" class="form-control"
+							placeholder="Localidad y Provincia Seleccionada" aria-label="First name" id="seleccion"
+							required>
+						<input type="hidden" class="form-control" placeholder="Localidad y Provincia Seleccionada"
+							aria-label="First name" id="id_seleccion" th:field="*{empresa.id_localidad2}" required>
+						<small style="color:blue;">(*) Campo autocompletable cuando selecciona provincia y
+							localidad</small>
+						<br><br>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col col-12 col-md-12 col-lg-4">
+						<label for="exampleFormControlTextarea1" class="form-label">Número DGR:</label>
+						<input type="text" class="form-control" placeholder="Número DGR" aria-label="First name"
+							th:field="*{empresa.numero_dgr}">
+						<br>
+					</div>
+					<div class="col col-12 col-md-12 col-lg-4">
+						<label class="form-label">Tel Fijo:</label>
+						<input type="text" placeholder="Teléfono Fijo" class="form-control"
+							th:field="*{empresa.tel_fijo}"></input>
+						<br>
+					</div>
+					<div class="col col-12 col-md-12 col-lg-4">
+						<label class="form-label">Tel Fijo 2:</label>
+						<input type="text" placeholder="Teléfono Fijo" class="form-control"
+							th:field="*{empresa.tel_fijo2}"></input>
+						<br>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col col-12 col-md-12 col-lg-6">
+						<label class="form-label">Celular:</label>
+						<input type="text" placeholder="Celular" class="form-control" th:field="*{empresa.cel}"></input>
+						<br>
+					</div>
+					<div class="col col-12 col-md-12 col-lg-6">
+						<label class="form-label">Celular 2:</label>
+						<input type="text" placeholder="Celular 2" class="form-control"
+							th:field="*{empresa.cel2}"></input>
+						<br>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col col-12 col-md-12 col-lg-6">
+						<label class="form-label">Correo:</label>
+						<input type="text" placeholder="Correo" class="form-control" th:field="*{empresa.mail}"></input>
+						<br>
+					</div>
+					<div class="col col-12 col-md-12 col-lg-6">
+						<label class="form-label">Correo 2:</label>
+						<input type="text" placeholder="Correo 2" class="form-control"
+							th:field="*{empresa.mail2}"></input>
+						<br>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col col-12 col-md-12 col-lg-6">
+						<label for="exampleFormControlTextarea1" class="form-label">Punto de Venta (AFIP)
+							Central:</label>
+						<input type="text" class="form-control" placeholder="Punto de Venta"
+							th:field="*{empresa.puntoventaafipcentral}"></input>
+						<br>
+					</div>
+					<div class="col col-12 col-md-12 col-lg-6">
+						<label for="exampleFormControlTextarea1" class="form-label">Responsable Iva:</label>
+						<select class="form-select" aria-label="Default select example"
+							th:field="*{empresa.id_responsable}" required>
+							<option th:each="responsable : ${responsables_iva}" th:text="${responsable.responsable}"
+								th:value="${responsable.id_responsable}"></option>
+						</select>
+						<br>
+					</div>
+				</div>
+				<div class="row">
+					<br>
+					<div class="text-center">
+
+						<input type="submit" class="btn btn-success" value="Guardar" />
+						<a class="btn btn-danger" th:href="@{/}">Cancelar</a>
+
+					</div>
+
+				</div>
+			</form>
+
+		</div>
+	</div>
+
+	<br>
+
+
+	<div th:replace="layout :: script"></div>
+
+	<script>
+
+		$(document).ready(function () {
+
+			$.get("/registros/provincias", function (data) {
+
+				data.forEach(function (item, i) {
+					var option = "<option value = " + item.id + ">" + item.prov + "</option>";
+					$("#id_provincia").append(option);
+				});
+			});
+
+			function sendAjaxRequest() {
+				var id_provincia = $("#id_provincia").val();
+				$.get("/registros/localidades?id_provincia=" + id_provincia, function (data) {
+					$("#id_localidad").empty();
+					data.forEach(function (item, i) {
+						var option = "<option value = " + item.id + ">" + item.localidad + "</option>";
+						$("#id_localidad").append(option);
+					});
+					if ($("#id_localidad option:selected").val() > 0) {
+						var localidad = $("#id_localidad option:selected").text();
+						var provincia = $("#id_provincia option:selected").text();
+						$("#id_seleccion").val($("#id_localidad").val());
+						$("#seleccion").val(localidad + ", " + provincia);
+					}
+				});
+			};
+
+			$("#id_provincia").change(function () {
+				sendAjaxRequest();
+			});
+
+
+
+			$("#id_localidad").change(function () {
+				if ($("#id_localidad option:selected").val() > 0) {
+					var localidad = $("#id_localidad option:selected").text();
+					var provincia = $("#id_provincia option:selected").text();
+					$("#id_seleccion").val($("#id_localidad").val());
+					$("#seleccion").val(localidad + ", " + provincia);
+				}
+			});
+
+		});
+
+
+
+
+	</script>
+
+
+
+</body>
+
+</html>

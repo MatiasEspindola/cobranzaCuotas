@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+           
+        <script type="text/javascript" th:fragment="autocomplete">
+			$(document).ready(function() {
+				
+				
+				
+				function sendAjaxRequest() {
+				     var id_provincia = $("#id_provincia").val();
+				   	    $.get( "/proveedores/cargar_localidad?id=" + id_provincia, function( data ) {
+				       
+				       
+				        $("#id_localidad").empty();
+				      
+				            
+				        data.forEach(function(item, i) {
+							
+				            var option = "<option value = " + item.id + ">"
+				              + item.localidad +  "</option>";
+				            $("#id_localidad").append(option);
+				        });
+				    });
+				};
+				
+				
+				
+			  $("#id_provincia").change(function() {
+			    		
+			    		if($("#id_provincia").val() == "Seleccione Provincia"){
+							$("#id_localidad").empty();
+						}else{
+							 sendAjaxRequest();
+						}
+						
+					
+			    });
+			  });
+			    
+           
+        </script>
+    </body>
+</html>
