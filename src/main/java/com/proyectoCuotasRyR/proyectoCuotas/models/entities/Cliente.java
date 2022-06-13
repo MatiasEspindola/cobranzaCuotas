@@ -83,10 +83,6 @@ public class Cliente {
 
 	private String mail2;
 
-	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date alta;
-
 	public long getId_cliente() {
 		return id_cliente;
 	}
@@ -118,14 +114,8 @@ public class Cliente {
 	public void setTipo_documento(Tipo_Documento tipo_documento) {
 		this.tipo_documento = tipo_documento;
 	}
-
-	public Date getAlta() {
-		return alta;
-	}
-
-	public void setAlta(Date alta) {
-		this.alta = alta;
-	}
+	
+	
 
 	@JoinColumn(name = "id_localidad1", referencedColumnName = "id")
 	@ManyToOne(fetch = FetchType.EAGER)

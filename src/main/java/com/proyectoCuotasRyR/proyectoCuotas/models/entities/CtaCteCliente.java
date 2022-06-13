@@ -40,21 +40,23 @@ public class CtaCteCliente{
 	
 	private float saldo;
 	
-	@JoinColumn(name = "id_cli", referencedColumnName = "id_cliente")
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JsonBackReference
-	private Cliente cliente;
-	
-	@JoinColumn(name = "id_comprobante", referencedColumnName = "id_comprobante")
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JsonBackReference
-	private Comprobante comprobante;
-	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "id_ctactecli")
+	@JoinColumn(name = "id_ctactecliente")
 	@JsonManagedReference
 	@JsonIgnore
-	private List<Recibo> recibos;
+	private List<Historial_Alta_Cliente> historiales_altas_clientes;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "id_ctactecliente")
+	@JsonManagedReference
+	@JsonIgnore
+	private List<Historial_Plan_Pago> historiales_planes_pagos;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "id_ctactecliente")
+	@JsonManagedReference
+	@JsonIgnore
+	private List<Historial_Recibo> historiales_recibos;
 	
 
 	public long getId_ctactecliente() {
@@ -97,31 +99,28 @@ public class CtaCteCliente{
 		this.saldo = saldo;
 	}
 
-	public Cliente getCliente() {
-		return cliente;
+	public List<Historial_Alta_Cliente> getHistoriales_altas_clientes() {
+		return historiales_altas_clientes;
 	}
 
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
+	public void setHistoriales_altas_clientes(List<Historial_Alta_Cliente> historiales_altas_clientes) {
+		this.historiales_altas_clientes = historiales_altas_clientes;
 	}
 
-	public Comprobante getComprobante() {
-		return comprobante;
+	public List<Historial_Plan_Pago> getHistoriales_planes_pagos() {
+		return historiales_planes_pagos;
 	}
 
-	public void setComprobante(Comprobante comprobante) {
-		this.comprobante = comprobante;
+	public void setHistoriales_planes_pagos(List<Historial_Plan_Pago> historiales_planes_pagos) {
+		this.historiales_planes_pagos = historiales_planes_pagos;
 	}
 
-	public List<Recibo> getRecibos() {
-		return recibos;
+	public List<Historial_Recibo> getHistoriales_recibos() {
+		return historiales_recibos;
 	}
 
-	public void setRecibos(List<Recibo> recibos) {
-		this.recibos = recibos;
+	public void setHistoriales_recibos(List<Historial_Recibo> historiales_recibos) {
+		this.historiales_recibos = historiales_recibos;
 	}
-
-
-	
 	
 }

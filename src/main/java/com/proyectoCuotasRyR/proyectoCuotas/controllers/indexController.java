@@ -20,9 +20,7 @@ public class indexController {
 	@GetMapping({"/","/index"})
 	public String index(Model model) {
 		
-		if(obtenerUsuario().getEmpresa() == null) {
-			return "redirect:/empresas/formulario";
-		}
+	
 		
 		model.addAttribute("usuario", obtenerUsuario());
 		

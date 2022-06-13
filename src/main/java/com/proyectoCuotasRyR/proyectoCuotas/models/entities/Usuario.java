@@ -41,16 +41,7 @@ public class Usuario {
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fecha_alta;
-	
-	@JoinColumn(name = "id_empresa_user", referencedColumnName = "id_empresa")
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JsonBackReference
-	private Empresa empresa;
-	
-	/*@JoinColumn(name = "id_sucursal_user", referencedColumnName = "id_sucursal")
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JsonBackReference
-	private Sucursal sucursal;*/
+
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_usuario_auth")
@@ -108,21 +99,6 @@ public class Usuario {
 
 	
 
-	public Empresa getEmpresa() {
-		return empresa;
-	}
-
-	public void setEmpresa(Empresa empresa) {
-		this.empresa = empresa;
-	}
-
-	/*public Sucursal getSucursal() {
-		return sucursal;
-	}
-
-	public void setSucursal(Sucursal sucursal) {
-		this.sucursal = sucursal;
-	}*/
 
 	public boolean isActivo() {
 		return activo;
