@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cliente;
-import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Comprobante;
+
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.CtaCteCliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cuota;
 
@@ -39,11 +39,11 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.ClienteService;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Cliente_Service;
-import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Comprobante_Service;
+
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_CtaCteCliente_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_GeoService;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Responsable_Iva_Service;
-import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Tipo_Comprobante_Service;
+
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Tipo_Documento_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
 
@@ -93,11 +93,7 @@ public class clienteController {
 	@Autowired
 	private I_CtaCteCliente_Service ctacteclienteService;
 
-	@Autowired
-	private I_Comprobante_Service comprobanteService;
-
-	@Autowired
-	private I_Tipo_Comprobante_Service tipoComprobanteService;
+	
 	
 	@Autowired
 	private I_Responsable_Iva_Service responsableIvaService;
@@ -180,25 +176,21 @@ public class clienteController {
 
 		cliente_Service.guardar(cliente);
 
-		Comprobante comprobante1 = new Comprobante();
+		
 
 		String comprobante;
 
-		comprobante = tipoComprobanteService.listar().get(0).getTipo_comprobante().concat("/") + cliente.getId_cliente();
+	
 
-		comprobante1.setComprobante(comprobante);
-		comprobante1.setTipo_comprobante(tipoComprobanteService.listar().get(0));
 		
-		comprobanteService.guardar(comprobante1);
 		
 		CtaCteCliente ctactecliente1 = new CtaCteCliente();
 		
 		ctactecliente1.setDebe(0);
 		ctactecliente1.setHaber(0);
 		ctactecliente1.setSaldo(0);
-		ctactecliente1.setComprobante(comprobante1);
-		ctactecliente1.setCliente(cliente);
-		ctactecliente1.setFecha(cliente.getAlta());
+	
+		ctactecliente1.setFecha(new Date());
 		
 		ctacteclienteService.guardar(ctactecliente1);
 

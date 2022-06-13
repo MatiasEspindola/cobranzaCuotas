@@ -53,12 +53,6 @@ public class Cliente {
 	@JsonIgnore
 	private List<Plan_Pago> planes_pagos;
 	
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "id_cli")
-	@JsonManagedReference
-	@JsonIgnore
-	private List<CtaCteCliente> ctas_ctes_cliente;
 
 	public List<Plan_Pago> getPlanes_pagos() {
 		return planes_pagos;
@@ -186,13 +180,7 @@ public class Cliente {
 		this.mail2 = mail2;
 	}
 
-	public List<CtaCteCliente> getCtas_ctes_cliente() {
-		return ctas_ctes_cliente;
-	}
-
-	public void setCtas_ctes_cliente(List<CtaCteCliente> ctas_ctes_cliente) {
-		this.ctas_ctes_cliente = ctas_ctes_cliente;
-	}
+	
 
 	public Responsable_Iva getId_responsable() {
 		return id_responsable;

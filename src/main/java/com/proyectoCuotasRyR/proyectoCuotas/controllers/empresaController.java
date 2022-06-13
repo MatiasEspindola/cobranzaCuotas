@@ -87,13 +87,6 @@ public class empresaController {
 		
 		Empresa empresa;
 		
-		if(obtenerUsuario().getEmpresa() != null) {
-			model.addAttribute("empresa", obtenerUsuario().getEmpresa());
-		} else {
-			model.addAttribute("empresa", new Empresa());
-		}
-
-		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("responsables_iva", responsableIvaService.listar_todo());
 		
 		return "empresas/formulario";
@@ -121,7 +114,7 @@ public class empresaController {
 		
 		empresaService.guardar(empresa);
 		
-		obtenerUsuario().setEmpresa(empresa);
+	
 		usuarioRepo.save(obtenerUsuario());
 		
 		return "redirect:/";

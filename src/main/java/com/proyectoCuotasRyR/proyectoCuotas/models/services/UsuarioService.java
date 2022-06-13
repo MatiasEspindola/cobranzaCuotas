@@ -55,7 +55,7 @@ public class UsuarioService implements UserDetailsService{
         	throw new UsernameNotFoundException("Error en el Login: usuario '" + username + "' no tiene roles asignados!");
         }
         
-		return new User(usuario.getUsername(), usuario.getPassword(), usuario.isActivo(), true, true, true, authorities);
+		return new User(usuario.getUsername(), usuario.getPassword(), true, true, true, true, authorities);
 	}
 	
 }

@@ -49,10 +49,10 @@ public class Plan_Pago {
 	@JsonBackReference
 	private Cliente id_cliente;
 	
-	@JoinColumn(name = "id_empresa", referencedColumnName = "id_empresa")
+	@JoinColumn(name = "id_sucursal", referencedColumnName = "id_sucursal")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonBackReference
-	private Empresa id_empresa;
+	private Sucursal id_sucursal;
 	
 	
 	@JoinColumn(name = "id_tipo_interes", referencedColumnName = "id_tipo_interes")
@@ -86,12 +86,14 @@ public class Plan_Pago {
 	@Column(name = "fecha_inicio")
 	private Date fecha_inicio;
 	
-	public Empresa getId_empresa() {
-		return id_empresa;
+	
+
+	public Sucursal getId_sucursal() {
+		return id_sucursal;
 	}
 
-	public void setId_empresa(Empresa id_empresa) {
-		this.id_empresa = id_empresa;
+	public void setId_sucursal(Sucursal id_sucursal) {
+		this.id_sucursal = id_sucursal;
 	}
 
 	private String pactora;

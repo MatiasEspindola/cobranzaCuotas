@@ -50,4 +50,38 @@ public class Historial_Alta_Cliente {
 		this.alta = alta;
 	}
 
+	public long getId_historial_alta_cliente() {
+		return id_historial_alta_cliente;
+	}
+
+	public void setId_historial_alta_cliente(long id_historial_alta_cliente) {
+		this.id_historial_alta_cliente = id_historial_alta_cliente;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public CtaCteCliente getCtactecliente() {
+		return ctactecliente;
+	}
+
+	public void setCtactecliente(CtaCteCliente ctactecliente) {
+		this.ctactecliente = ctactecliente;
+	}
+	
+	
+
 }

@@ -41,7 +41,7 @@ public class Localidad {
 	@JoinColumn(name = "id_localidad2")
 	@JsonManagedReference
 	@JsonIgnore
-	private List<Empresa> empresas;
+	private List<Sucursal> sucursales;
 	
 	/*@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -94,21 +94,14 @@ public class Localidad {
 		this.localidad = localidad;
 	}
 
-	public List<Empresa> getEmpresas() {
-		return empresas;
-	}
 
-	public void setEmpresas(List<Empresa> empresas) {
-		this.empresas = empresas;
-	}
-
-	/*public List<Sucursal> getSucursales() {
+	public List<Sucursal> getSucursales() {
 		return sucursales;
 	}
 
 	public void setSucursales(List<Sucursal> sucursales) {
 		this.sucursales = sucursales;
-	}*/
+	}
 
 	public List<Cliente> getClientes() {
 		return clientes;

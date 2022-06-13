@@ -33,31 +33,30 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.services.ResponsableService;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.UsuarioService;
 
 @Controller
-@RequestMapping("registros")
 @SessionAttributes("usuario")
 public class registrarController {
-	
+
 	@Autowired
 	private I_Usuario_Repo usuarioRepo;
-	
+
 	@Autowired
 	private PreguntaService preguntaService;
-	
+
 	@Autowired
 	private ResponsableService responsableService;
-	
+
 	@Autowired
-    private I_UploadFile_Service upl;
-	
+	private I_UploadFile_Service upl;
+
 	@Autowired
 	private I_GeoService geoService;
-	
+
 	@Autowired
 	private I_Authority_Repo authorityRepo;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private I_Rol_Repo rolRepo;
 
@@ -73,36 +72,36 @@ public class registrarController {
 
 	@GetMapping("/registrar")
 	public String registrar(Model model) {
-		
+
 		model.addAttribute("usuario", new Usuario());
 		model.addAttribute("preguntas", preguntaService.listar());
 		model.addAttribute("responsables_iva", responsableService.listar_todo());
-		
-		return "registros/registrar";
+
+		return "registrar";
 	}
-	
+
 	@PostMapping("/registrar")
-	public String guardar(Model model, @Valid Usuario usuario
-			) {
-		
+	public String guardar(Model model, @Valid Usuario usuario) {
+
 		String bcryptPassword = passwordEncoder.encode(usuario.getPassword());
 		System.out.println(bcryptPassword);
+
 		usuario.setPass2(usuario.getPassword());
+
 		usuario.setPassword(bcryptPassword);
 		usuario.setFecha_alta(new Date());
 		usuarioRepo.save(usuario);
-		
+
 		Authority authority = new Authority();
-		
-		authority.setId_rol_auth(((List<Rol>) rolRepo.findAll()).get(0));
+
+		authority.setId_rol_auth(((List<Rol>) rolRepo.findAll()).get(2));
 		authority.setId_usuario_auth(usuario);
-		
+
 		authorityRepo.save(authority);
 		
-		
-		return "login";
+		System.out.println("Se ha creado la cuenta " + usuario.getUsername() + ", con el ROL: " + authority.getId_rol_auth().getRol());
+
+		return "redirect:/";
 	}
-	
-	
-	
+
 }

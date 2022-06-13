@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cliente;
-import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Comprobante;
+
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.CtaCteCliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cuota;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Importe;
@@ -36,7 +36,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Tipo_Documento;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Cliente_Service;
-import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Comprobante_Service;
+
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_CtaCteCliente_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Cuota_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_GeoService;
@@ -45,7 +45,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Medio_Pago_Service
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Proveedor_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Responsable_Iva_Service;
-import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Tipo_Comprobante_Service;
+
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Tipo_Interes_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.Tipo_DocumentoService;
 
@@ -81,11 +81,7 @@ public class planPagoController {
 	@Autowired
 	private I_CtaCteCliente_Service ctacteclienteService;
 
-	@Autowired
-	private I_Comprobante_Service comprobanteService;
 
-	@Autowired
-	private I_Tipo_Comprobante_Service tipoComprobanteService;
 	
 	@Autowired
 	private I_Responsable_Iva_Service responsableIvaService;
@@ -260,7 +256,7 @@ public class planPagoController {
 
 		Cliente c = new Cliente();
 		c.setCliente(cliente);
-		c.setAlta(alta);
+	
 		c.setCel(cel);
 		c.setCel2(cel2);
 		c.setDireccion(direccion);
@@ -284,38 +280,18 @@ public class planPagoController {
 		plan_pago.setValor_cuota((float) (Math.round(vcuota * 100d) / 100d));
 		plan_pago.setNro_expediente(generadorNroExpediente());
 
-		plan_pago.setId_empresa(obtenerUsuario().getEmpresa());
+	
 
 		planPagoService.guardar(plan_pago);
 		
-		Comprobante comprobante1 = new Comprobante();
 		
-		String comprobante;
-		
-			   comprobante = tipoComprobanteService.listar().get(0).getTipo_comprobante().concat("/")
-					   		 + c.getId_cliente();
-		
-		comprobante1.setComprobante(comprobante);
-		comprobante1.setTipo_comprobante(tipoComprobanteService.listar().get(0));
-
-		Comprobante comprobante2 = new Comprobante();
-		
-			   comprobante = tipoComprobanteService.listar().get(1).getTipo_comprobante().concat("/")
-			   		 + plan_pago.getId_plan_pago();
-		
-		comprobante2.setComprobante(comprobante);
-		comprobante2.setTipo_comprobante(tipoComprobanteService.listar().get(1));
-		
-		comprobanteService.guardar(comprobante1);
-		comprobanteService.guardar(comprobante2);
 
 		CtaCteCliente ctactecliente1 = new CtaCteCliente();
 
 		ctactecliente1.setDebe(0);
 		ctactecliente1.setHaber(0);
 		ctactecliente1.setSaldo(0);
-		ctactecliente1.setComprobante(comprobante1);
-		ctactecliente1.setCliente(c);
+	
 		ctactecliente1.setFecha(alta);
 		
 		CtaCteCliente ctactecliente2 = new CtaCteCliente();
@@ -323,8 +299,7 @@ public class planPagoController {
 		ctactecliente2.setDebe((float) (Math.round(Float.valueOf(total) * 100d) / 100d));
 		ctactecliente2.setHaber(0);
 		ctactecliente2.setSaldo((float) (Math.round(Float.valueOf(total) * 100d) / 100d));
-		ctactecliente2.setComprobante(comprobante2);
-		ctactecliente2.setCliente(c);
+		
 		ctactecliente2.setFecha(plan_pago.getFecha_inicio());
 		
 		ctacteclienteService.guardar(ctactecliente1);
@@ -390,35 +365,27 @@ public class planPagoController {
 		plan_pago.setValor_cuota((float) (Math.round(vcuota * 100d) / 100d));
 		plan_pago.setNro_expediente(generadorNroExpediente());
 
-		plan_pago.setId_empresa(obtenerUsuario().getEmpresa());
+		
 
 		planPagoService.guardar(plan_pago);
 		
-		Comprobante comprobante2 = new Comprobante();
 		
-		String comprobante = tipoComprobanteService.listar().get(1).getTipo_comprobante().concat("/")
-		   		 + plan_pago.getId_plan_pago();
 	
-		comprobante2.setComprobante(comprobante);
-		comprobante2.setTipo_comprobante(tipoComprobanteService.listar().get(1));
-		
-		comprobanteService.guardar(comprobante2);
-		
-		int size = this.cliente.getCtas_ctes_cliente().size();
 		
 		
-		float saldo_cta_cte = this.cliente.getCtas_ctes_cliente().get(size - 1).getSaldo();
+		//int size = this.cliente.getCtas_ctes_cliente().size();
+		
+		
+		//float saldo_cta_cte = this.cliente.getCtas_ctes_cliente().get(size - 1).getSaldo();
 	
 		
 		CtaCteCliente ctactecliente = new CtaCteCliente();
 		
 		ctactecliente.setFecha(plan_pago.getFecha_inicio());
-		ctactecliente.setComprobante(comprobante2);
 		
 		ctactecliente.setDebe((float) (Math.round(Float.valueOf(total) * 100d) / 100d));
-		ctactecliente.setSaldo((float) (Math.round(Float.valueOf(saldo_cta_cte) * 100d) / 100d) + (float) (Math.round(Float.valueOf(total) * 100d) / 100d));
+		//ctactecliente.setSaldo((float) (Math.round(Float.valueOf(saldo_cta_cte) * 100d) / 100d) + (float) (Math.round(Float.valueOf(total) * 100d) / 100d));
 		ctactecliente.setHaber(0);
-		ctactecliente.setCliente(cliente);
 		
 		ctacteclienteService.guardar(ctactecliente);
 		

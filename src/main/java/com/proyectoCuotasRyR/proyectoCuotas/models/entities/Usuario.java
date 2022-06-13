@@ -36,12 +36,9 @@ public class Usuario {
 	
 	private String pass2;
 	
-	private boolean activo;
-	
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fecha_alta;
-
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_usuario_auth")
@@ -97,16 +94,6 @@ public class Usuario {
 		this.fecha_alta = fecha_alta;
 	}
 
-	
-
-
-	public boolean isActivo() {
-		return activo;
-	}
-
-	public void setActivo(boolean activo) {
-		this.activo = activo;
-	}
 
 	public List<Authority> getAuthorities() {
 		return authorities;

@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cliente;
-import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Comprobante;
+
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.CtaCteCliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cuota;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Detalle_Recibo;
@@ -39,7 +39,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Recibo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Cliente_Service;
-import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Comprobante_Service;
+
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Concepto_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_CtaCteCliente_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Cuota_Service;
@@ -49,7 +49,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Importe_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Medio_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Recibo_Service;
-import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Tipo_Comprobante_Service;
+
 
 @Controller
 @RequestMapping("pagos")
@@ -74,12 +74,7 @@ public class pagoController {
 
 	@Autowired
 	private I_Importe_Service importeService;
-
-	@Autowired
-	private I_Tipo_Comprobante_Service tipoComprobanteService;
-
-	@Autowired
-	private I_Comprobante_Service comprobanteService;
+	
 
 	@Autowired
 	private I_CtaCteCliente_Service ctacteclienteService;
@@ -243,28 +238,22 @@ public class pagoController {
 
 		Cliente cliente = planPagoService.buscarPorId(id_plan_pago).getId_cliente();
 
-		Comprobante comprobante = new Comprobante();
 		
-		String text =
-		tipoComprobanteService.listar().get(2).getTipo_comprobante().concat("/") +
 		recibo.getId_recibo();
 
-		comprobante.setComprobante(text);
-		comprobante.setTipo_comprobante(tipoComprobanteService.listar().get(2));
 
-		comprobanteService.guardar(comprobante);
 	 
-		int size = cliente.getCtas_ctes_cliente().size();
+	//	int size = cliente.getCtas_ctes_cliente().size();
 
-		float saldo_cta_cte = cliente.getCtas_ctes_cliente().get(size -
-		1).getSaldo();
+		//float saldo_cta_cte = cliente.getCtas_ctes_cliente().get(size -
+		//1).getSaldo();
 
 		CtaCteCliente ctactecliente = new CtaCteCliente();
 		 
-		ctactecliente.setFecha(new Date()); ctactecliente.setComprobante(comprobante);
-		ctactecliente.setCliente(cliente);
+		ctactecliente.setFecha(new Date());
+	
 
-		ctactecliente.setSaldo(saldo_cta_cte - total);
+		//ctactecliente.setSaldo(saldo_cta_cte - total);
 		ctactecliente.setHaber(total);
 		
 		ctacteclienteService.guardar(ctactecliente);
