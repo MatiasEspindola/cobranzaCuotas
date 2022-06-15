@@ -33,36 +33,33 @@
 			<main>
 
 				<div class="container-fluid px-4">
-					<h1 class="mt-4">Registrar Sucursal</h1>
+					<h1 class="mt-4">Registrar Proveedor</h1>
 					<ol class="breadcrumb mb-4">
 						<li class="breadcrumb-item"><a th:href="@{/}">Tablero</a></li>
-						<li class="breadcrumb-item active">Registrar Sucursal</li>
+						<li class="breadcrumb-item active">Registrar Proveedor</li>
 					</ol>
 					<div class="card mb-4">
 						<div class="card-header">
 							<i class="fas fa-table me-1"></i>
-							Registrar Sucursal
+							Registrar Proveedor
 						</div>
 						<div class="card-body">
 
-							<form class="row" th:object="${sucursal}" th:action="@{/sucursales/registrar}"
+							<form class="row" th:object="${proveedor}" th:action="@{/proveedores/registrar}"
 								method="post">
 
 								<div class="row">
 									<div class="col col-12 col-lg-6 col-md-12 col-sm-12">
+										<label for="exampleFormControlTextarea1" class="form-label">Razón
+											Social:</label>
+										<input type="text" class="form-control" placeholder="Dirección"
+											aria-label="First name" th:field="*{razon_social}" required>
+										<br>
+									</div>
+									<div class="col col-12 col-lg-6 col-md-12 col-sm-12">
 										<label for="exampleFormControlTextarea1" class="form-label">Dirección:</label>
 										<input type="text" class="form-control" placeholder="Dirección"
 											aria-label="First name" th:field="*{direccion}" required>
-										<br>
-									</div>
-
-									<div class="col col-12 col-lg-6 col-md-12 col-sm-12">
-										<label for="exampleFormControlTextarea1" class="form-label">¿Es Casa
-											Central?:</label>
-										<select class="form-select" th:field="*{es_casa_central}" required>
-											<option value="true" th:text="Si"></option>
-											<option value="false" th:text="No"></option>
-										</select>
 										<br>
 									</div>
 								</div>
@@ -93,11 +90,11 @@
 										<input onkeydown="return false" type="text" class="form-control"
 											placeholder="Localidad y Provincia Seleccionada" aria-label="First name"
 											id="seleccion"
-											th:value="${sucursal.id_localidad2 == null ? '':sucursal.id_localidad2.localidad+', '+sucursal.id_localidad2.provincia.prov}"
+											th:value="${proveedor.id_localidad4 == null ? '':proveedor.id_localidad4.localidad+', '+proveedor.id_localidad4.provincia.prov}"
 											required>
 										<input type="hidden" class="form-control"
 											placeholder="Localidad y Provincia Seleccionada" aria-label="First name"
-											id="id_seleccion" th:field="*{id_localidad2}" required>
+											id="id_seleccion" th:field="*{id_localidad4}" required>
 										<small style="color:blue;">(*) Campo autocompletable cuando selecciona provincia
 											y
 											localidad</small>
@@ -154,11 +151,22 @@
 								</div>
 
 								<div class="row">
-									<div class="col col-12 col-lg-12 col-md-12 col-sm-12">
-										<label for="exampleFormControlTextarea1" class="form-label">Punto Venta
-											Afip:</label>
-										<input type="number" class="form-control" placeholder="Punto Venta Afip"
-											aria-label="First name" th:field="*{puntoventaafip}">
+									<div class="col col-12 col-lg-6 col-md-12 col-sm-12">
+										<label for="exampleFormControlTextarea1" class="form-label">Nro
+											Documento:</label>
+										<input type="text" class="form-control" placeholder="Nro Documento"
+											aria-label="First name" th:field="*{nro_documento}">
+										<br>
+									</div>
+									<div class="col col-12 col-lg-6 col-md-12 col-sm-12">
+										<label for="exampleFormControlTextarea1" class="form-label">Tipo de
+											Documento</label>
+										<select class="form-select" aria-label="Default select example"
+											th:field="*{id_tipo_documento1}" required>
+											<option th:each="tipo_documento : ${tipos_documentos}"
+												th:text="${tipo_documento.tipo_documento}"
+												th:value="${tipo_documento.id_tipo_documento}"></option>
+										</select>
 										<br>
 									</div>
 								</div>

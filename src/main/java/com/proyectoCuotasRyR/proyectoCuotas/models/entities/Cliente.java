@@ -53,6 +53,8 @@ public class Cliente {
 	@JsonIgnore
 	private List<Plan_Pago> planes_pagos;
 	
+	private boolean activo;
+	
 
 	public List<Plan_Pago> getPlanes_pagos() {
 		return planes_pagos;
@@ -188,6 +190,14 @@ public class Cliente {
 
 	public void setId_responsable(Responsable_Iva id_responsable) {
 		this.id_responsable = id_responsable;
+	}
+
+	public boolean isActivo() {
+		return activo;
+	}
+
+	public void setActivo(boolean activo) {
+		this.activo = activo;
 	}
 	
 	

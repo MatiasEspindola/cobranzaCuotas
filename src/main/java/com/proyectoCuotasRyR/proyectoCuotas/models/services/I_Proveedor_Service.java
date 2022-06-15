@@ -10,10 +10,12 @@ public interface I_Proveedor_Service {
 	
 	public Proveedor buscarPorId(Long id_proveedor);
 	
-	public void guardar(Proveedor proveedor);
+	public void guardar(Proveedor proveedor, boolean valor);
 	
 	public List<Proveedor> buscarPorTerm(String term);
 	
-	public void eliminar(Proveedor proveedor);
+	public void deshabilitar(Proveedor proveedor, boolean valor);
+	
+	public boolean existente(Proveedor proveedor, boolean valor);
 	
 }

@@ -33,14 +33,14 @@
 			<main>
 
 				<div class="container-fluid px-4">
-					<h1 class="mt-4">Listar Sucursales</h1>
+					<h1 class="mt-4">Listar Proveedores</h1>
 					<ol class="breadcrumb mb-4">
 						<li class="breadcrumb-item"><a th:href="@{/}">Tablero</a></li>
-						<li class="breadcrumb-item active">Listar Sucursales</li>
+						<li class="breadcrumb-item active">Listar Proveedores</li>
 					</ol>
 					<div class="card mb-4">
 						<div class="card-body">
-							Aquí se detallan las sucursales registradas. Puede consultar el Manual del Usuario en:
+							Aquí se detallan los proveedores registrados. Puede consultar el Manual del Usuario en:
 							<a target="_blank" href="https://datatables.net/">Manual del Usuario</a>
 							.
 						</div>
@@ -48,7 +48,7 @@
 					<div class="card mb-4">
 						<div class="card-header">
 							<i class="fas fa-table me-1"></i>
-							Sucursales
+							Proveedores
 						</div>
 						<div class="card-body">
 						<div class="table-responsive">
@@ -56,41 +56,41 @@
 								<thead>
 									<tr>
 										<th>ID</th>
+										<th>Razón Social</th>
 										<th>Dirección</th>
 										<th>Localidad</th>
-										<th>¿Central?</th>
-										<th>Pto.</th>
 										<th>Contacto</th>
+										
 										<th>¿Activo?</th>
 									</tr>
 								</thead>
 								<tfoot>
 									<tr>
 										<th>ID</th>
+										<th>Razón Social</th>
 										<th>Dirección</th>
 										<th>Localidad</th>
-										<th>¿Central?</th>
-										<th>Pto.</th>
 										<th>Contacto</th>
+										
 										<th>¿Activo?</th>
 									</tr>
 								</tfoot>
 								<tbody>
 
-									<tr th:each="sucursal : ${sucursales}">
+									<tr th:each="proveedor : ${proveedores}">
 										<td>
-										<a th:text="${sucursal.id_sucursal}" 
-										th:href="@{/sucursales/registrar/} + ${sucursal.id_sucursal}"> </a>
+										<a th:text="${proveedor.id_proveedor}" 
+										th:href="@{/proveedores/registrar/} + ${proveedor.id_proveedor}"> </a>
 										</td>
-										<td th:text="${sucursal.direccion}"></td>
-										<td th:text="${sucursal.id_localidad2.localidad + ', ' + sucursal.id_localidad2.provincia.prov}">Software Engineer</td>
-										<td th:text="${sucursal.es_casa_central ? 'Si':'No'}" th:classappend="${sucursal.es_casa_central ? 'text-success':'text-primary'}"></td>
-										<td th:text="${sucursal.puntoventaafip}"></td>
-										<td th:text="${sucursal.cel + '  ' + sucursal.cel2 + '  ' + sucursal.tel_fijo + '  '
-										+ sucursal.tel_fijo2 + '  ' + sucursal.mail + '  ' + sucursal.mail2}"></td>
+										<td th:text="${proveedor.razon_social}"></td>
+										<td th:text="${proveedor.direccion}"></td>
+										<td th:text="${proveedor.id_localidad4.localidad + ', ' + proveedor.id_localidad4.provincia.prov}">Software Engineer</td>
+							
+										<td th:text="${proveedor.cel + '  ' + proveedor.cel2 + '  ' + proveedor.tel_fijo + '  '
+										+ proveedor.tel_fijo2 + '  ' + proveedor.mail + '  ' + proveedor.mail2}"></td>
 										<td >
-										<a th:text="${sucursal.activo ? 'Si':'No'}" th:classappend="${sucursal.activo ? 'text-success':'text-danger'}"
-										th:href="@{/sucursales/deshabilitar/} + ${sucursal.id_sucursal}"> </a>
+										<a th:text="${proveedor.activo ? 'Si':'No'}" th:classappend="${proveedor.activo ? 'text-success':'text-danger'}"
+										th:href="@{/proveedores/deshabilitar/} + ${proveedor.id_proveedor}"> </a>
 										</td>
 									</tr>
 

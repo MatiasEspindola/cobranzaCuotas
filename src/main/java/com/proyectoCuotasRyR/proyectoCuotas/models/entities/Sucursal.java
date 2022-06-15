@@ -49,13 +49,33 @@ public class Sucursal {
 	
 	private String mail2;
 	
+	private boolean activo;
 	
 	
+	
+	public boolean isActivo() {
+		return activo;
+	}
+
+	public void setActivo(boolean activo) {
+		this.activo = activo;
+	}
+
 	private String direccion;
 	
 	private boolean es_casa_central;
+	
+	private int puntoventaafip;
 
 	
+	public int getPuntoventaafip() {
+		return puntoventaafip;
+	}
+
+	public void setPuntoventaafip(int puntoventaafip) {
+		this.puntoventaafip = puntoventaafip;
+	}
+
 	@JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonBackReference
@@ -182,7 +202,6 @@ public class Sucursal {
 	public void setPlanes_pagos(List<Plan_Pago> planes_pagos) {
 		this.planes_pagos = planes_pagos;
 	}
-	
 	
 
 }

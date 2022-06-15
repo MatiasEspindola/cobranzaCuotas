@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Proveedor;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Proveedor_Repo;
 
 @Service
@@ -27,15 +28,17 @@ public class ProveedorService implements I_Proveedor_Service {
 	}
 
 	@Override
-	public void guardar(Proveedor proveedor) {
+	public void guardar(Proveedor proveedor, boolean valor) {
 		// TODO Auto-generated method stub
+		proveedor.setActivo(true);
 		repo.save(proveedor);
 	}
 	
 	@Override
-	public void eliminar(Proveedor proveedor) {
+	public void deshabilitar(Proveedor proveedor, boolean valor) {
 		// TODO Auto-generated method stub
-		repo.delete(proveedor);
+		proveedor.setActivo(valor);
+		repo.save(proveedor);
 	}
 
 	@Override
@@ -43,5 +46,38 @@ public class ProveedorService implements I_Proveedor_Service {
 		// TODO Auto-generated method stub
 		return repo.buscarPorTerm(term);
 	}
+	
+	@Override
+	public boolean existente(Proveedor proveedor, boolean editar) {
+		
+		if(editar) {
+			for(Proveedor proveedor_pos : listarTodo()) {
+				if(proveedor_pos.getId_proveedor() != proveedor.getId_proveedor()) {
+					if(proveedor_pos.getRazon_social().equals(proveedor.getRazon_social())) {
+						if(proveedor_pos.getDireccion().equals(proveedor.getDireccion())) {
+							if(proveedor_pos.getId_localidad4().getLocalidad() == proveedor.getId_localidad4().getLocalidad()) {
+								System.out.print("REPETIDO");
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}else {
+			for(Proveedor proveedor_pos : listarTodo()) {
+				if(proveedor_pos.getRazon_social().equals(proveedor.getRazon_social())) {
+					if(proveedor_pos.getDireccion().equals(proveedor.getDireccion())) {
+						if(proveedor_pos.getId_localidad4().getLocalidad() == proveedor.getId_localidad4().getLocalidad()) {
+							System.out.print("REPETIDO");
+							return true;
+						}
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+
 
 }

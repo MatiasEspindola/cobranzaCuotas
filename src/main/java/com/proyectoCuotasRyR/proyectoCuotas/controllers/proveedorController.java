@@ -24,6 +24,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Proveedor;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Provincia;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_GeoService;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Proveedor_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Tipo_Documento_Service;
@@ -48,6 +49,9 @@ public class proveedorController {
 	@Autowired
 	private I_GeoService geoService;
 	
+	@Autowired
+	private I_Empresa_Service empresaService;
+	
 	@GetMapping(value = "/cargar_proveedor/{term}", produces = { "application/json" })
 	public @ResponseBody List<Proveedor> autocompleteProveedor(String term) {
 		return proveedor_Service.buscarPorTerm(term);
@@ -63,26 +67,8 @@ public class proveedorController {
 		return geoService.buscarPorId(Integer.valueOf(id_provincia)).getLocalidades();
 	}
 	
-	@GetMapping("/listar")
-	public String listar(Model model) {
 
-		model.addAttribute("proveedores", proveedor_Service.listarTodo());
-
-		model.addAttribute("usuario", obtenerUsuario());
-
-		return "proveedores/listar";
-	}
-	
-	@GetMapping("/detalles/{id}")
-	public String detalles(Model model, @PathVariable(name = "id") long id_proveedor) {
-
-		model.addAttribute("proveedor", proveedor_Service.buscarPorId(id_proveedor));
-		model.addAttribute("usuario", obtenerUsuario());
-
-		return "proveedores/detalles";
-	}
-
-	@GetMapping("/formulario/{id}")
+	@GetMapping("/registrar/{id}")
 	public String formulario(Model model, @PathVariable(name = "id") long id_proveedor) {
 
 		model.addAttribute("proveedor", proveedor_Service.buscarPorId(id_proveedor));
@@ -91,21 +77,44 @@ public class proveedorController {
 
 		model.addAttribute("usuario", obtenerUsuario());
 		
+		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+		
 		editar = true;
 
-		return "proveedores/formulario";
+		return "proveedores/registrar";
 	}
 	
-	@GetMapping("/eliminar/{id}")
-	public String eliminar(Model model, @PathVariable(name = "id") long id_proveedor) {
+	@GetMapping("/deshabilitar/{id_proveedor}")
+	public String eliminar(Model model, @PathVariable long id_proveedor) {
 
-		proveedor_Service.eliminar(proveedor_Service.buscarPorId(id_proveedor));
-
+		Proveedor proveedor = proveedor_Service.buscarPorId(id_proveedor);
+		
+		if(proveedor.isActivo()) {
+			proveedor_Service.deshabilitar(proveedor, false);
+		}else {
+			proveedor_Service.deshabilitar(proveedor, true);
+		}
+		
+		
 		return "redirect:/proveedores/listar";
+	}
+	
+	@GetMapping("/listar")
+	public String listar(Model model) {
+
+		model.addAttribute("proveedores", proveedor_Service.listarTodo());
+	
+		model.addAttribute("usuario", obtenerUsuario());
+		
+		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+		
+
+
+		return "proveedores/listar";
 	}
 
 
-	@GetMapping("/formulario")
+	@GetMapping("/registrar")
 	public String formulario(Model model) {
 
 		model.addAttribute("proveedor", new Proveedor());
@@ -114,42 +123,23 @@ public class proveedorController {
 
 		model.addAttribute("usuario", obtenerUsuario());
 		
+		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+		
 		editar = false;
 
-		return "proveedores/formulario";
+		return "proveedores/registrar";
 	}
 
-	@PostMapping("/formulario")
+	@PostMapping("/registrar")
 	public String guardar(@Valid Proveedor proveedor, RedirectAttributes redirAttrs) {
 
-		if (proveedor_Service.listarTodo().size() > 0) {
-			for (Proveedor prov : proveedor_Service.listarTodo()) {
-				if(editar) {
-					if(prov.getId_proveedor() != proveedor.getId_proveedor()) {
-						if (prov.getRazon_social().equals(proveedor.getRazon_social())) {
-							if (prov.getId_localidad4().getId() == proveedor.getId_localidad4().getId()) {
-								redirAttrs.addFlashAttribute("error",
-										"Error, ya se encuentra el proveedor "+proveedor.getRazon_social()+" ("+proveedor.getId_localidad4().getLocalidad()+", "+proveedor.getId_localidad4().getProvincia().getProv()+") "+" registrado en el Sistema");
-								
-								return "redirect:/proveedores/listar";
-							}
-						}
-					}
-				}else {
-					if (prov.getRazon_social().equals(proveedor.getRazon_social())) {
-						if (prov.getId_localidad4().getId() == proveedor.getId_localidad4().getId()) {
-							redirAttrs.addFlashAttribute("error",
-									"Error, ya se encuentra el proveedor "+proveedor.getRazon_social()+" ("+proveedor.getId_localidad4().getLocalidad()+", "+proveedor.getId_localidad4().getProvincia().getProv()+") "+" registrado en el Sistema");
-							
-							return "redirect:/proveedores/listar";
-						}
-					}
-				}
-			}
+		if(!proveedor_Service.existente(proveedor, editar)) {
+			
+		
+			proveedor_Service.guardar(proveedor, true);
+			
 		}
-
-		proveedor.setActivo(true);
-		proveedor_Service.guardar(proveedor);
+		
 
 		return "redirect:/proveedores/listar";
 	}
