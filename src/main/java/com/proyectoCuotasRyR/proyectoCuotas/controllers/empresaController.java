@@ -82,17 +82,39 @@ public class empresaController {
                 .body(recurso);
     }
 	
-	@GetMapping("/formulario")
+	@GetMapping("/registrar")
 	public String formulario(Model model) {
 		
-		Empresa empresa;
+		if(empresaService.listar_todo().size() > 0) {
+			return "redirect:/index"; 
+		}
+		
+		Empresa empresa = new Empresa();
 		
 		model.addAttribute("responsables_iva", responsableIvaService.listar_todo());
 		
-		return "empresas/formulario";
+		model.addAttribute("empresa", empresa);
+		
+		model.addAttribute("usuario", obtenerUsuario());
+		
+		return "empresas/registrar";
 	}
 	
-	@PostMapping("/formulario")
+	@GetMapping("/registrar/{id_empresa}")
+	public String formulario(Model model, @PathVariable long id_empresa) {
+		
+		Empresa empresa = empresaService.buscarPorId(id_empresa);
+		
+		model.addAttribute("responsables_iva", responsableIvaService.listar_todo());
+		
+		model.addAttribute("empresa", empresa);
+		
+		model.addAttribute("usuario", obtenerUsuario());
+		
+		return "empresas/registrar";
+	}
+	
+	@PostMapping("/registrar")
 	public String guardar(@Valid Empresa empresa, @RequestParam("file") MultipartFile foto) {
 		
 		  if (!foto.isEmpty()) {
@@ -113,9 +135,6 @@ public class empresaController {
 		  }
 		
 		empresaService.guardar(empresa);
-		
-	
-		usuarioRepo.save(obtenerUsuario());
 		
 		return "redirect:/";
 	}

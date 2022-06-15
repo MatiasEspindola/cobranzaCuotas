@@ -36,6 +36,7 @@ public class Empresa {
 	
 	private String nombre_fantasia;
 	
+	private String razon_social;
 	
 	private String numero_dgr;
 	
@@ -127,6 +128,14 @@ public class Empresa {
 
 	public void setSucursales(List<Sucursal> sucursales) {
 		this.sucursales = sucursales;
+	}
+	
+	public String getRazon_social() {
+		return razon_social;
+	}
+
+	public void setRazon_social(String razon_social) {
+		this.razon_social = razon_social;
 	}
 	
 }

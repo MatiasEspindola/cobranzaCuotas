@@ -2,6 +2,7 @@ package com.proyectoCuotasRyR.proyectoCuotas.controllers;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -26,10 +27,12 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Authority_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Rol_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Authority_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_GeoService;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.PreguntaService;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.ResponsableService;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.RolService;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.UsuarioService;
 
 @Controller
@@ -52,13 +55,13 @@ public class registrarController {
 	private I_GeoService geoService;
 
 	@Autowired
-	private I_Authority_Repo authorityRepo;
+	private I_Authority_Service authorityService;
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 
 	@Autowired
-	private I_Rol_Repo rolRepo;
+	private RolService rolService;
 
 	@GetMapping(value = "/provincias", produces = { "application/json" })
 	public @ResponseBody List<Provincia> provincias() {
@@ -81,8 +84,14 @@ public class registrarController {
 	}
 
 	@PostMapping("/registrar")
-	public String guardar(Model model, @Valid Usuario usuario) {
-
+	public String guardar(@Valid Usuario usuario, Model model) {
+		
+		for(Usuario user : usuarioRepo.findAll()) {
+			if(user.getUsername() == usuario.getUsername()) {
+				return "registrar";
+			}
+		}
+		
 		String bcryptPassword = passwordEncoder.encode(usuario.getPassword());
 		System.out.println(bcryptPassword);
 
@@ -94,14 +103,15 @@ public class registrarController {
 
 		Authority authority = new Authority();
 
-		authority.setId_rol_auth(((List<Rol>) rolRepo.findAll()).get(2));
+		authority.setId_rol_auth(rolService.buscarPorId(3));
 		authority.setId_usuario_auth(usuario);
 
-		authorityRepo.save(authority);
+		authorityService.guardar(authority);
 		
 		System.out.println("Se ha creado la cuenta " + usuario.getUsername() + ", con el ROL: " + authority.getId_rol_auth().getRol());
 
-		return "redirect:/";
+		return "redirect:/login";
+
 	}
 
 }

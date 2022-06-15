@@ -31,6 +31,11 @@ public class UsuarioService implements UserDetailsService{
 	
 	private Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 	
+	@Transactional(readOnly=true)
+	public void guardar(Usuario usuario) {
+		usuarioDao.save(usuario);
+	}
+	
 	@Override
 	@Transactional(readOnly=true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
