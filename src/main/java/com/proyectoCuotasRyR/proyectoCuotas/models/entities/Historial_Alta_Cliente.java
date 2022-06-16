@@ -23,7 +23,7 @@ public class Historial_Alta_Cliente {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id_historial_alta_cliente;
+	private long id_historial_cliente;
 	
 	@JoinColumn(name = "fk_cliente", referencedColumnName = "id_cliente")
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -36,10 +36,15 @@ public class Historial_Alta_Cliente {
 	
 	private String descripcion;
 	
-	@JoinColumn(name = "fk_ctactecliente_cliente", referencedColumnName = "id_ctactecliente")
+	@JoinColumn(name = "id_ctactecliente_cliente", referencedColumnName = "id_ctactecliente")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonBackReference
 	private CtaCteCliente ctactecliente;
+	
+	@JoinColumn(name = "id_actividad_cliente", referencedColumnName = "id_actividad")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonBackReference
+	private Actividad_Usuario actividad_usuario;
 
 
 	public Date getAlta() {
@@ -50,12 +55,14 @@ public class Historial_Alta_Cliente {
 		this.alta = alta;
 	}
 
-	public long getId_historial_alta_cliente() {
-		return id_historial_alta_cliente;
+	
+
+	public long getId_historial_cliente() {
+		return id_historial_cliente;
 	}
 
-	public void setId_historial_alta_cliente(long id_historial_alta_cliente) {
-		this.id_historial_alta_cliente = id_historial_alta_cliente;
+	public void setId_historial_cliente(long id_historial_cliente) {
+		this.id_historial_cliente = id_historial_cliente;
 	}
 
 	public Cliente getCliente() {
@@ -81,7 +88,13 @@ public class Historial_Alta_Cliente {
 	public void setCtactecliente(CtaCteCliente ctactecliente) {
 		this.ctactecliente = ctactecliente;
 	}
-	
-	
+
+	public Actividad_Usuario getActividad_usuario() {
+		return actividad_usuario;
+	}
+
+	public void setActividad_usuario(Actividad_Usuario actividad_usuario) {
+		this.actividad_usuario = actividad_usuario;
+	}
 
 }

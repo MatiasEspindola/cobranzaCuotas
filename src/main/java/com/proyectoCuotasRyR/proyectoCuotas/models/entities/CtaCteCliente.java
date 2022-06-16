@@ -41,13 +41,13 @@ public class CtaCteCliente{
 	private float saldo;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "id_ctactecliente")
+	@JoinColumn(name = "fk_ctactecliente_cliente")
 	@JsonManagedReference
 	@JsonIgnore
 	private List<Historial_Alta_Cliente> historiales_altas_clientes;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "id_ctactecliente")
+	@JoinColumn(name = "fk_ctactecliente_cliente")
 	@JsonManagedReference
 	@JsonIgnore
 	private List<Historial_Plan_Pago> historiales_planes_pagos;

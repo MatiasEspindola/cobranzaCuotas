@@ -50,6 +50,13 @@ public class Usuario {
 	@JsonIgnore
 	private List<Authority> authorities;
 	
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@JoinColumn(name = "id_us")
+	@JsonManagedReference
+	@JsonIgnore
+	private List<Actividad_Usuario> actividades;
+	
 	@JoinColumn(name = "id_pregunta", referencedColumnName = "id_pregunta")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonBackReference

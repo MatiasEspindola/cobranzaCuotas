@@ -85,7 +85,7 @@ public class proveedorController {
 	}
 	
 	@GetMapping("/deshabilitar/{id_proveedor}")
-	public String eliminar(Model model, @PathVariable long id_proveedor) {
+	public String deshabilitar(Model model, @PathVariable long id_proveedor) {
 
 		Proveedor proveedor = proveedor_Service.buscarPorId(id_proveedor);
 		

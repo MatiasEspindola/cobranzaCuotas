@@ -2,7 +2,9 @@ package com.proyectoCuotasRyR.proyectoCuotas.models.services;
 
 import java.util.List;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Actividad_Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cliente;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Alta_Cliente;
 
 public interface I_Cliente_Service {
 
@@ -12,8 +14,18 @@ public interface I_Cliente_Service {
 	
 	public Cliente buscarPorId(Long id_cliente);
 	
-	public void guardar(Cliente cliente);
+	public void guardar(Cliente cliente, boolean activo);
 	
-	public void eliminar(Cliente cliente);
+	public void deshabilitar(Cliente cliente, boolean valor);
+	
+	public boolean existente(Cliente cliente, boolean valor);
+	
+	public void borrar_historial(Historial_Alta_Cliente historial);
+	
+	public void guardar_historial(Historial_Alta_Cliente historial);
+	
+	public void borrar_actividad(Actividad_Usuario actividad);
+	
+	public void guardar_actividad(Actividad_Usuario actividad);
 	
 }

@@ -29,19 +29,10 @@ public class Recibo{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id_recibo;
 	
-	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date fecha;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date hora;
 	
 	private String descripcion;
 	
-	@JoinColumn(name = "id_ctactecli", referencedColumnName = "id_ctactecliente")
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JsonBackReference
-	private CtaCteCliente id_ctactecliente;
+	
 	
 	@JoinColumn(name = "id_concepto", referencedColumnName = "id_concepto")
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -62,22 +53,7 @@ public class Recibo{
 		this.id_recibo = id_recibo;
 	}
 
-	public Date getFecha() {
-		return fecha;
-	}
-
-	public void setFecha(Date fecha) {
-		this.fecha = fecha;
-	}
-
-	public Date getHora() {
-		return hora;
-	}
-
-	public void setHora(Date hora) {
-		this.hora = hora;
-	}
-
+	
 	public String getDescripcion() {
 		return descripcion;
 	}
@@ -86,14 +62,7 @@ public class Recibo{
 		this.descripcion = descripcion;
 	}
 
-	public CtaCteCliente getId_ctactecliente() {
-		return id_ctactecliente;
-	}
-
-	public void setId_ctactecliente(CtaCteCliente id_ctactecliente) {
-		this.id_ctactecliente = id_ctactecliente;
-	}
-
+	
 	public Concepto getConcepto() {
 		return concepto;
 	}

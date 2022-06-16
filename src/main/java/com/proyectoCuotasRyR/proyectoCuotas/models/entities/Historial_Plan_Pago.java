@@ -26,9 +26,56 @@ public class Historial_Plan_Pago {
 	
 	private String descripcion;
 	
-	@JoinColumn(name = "fk_ctactecliente_plan_pago", referencedColumnName = "id_ctactecliente")
+	@JoinColumn(name = "id_ctactecliente_plan_pago", referencedColumnName = "id_ctactecliente")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonBackReference
 	private CtaCteCliente ctactecliente;
+	
+	@JoinColumn(name = "id_actividad_plan_pago", referencedColumnName = "id_actividad")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonBackReference
+	private Actividad_Usuario actividad_usuario;
+
+	public long getId_historial_alta_plan_pago() {
+		return id_historial_alta_plan_pago;
+	}
+
+	public void setId_historial_alta_plan_pago(long id_historial_alta_plan_pago) {
+		this.id_historial_alta_plan_pago = id_historial_alta_plan_pago;
+	}
+
+	public Plan_Pago getPlan_pago() {
+		return plan_pago;
+	}
+
+	public void setPlan_pago(Plan_Pago plan_pago) {
+		this.plan_pago = plan_pago;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public CtaCteCliente getCtactecliente() {
+		return ctactecliente;
+	}
+
+	public void setCtactecliente(CtaCteCliente ctactecliente) {
+		this.ctactecliente = ctactecliente;
+	}
+
+	public Actividad_Usuario getActividad_usuario() {
+		return actividad_usuario;
+	}
+
+	public void setActividad_usuario(Actividad_Usuario actividad_usuario) {
+		this.actividad_usuario = actividad_usuario;
+	}
+	
+	
 
 }

@@ -25,11 +25,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Actividad_Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cliente;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.CtaCteCliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cuota;
-
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Alta_Cliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Localidad;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Plan_Pago;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Proveedor;
@@ -41,6 +42,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.services.ClienteService;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Cliente_Service;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_CtaCteCliente_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_GeoService;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Responsable_Iva_Service;
 
@@ -81,6 +83,9 @@ public class clienteController {
 	private I_GeoService geoService;
 
 	private List<Localidad> localidades;
+	
+	@Autowired
+	private I_Empresa_Service empresaService;
 
 	private boolean editar;
 
@@ -132,32 +137,40 @@ public class clienteController {
 
 		model.addAttribute("clientes", cliente_Service.listarTodo());
 		model.addAttribute("usuario", obtenerUsuario());
+		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 
 		return "clientes/listar";
 	}
 
-	@GetMapping("/formulario/{id}")
+	@GetMapping("/registrar/{id}")
 	public String formulario(Model model, @PathVariable(name = "id") long id_cliente) {
 
 		model.addAttribute("cliente", cliente_Service.buscarPorId(id_cliente));
 		model.addAttribute("tipos_documentos", tipo_documento_Service.listarTodo());
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("responsables_iva", responsableIvaService.listar_todo());
+		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 
 		editar = true;
 
-		return "clientes/formulario";
+		return "clientes/registrar";
 	}
 
-	@GetMapping("/eliminar/{id}")
-	public String eliminar(Model model, @PathVariable(name = "id") long id_cliente) {
+	@GetMapping("/deshabilitar/{id}")
+	public String deshabilitar(Model model, @PathVariable(name = "id") long id_cliente) {
 
-		cliente_Service.eliminar(cliente_Service.buscarPorId(id_cliente));
+		Cliente cliente = cliente_Service.buscarPorId(id_cliente);
+		
+		if(cliente.isActivo()) {
+			cliente_Service.deshabilitar(cliente, false);
+		}else {
+			cliente_Service.deshabilitar(cliente, true);
+		}
 
 		return "redirect:/clientes/listar";
 	}
 
-	@GetMapping("/formulario")
+	@GetMapping("/registrar")
 	public String formulario(Model model) {
 
 		Cliente cliente = new Cliente();
@@ -165,34 +178,54 @@ public class clienteController {
 		model.addAttribute("tipos_documentos", tipo_documento_Service.listarTodo());
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("responsables_iva", responsableIvaService.listar_todo());
+		
+		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+		
 
 		model.addAttribute("cliente", cliente);
+		
+		editar = false;
 
-		return "clientes/formulario";
+		return "clientes/registrar";
 	}
 
-	@PostMapping("/formulario")
+	@PostMapping("/registrar")
 	public String guardar(@Valid Cliente cliente, RedirectAttributes redirAttrs) {
-
-		cliente_Service.guardar(cliente);
-
 		
+		if(!cliente_Service.existente(cliente, editar)) {
+			cliente_Service.guardar(cliente, true);
+			
+			if(!editar) {
+				CtaCteCliente ctactecliente = new CtaCteCliente();
+				
+				ctactecliente.setDebe(0);
+				ctactecliente.setHaber(0);
+				ctactecliente.setSaldo(0);
+				ctactecliente.setFecha(new Date());
+				
+				Actividad_Usuario actividad = new Actividad_Usuario();
+				
+				actividad.setFecha(new Date());
+				actividad.setHora(new Date());
+				actividad.setUsuario(obtenerUsuario());
+				actividad.setDescripcion("Alta Cliente " + cliente.getCliente() + " por usuario: " + obtenerUsuario().getUsername());
+				
+				Historial_Alta_Cliente historial = new Historial_Alta_Cliente();
+				historial.setCliente(cliente);
+				historial.setCtactecliente(ctactecliente);
+				historial.setDescripcion("TRANSPORTE CLI/" + cliente.getId_cliente());
+				historial.setActividad_usuario(actividad);
+				
+				ctacteclienteService.guardar(ctactecliente);
+				cliente_Service.guardar_actividad(actividad);
+				cliente_Service.guardar_historial(historial);
+			} else {
+				
+			}
+			
+			
+		}
 
-		String comprobante;
-
-	
-
-		
-		
-		CtaCteCliente ctactecliente1 = new CtaCteCliente();
-		
-		ctactecliente1.setDebe(0);
-		ctactecliente1.setHaber(0);
-		ctactecliente1.setSaldo(0);
-	
-		ctactecliente1.setFecha(new Date());
-		
-		ctacteclienteService.guardar(ctactecliente1);
 
 		return "redirect:/clientes/listar";
 	}

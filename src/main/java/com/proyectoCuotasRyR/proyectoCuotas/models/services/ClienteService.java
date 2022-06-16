@@ -5,15 +5,26 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Actividad_Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cliente;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Alta_Cliente;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
+import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Actividad_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Cliente_Repo;
+import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Historial_Alta_Cliente_Repo;
 
 @Service
 public class ClienteService implements I_Cliente_Service {
 
 	@Autowired
 	private I_Cliente_Repo repo;
-	
+
+	@Autowired
+	private I_Historial_Alta_Cliente_Repo historial_repo;
+
+	@Autowired
+	private I_Actividad_Repo actividad_repo;
+
 	@Override
 	public List<Cliente> listarTodo() {
 		// TODO Auto-generated method stub
@@ -27,21 +38,73 @@ public class ClienteService implements I_Cliente_Service {
 	}
 
 	@Override
-	public void guardar(Cliente cliente) {
+	public void guardar(Cliente cliente, boolean activo) {
 		// TODO Auto-generated method stub
+		cliente.setActivo(activo);
 		repo.save(cliente);
-	}
-	
-	@Override
-	public void eliminar(Cliente cliente) {
-		// TODO Auto-generated method stub
-		repo.delete(cliente);
 	}
 
 	@Override
 	public List<Cliente> buscarPorTerm(String term) {
 		// TODO Auto-generated method stub
 		return repo.buscarPorTerm(term);
+	}
+
+	@Override
+	public void deshabilitar(Cliente cliente, boolean valor) {
+		// TODO Auto-generated method stub
+		cliente.setActivo(valor);
+		;
+		repo.save(cliente);
+	}
+
+	@Override
+	public boolean existente(Cliente cliente, boolean editar) {
+		if (editar) {
+			for (Cliente cliente_pos : listarTodo()) {
+				if (cliente_pos.getId_cliente() != cliente.getId_cliente()) {
+					if (cliente_pos.getNro_documento().equals(cliente.getNro_documento())) {
+
+						return true;
+
+					}
+				}
+			}
+		} else {
+			for (Cliente cliente_pos : listarTodo()) {
+				if (cliente_pos.getNro_documento().equals(cliente.getNro_documento())) {
+
+					return true;
+
+				}
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public void borrar_historial(Historial_Alta_Cliente historial) {
+		// TODO Auto-generated method stub
+		historial_repo.delete(historial);
+	}
+
+	@Override
+	public void guardar_historial(Historial_Alta_Cliente historial) {
+		// TODO Auto-generated method stub
+		historial_repo.save(historial);
+	}
+
+	@Override
+	public void borrar_actividad(Actividad_Usuario actividad) {
+		// TODO Auto-generated method stub
+		actividad_repo.delete(actividad);
+	}
+
+	@Override
+	public void guardar_actividad(Actividad_Usuario actividad) {
+		// TODO Auto-generated method stub
+		actividad_repo.save(actividad);
 	}
 
 }
