@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Proveedor;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Proveedor;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
+import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Historial_Proveedor_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Proveedor_Repo;
 
 @Service
@@ -14,6 +16,9 @@ public class ProveedorService implements I_Proveedor_Service {
 
 	@Autowired
 	private I_Proveedor_Repo repo;
+	
+	@Autowired
+	private I_Historial_Proveedor_Repo repo_historial;
 	
 	@Override
 	public List<Proveedor> listarTodo() {
@@ -77,6 +82,18 @@ public class ProveedorService implements I_Proveedor_Service {
 		}
 		
 		return false;
+	}
+
+	@Override
+	public void borrar_historial(Historial_Proveedor historial) {
+		// TODO Auto-generated method stub
+		repo_historial.delete(historial);
+	}
+
+	@Override
+	public void guardar_historial(Historial_Proveedor historial) {
+		// TODO Auto-generated method stub
+		repo_historial.save(historial);
 	}
 
 

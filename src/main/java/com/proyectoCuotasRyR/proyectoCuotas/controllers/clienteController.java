@@ -38,7 +38,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Provincia;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.ClienteService;
-
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Actividad_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Cliente_Service;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_CtaCteCliente_Service;
@@ -98,7 +98,8 @@ public class clienteController {
 	@Autowired
 	private I_CtaCteCliente_Service ctacteclienteService;
 
-	
+	@Autowired
+	private I_Actividad_Service actividadService;
 	
 	@Autowired
 	private I_Responsable_Iva_Service responsableIvaService;
@@ -201,7 +202,6 @@ public class clienteController {
 				ctactecliente.setDebe(0);
 				ctactecliente.setHaber(0);
 				ctactecliente.setSaldo(0);
-				ctactecliente.setFecha(new Date());
 				
 				Actividad_Usuario actividad = new Actividad_Usuario();
 				
@@ -213,11 +213,11 @@ public class clienteController {
 				Historial_Alta_Cliente historial = new Historial_Alta_Cliente();
 				historial.setCliente(cliente);
 				historial.setCtactecliente(ctactecliente);
-				historial.setDescripcion("TRANSPORTE CLI/" + cliente.getId_cliente());
+				historial.setConcepto("TRANSPORTE CLI/" + cliente.getId_cliente());
 				historial.setActividad_usuario(actividad);
 				
 				ctacteclienteService.guardar(ctactecliente);
-				cliente_Service.guardar_actividad(actividad);
+				actividadService.guardar_actividad(actividad);
 				cliente_Service.guardar_historial(historial);
 			} else {
 				

@@ -30,14 +30,7 @@ public class Historial_Recibo {
 	@JsonBackReference
 	private Recibo recibo;
 
-	private String descripcion;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date hora;
-	
-	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date fecha;
+	private String concepto;
 	
 	@JoinColumn(name = "id_actividad_recibo", referencedColumnName = "id_actividad")
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -65,28 +58,22 @@ public class Historial_Recibo {
 		this.recibo = recibo;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
+
+
+	public String getConcepto() {
+		return concepto;
 	}
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+	public void setConcepto(String concepto) {
+		this.concepto = concepto;
 	}
 
-	public Date getHora() {
-		return hora;
+	public CtaCteCliente getCtactecliente() {
+		return ctactecliente;
 	}
 
-	public void setHora(Date hora) {
-		this.hora = hora;
-	}
-
-	public Date getFecha() {
-		return fecha;
-	}
-
-	public void setFecha(Date fecha) {
-		this.fecha = fecha;
+	public void setCtactecliente(CtaCteCliente ctactecliente) {
+		this.ctactecliente = ctactecliente;
 	}
 
 	public Actividad_Usuario getActividad_usuario() {

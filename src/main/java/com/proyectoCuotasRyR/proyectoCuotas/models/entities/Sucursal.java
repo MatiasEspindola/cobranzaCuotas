@@ -76,10 +76,6 @@ public class Sucursal {
 		this.puntoventaafip = puntoventaafip;
 	}
 
-	@JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JsonBackReference
-	private Usuario usuario;
 	
 	
 	@JoinColumn(name = "id_localidad2", referencedColumnName = "id")
@@ -183,16 +179,6 @@ public class Sucursal {
 
 	public void setEs_casa_central(boolean es_casa_central) {
 		this.es_casa_central = es_casa_central;
-	}
-
-
-
-	public Usuario getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
 	}
 
 	public List<Plan_Pago> getPlanes_pagos() {

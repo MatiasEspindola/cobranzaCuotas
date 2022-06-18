@@ -22,8 +22,7 @@ public class ClienteService implements I_Cliente_Service {
 	@Autowired
 	private I_Historial_Alta_Cliente_Repo historial_repo;
 
-	@Autowired
-	private I_Actividad_Repo actividad_repo;
+
 
 	@Override
 	public List<Cliente> listarTodo() {
@@ -95,16 +94,5 @@ public class ClienteService implements I_Cliente_Service {
 		historial_repo.save(historial);
 	}
 
-	@Override
-	public void borrar_actividad(Actividad_Usuario actividad) {
-		// TODO Auto-generated method stub
-		actividad_repo.delete(actividad);
-	}
-
-	@Override
-	public void guardar_actividad(Actividad_Usuario actividad) {
-		// TODO Auto-generated method stub
-		actividad_repo.save(actividad);
-	}
 
 }

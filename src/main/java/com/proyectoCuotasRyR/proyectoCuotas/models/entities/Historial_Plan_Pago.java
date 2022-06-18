@@ -24,7 +24,7 @@ public class Historial_Plan_Pago {
 	@JsonBackReference
 	private Plan_Pago plan_pago;
 	
-	private String descripcion;
+	private String concepto;
 	
 	@JoinColumn(name = "id_ctactecliente_plan_pago", referencedColumnName = "id_ctactecliente")
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -52,12 +52,14 @@ public class Historial_Plan_Pago {
 		this.plan_pago = plan_pago;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
+	
+
+	public String getConcepto() {
+		return concepto;
 	}
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+	public void setConcepto(String concepto) {
+		this.concepto = concepto;
 	}
 
 	public CtaCteCliente getCtactecliente() {

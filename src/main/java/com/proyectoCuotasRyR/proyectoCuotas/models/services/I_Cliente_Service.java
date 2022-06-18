@@ -24,8 +24,5 @@ public interface I_Cliente_Service {
 	
 	public void guardar_historial(Historial_Alta_Cliente historial);
 	
-	public void borrar_actividad(Actividad_Usuario actividad);
-	
-	public void guardar_actividad(Actividad_Usuario actividad);
 	
 }

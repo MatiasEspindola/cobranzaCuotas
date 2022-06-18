@@ -30,10 +30,6 @@ public class CtaCteCliente{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id_ctactecliente;
 	
-	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date fecha;
-	
 	private float debe;
 	
 	private float haber;
@@ -65,14 +61,6 @@ public class CtaCteCliente{
 
 	public void setId_ctactecliente(long id_ctactecliente) {
 		this.id_ctactecliente = id_ctactecliente;
-	}
-
-	public Date getFecha() {
-		return fecha;
-	}
-
-	public void setFecha(Date fecha) {
-		this.fecha = fecha;
 	}
 
 	public float getDebe() {

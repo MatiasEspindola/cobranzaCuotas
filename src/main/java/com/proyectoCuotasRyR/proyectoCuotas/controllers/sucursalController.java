@@ -1,5 +1,6 @@
 package com.proyectoCuotasRyR.proyectoCuotas.controllers;
 import java.net.MalformedURLException;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -21,14 +22,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Actividad_Usuario;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Localidad;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Provincia;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
-import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Actividad_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_GeoService;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
 
 @Controller
@@ -50,6 +54,9 @@ public class sucursalController {
 	
 	@Autowired
 	private I_Sucursal_Service sucursalService;
+	
+	@Autowired
+	private I_Actividad_Service actividadService;
 	
 	private boolean editar;
 	
@@ -131,9 +138,33 @@ public class sucursalController {
 		
 		if(!sucursalService.existente(sucursal, editar)) {
 			
-			sucursal.setUsuario(obtenerUsuario());
-			sucursal.setEmpresa(empresaService.listar_todo().get(0));
-			sucursalService.guardar(sucursal, true);
+			if(!editar) {
+				sucursal.setEmpresa(empresaService.listar_todo().get(0));
+				sucursalService.guardar(sucursal, true);
+			}else {
+				sucursalService.guardar(sucursal, sucursal.isActivo());
+				
+				Actividad_Usuario actividad = new Actividad_Usuario();
+				actividad.setFecha(new Date());
+				actividad.setHora(new Date());
+				
+				String txt = sucursal.getEmpresa().getRazon_social();
+				txt.concat(", " + sucursal.getDireccion());
+				txt.concat(", (" + sucursal.getId_localidad2().getLocalidad());
+				txt.concat(", " + sucursal.getId_localidad2().getProvincia().getProv() + ")");
+				
+				actividad.setDescripcion(txt);
+				
+				actividadService.guardar_actividad(actividad);
+				
+				Historial_Sucursal historial = new Historial_Sucursal();
+				historial.setActividad_usuario(actividad);
+				historial.setSucursal(sucursal);
+				
+				sucursalService.guardar_historial(historial);
+				
+				
+			}
 			
 		}
 		

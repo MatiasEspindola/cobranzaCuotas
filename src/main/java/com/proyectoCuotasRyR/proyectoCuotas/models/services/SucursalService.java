@@ -5,15 +5,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
+import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Historial_Sucursal_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Sucursal_Repo;
-import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Sucursal_Service;
 
 @Service
 public class SucursalService implements I_Sucursal_Service {
 
 	@Autowired
 	private I_Sucursal_Repo repo;
+	
+	@Autowired
+	private I_Historial_Sucursal_Repo historial_repo;
 	
 	@Override
 	public List<Sucursal> listar() {
@@ -66,6 +70,18 @@ public class SucursalService implements I_Sucursal_Service {
 		}
 		
 		return false;
+	}
+
+	@Override
+	public void borrar_historial(Historial_Sucursal historial) {
+		// TODO Auto-generated method stub
+		historial_repo.delete(historial);
+	}
+
+	@Override
+	public void guardar_historial(Historial_Sucursal historial) {
+		// TODO Auto-generated method stub
+		historial_repo.save(historial);
 	}
 
 }

@@ -30,11 +30,7 @@ public class Historial_Alta_Cliente {
 	@JsonBackReference
 	private Cliente cliente;
 	
-	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date alta;
-	
-	private String descripcion;
+	private String concepto;
 	
 	@JoinColumn(name = "id_ctactecliente_cliente", referencedColumnName = "id_ctactecliente")
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -46,16 +42,6 @@ public class Historial_Alta_Cliente {
 	@JsonBackReference
 	private Actividad_Usuario actividad_usuario;
 
-
-	public Date getAlta() {
-		return alta;
-	}
-
-	public void setAlta(Date alta) {
-		this.alta = alta;
-	}
-
-	
 
 	public long getId_historial_cliente() {
 		return id_historial_cliente;
@@ -73,12 +59,14 @@ public class Historial_Alta_Cliente {
 		this.cliente = cliente;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
+	
+
+	public String getConcepto() {
+		return concepto;
 	}
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+	public void setConcepto(String concepto) {
+		this.concepto = concepto;
 	}
 
 	public CtaCteCliente getCtactecliente() {
