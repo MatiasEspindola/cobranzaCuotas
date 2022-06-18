@@ -141,19 +141,11 @@ public class sucursalController {
 			if(!editar) {
 				sucursal.setEmpresa(empresaService.listar_todo().get(0));
 				sucursalService.guardar(sucursal, true);
-			}else {
-				sucursalService.guardar(sucursal, sucursal.isActivo());
 				
 				Actividad_Usuario actividad = new Actividad_Usuario();
 				actividad.setFecha(new Date());
 				actividad.setHora(new Date());
-				
-				String txt = sucursal.getEmpresa().getRazon_social();
-				txt.concat(", " + sucursal.getDireccion());
-				txt.concat(", (" + sucursal.getId_localidad2().getLocalidad());
-				txt.concat(", " + sucursal.getId_localidad2().getProvincia().getProv() + ")");
-				
-				actividad.setDescripcion(txt);
+				actividad.setDescripcion("Alta Sucursal " + sucursal.getId_sucursal() + " por usuario: " + obtenerUsuario().getUsername());
 				
 				actividadService.guardar_actividad(actividad);
 				
@@ -163,6 +155,8 @@ public class sucursalController {
 				
 				sucursalService.guardar_historial(historial);
 				
+			}else {
+				sucursalService.guardar(sucursal, sucursal.isActivo());
 				
 			}
 			

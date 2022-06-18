@@ -194,9 +194,11 @@ public class clienteController {
 	public String guardar(@Valid Cliente cliente, RedirectAttributes redirAttrs) {
 		
 		if(!cliente_Service.existente(cliente, editar)) {
-			cliente_Service.guardar(cliente, true);
 			
 			if(!editar) {
+				
+				cliente_Service.guardar(cliente, true);
+				
 				CtaCteCliente ctactecliente = new CtaCteCliente();
 				
 				ctactecliente.setDebe(0);
@@ -208,7 +210,7 @@ public class clienteController {
 				actividad.setFecha(new Date());
 				actividad.setHora(new Date());
 				actividad.setUsuario(obtenerUsuario());
-				actividad.setDescripcion("Alta Cliente " + cliente.getCliente() + " por usuario: " + obtenerUsuario().getUsername());
+				actividad.setDescripcion("Alta Cliente " + cliente.getId_cliente() + " por usuario: " + obtenerUsuario().getUsername());
 				
 				Historial_Alta_Cliente historial = new Historial_Alta_Cliente();
 				historial.setCliente(cliente);
@@ -220,7 +222,7 @@ public class clienteController {
 				actividadService.guardar_actividad(actividad);
 				cliente_Service.guardar_historial(historial);
 			} else {
-				
+				cliente_Service.guardar(cliente, cliente.isActivo());
 			}
 			
 			
