@@ -269,7 +269,7 @@ public class planPagoController {
 		c.setTipo_documento(tipo_documento);
 		c.setId_responsable(responsable_iva);
 
-		clienteService.guardar(c);
+		//clienteService.guardar(c);
 
 		plan_pago.setId_cliente(c);
 
@@ -292,7 +292,7 @@ public class planPagoController {
 		ctactecliente1.setHaber(0);
 		ctactecliente1.setSaldo(0);
 	
-		ctactecliente1.setFecha(alta);
+		//ctactecliente1.setFecha(alta);
 		
 		CtaCteCliente ctactecliente2 = new CtaCteCliente();
 
@@ -300,7 +300,7 @@ public class planPagoController {
 		ctactecliente2.setHaber(0);
 		ctactecliente2.setSaldo((float) (Math.round(Float.valueOf(total) * 100d) / 100d));
 		
-		ctactecliente2.setFecha(plan_pago.getFecha_inicio());
+		//ctactecliente2.setFecha(plan_pago.getFecha_inicio());
 		
 		ctacteclienteService.guardar(ctactecliente1);
 		ctacteclienteService.guardar(ctactecliente2);
@@ -381,7 +381,7 @@ public class planPagoController {
 		
 		CtaCteCliente ctactecliente = new CtaCteCliente();
 		
-		ctactecliente.setFecha(plan_pago.getFecha_inicio());
+		//ctactecliente.setFecha(plan_pago.getFecha_inicio());
 		
 		ctactecliente.setDebe((float) (Math.round(Float.valueOf(total) * 100d) / 100d));
 		//ctactecliente.setSaldo((float) (Math.round(Float.valueOf(saldo_cta_cte) * 100d) / 100d) + (float) (Math.round(Float.valueOf(total) * 100d) / 100d));

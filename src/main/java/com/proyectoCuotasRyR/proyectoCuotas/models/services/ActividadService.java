@@ -1,10 +1,12 @@
 package com.proyectoCuotasRyR.proyectoCuotas.models.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Actividad_Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Actividad_Repo;
 
+@Service
 public class ActividadService implements I_Actividad_Service {
 	
 	@Autowired

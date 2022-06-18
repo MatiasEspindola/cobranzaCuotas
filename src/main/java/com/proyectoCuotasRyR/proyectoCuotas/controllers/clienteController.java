@@ -224,7 +224,7 @@ public class clienteController {
 			} else {
 				cliente_Service.guardar(cliente, cliente.isActivo());
 			}
-			
+			 
 			
 		}
 

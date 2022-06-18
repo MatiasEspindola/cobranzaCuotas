@@ -87,7 +87,7 @@ public class escenarioController {
 	@PostMapping("clientes/formulario")
 	public String guardar(@Valid Cliente cliente, RedirectAttributes redirAttrs) {
 		
-		cliente_Service.guardar(cliente);
+		//cliente_Service.guardar(cliente);
 		
 
 		return "redirect:/clientes/listar";

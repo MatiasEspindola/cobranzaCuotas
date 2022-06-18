@@ -165,8 +165,8 @@ public class pagoController {
 				+ ")"
 			);
 		
-		recibo.setFecha(new Date());
-		recibo.setHora(new Date());
+		//recibo.setFecha(new Date());
+		//recibo.setHora(new Date());
 		recibo.setConcepto(conceptoService.listar().get(0));
 		
 		reciboService.guardar(recibo);
@@ -250,7 +250,7 @@ public class pagoController {
 
 		CtaCteCliente ctactecliente = new CtaCteCliente();
 		 
-		ctactecliente.setFecha(new Date());
+		//ctactecliente.setFecha(new Date());
 	
 
 		//ctactecliente.setSaldo(saldo_cta_cte - total);
