@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+	<table th:fragment="importes" class="d-none">
+		<tbody id="plantillaImportes">
+			<tr id="importe_{NRO_IMPORTE}" name="columnas-importes">
+			
+				<td class="d-none">
+					<span id="nro_importe_{NRO_IMPORTE}">{NRO_IMPORTE}</span >
+				</td >
+			
+				<td>
+					<span>{MEDIO_PAGO}</span >
+				</td>
+				<td class="d-none">
+					<input type="text" step="any" name="medios_pagos[]" id="medio_pago_{NRO_IMPORTE}"
+					value="{MEDIO_PAGO_VALUE}"
+					/>
+				</td >
+				<td> $
+					<input type="number" step="any" name="importes[]" id="inp_importe_{NRO_IMPORTE}"
+					onchange="pendiente()"
+					min="0" value="0" 
+					/>
+				</td>
+			
+			
+			</tr>
+		</tbody>
+	</table>
+	
+
+</body>
+
+</html>

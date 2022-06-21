@@ -96,7 +96,7 @@
 				</div>
 
 				<form th:action="@{/pagos/generar_pago}" method="post">
-					<input class="d-none" name="id_plan_pago" th:value="${plan_pago.id_plan_pago}"></input>
+				
 					<div class="table-responsive">
 						<table class="table table-sm text-center">
 							<thead class="bg-dark text-white">
@@ -258,7 +258,9 @@
 							</tbody>
 						</table>
 
-						<input class="d-none" th:value="${plan_pago.id_plan_pago}" name="plan_pago" id="">
+						<input class="d-none" th:value="${plan_pago.id_plan_pago}" name="id_plan_pago" id="">
+					
+						<input class="d-none" name="id_cliente" th:value="${cliente.id_cliente}"></input>
 
 						<button type="submit" class="btn btn-primary">
 							Generar Pago

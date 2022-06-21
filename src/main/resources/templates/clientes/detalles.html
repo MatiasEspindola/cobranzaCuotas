@@ -56,6 +56,32 @@
 								
 								<a class="btn btn-success"
 								th:href="@{/planes_pagos/clientes/simular_cuotas/} + ${cliente.id_cliente}">Desarrollo Plan de Pago</a>
+							
+								<div th:each="cta_cte : ${ctas_ctes}">
+								<div th:each="historial : ${cta_cte.historiales_planes_pagos}">
+										<br>
+									<div class="list-group">
+										<a th:href="@{/planes_pagos/detalles/} + ${historial.plan_pago.id_plan_pago} + '/' + ${cliente.id_cliente}"
+											class="list-group-item list-group-item-action" aria-current="true">
+											<div class="d-flex w-100 justify-content-between">
+												<h5 class="mb-1"
+													th:text="'Inicio: ' + ${#dates.format(historial.plan_pago.fecha_inicio,'dd/M/yyyy')}">List
+													group item heading</h5>
+												<small th:text="'Legajo Plan Pago: ' + ${historial.plan_pago.id_plan_pago}">3 days ago</small>
+											</div>
+											<p class="mb-1" th:text="'Tipo Interés: ' + ${historial.plan_pago.id_tipo_interes.tipo_interes}"></p>
+											<p class="mb-1" th:text="'Nro Expediente: ' + ${historial.plan_pago.nro_expediente}"></p>
+											<p class="mb-1" th:text="'Cuotas: ' + ${historial.plan_pago.nro_cuotas}"></p>
+											<p class="mb-1" th:text="'Total: ' + '$ ' + ${#numbers.formatDecimal(historial.plan_pago.total, 0, 'POINT', 2, 'COMMA')}"></p>
+											<p class="mb-1" th:text="'Valor Cuota: ' + '$ ' + ${#numbers.formatDecimal(historial.plan_pago.valor_cuota, 0, 'POINT', 2, 'COMMA')}"></p>
+											<p class="mb-1" th:text="'Proveedor: ' + ${historial.plan_pago.id_proveedor.razon_social}"></p>
+											<p class="mb-1" th:text="'Abogado Parte Actora: ' + ${historial.plan_pago.pactora}"></p>
+											<small class="text-success" th:text="${historial.plan_pago.activo ? 'Activo':'Inactivo'}"></small>
+										</a>
+									</div>
+									<br>
+								</div>
+							</div>
 						
 						</div>
 					</div>

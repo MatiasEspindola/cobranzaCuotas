@@ -27,6 +27,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cliente;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.CtaCteCliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cuota;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Alta_Cliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Plan_Pago;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Importe;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Localidad;
@@ -116,10 +117,21 @@ public class planPagoController {
 
 	private boolean editar;
 
-	@GetMapping("/detalles/{id}")
-	public String detalle_plan_pago(@PathVariable Long id, Model model, RedirectAttributes redirAttrs) {
+	@GetMapping("/detalles/{id}/{id_cliente}")
+	public String detalle_plan_pago(@PathVariable Long id, @PathVariable Long id_cliente, Model model, RedirectAttributes redirAttrs) {
+		
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
 
 		Plan_Pago plan_pago = planPagoService.buscarPorId(id);
+		
+		Cliente cliente = clienteService.buscarPorId(id_cliente);
+		
+		model.addAttribute("cliente", cliente);
+		
+		
 
 		if (plan_pago == null) {
 			redirAttrs.addFlashAttribute("error", "No existe un plan de pago con este id: " + id);
@@ -154,12 +166,30 @@ public class planPagoController {
 		model.addAttribute("pagado", pagado);
 		model.addAttribute("pendiente", pendiente);
 		
+		
+		Usuario usuario = obtenerUsuario();
+		
+		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+		model.addAttribute("usuario", usuario);
+		
 
 		return "planes_pagos/detalles";
 	}
 
 	@GetMapping("/simular_cuotas")
 	public String simular_cuotas(Model model) {
+		
+
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
+		
+		
+		Usuario usuario = obtenerUsuario();
+		
+		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+		model.addAttribute("usuario", usuario);
 
 		Plan_Pago plan_pago = new Plan_Pago();
 
@@ -178,6 +208,11 @@ public class planPagoController {
 
 	@GetMapping("/clientes/simular_cuotas/{id_cliente}")
 	public String simular_cuotas(Model model, @PathVariable(name = "id_cliente") long id_cliente) {
+		
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
 
 		Plan_Pago plan_pago = new Plan_Pago();
 
@@ -195,10 +230,7 @@ public class planPagoController {
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 		model.addAttribute("usuario", usuario);
 		
-		if (empresaService.listar_todo().size() == 0) {
-
-			return "redirect:/empresas/registrar";
-		}
+		
 
 		
 
@@ -235,7 +267,7 @@ public class planPagoController {
 			@RequestParam(name = "nro_documento", required = true) String nro_documento,
 			@RequestParam(name = "tipo_documento", required = true) Tipo_Documento tipo_documento,
 			@RequestParam(name = "id_responsable", required = true) Responsable_Iva responsable_iva,
-			@RequestParam(name = "alta", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") Date alta,
+			
 			@RequestParam(name = "direccion", required = true) String direccion,
 			@RequestParam(name = "id_seleccion", required = true) Localidad localidad,
 			@RequestParam(name = "tel_fijo", required = true) String tel_fijo,
@@ -246,6 +278,17 @@ public class planPagoController {
 			@RequestParam(name = "mail2", required = true) String mail2
 
 	) {
+		
+		
+		List<Historial_Plan_Pago> historiales = historialPlanPagoService.listar();
+		
+		for(Historial_Plan_Pago historial : historiales) {
+			if(historial.getPlan_pago().getId_proveedor().getId_proveedor() == plan_pago.getId_proveedor().getId_proveedor()) {
+				
+				return "redirect:/";
+				
+			}
+		}
 
 		List<Cuota> cuotas = new ArrayList<>();
 
@@ -292,7 +335,9 @@ public class planPagoController {
 		c.setTipo_documento(tipo_documento);
 		c.setId_responsable(responsable_iva);
 
-		//clienteService.guardar(c);
+		if(clienteService.existente(c, editar)) {
+			clienteService.guardar(c, true);
+		}
 
 	//	plan_pago.setId_cliente(c);
 
@@ -303,10 +348,9 @@ public class planPagoController {
 		plan_pago.setValor_cuota((float) (Math.round(vcuota * 100d) / 100d));
 		plan_pago.setNro_expediente(generadorNroExpediente());
 
-	
 
-		planPagoService.guardar(plan_pago);
-		
+
+		planPagoService.guardar(plan_pago);		
 		
 
 		CtaCteCliente ctactecliente1 = new CtaCteCliente();
@@ -314,22 +358,57 @@ public class planPagoController {
 		ctactecliente1.setDebe(0);
 		ctactecliente1.setHaber(0);
 		ctactecliente1.setSaldo(0);
-	
-		//ctactecliente1.setFecha(alta);
+		ctactecliente1.setCliente(c);
+		
 		
 		CtaCteCliente ctactecliente2 = new CtaCteCliente();
 
 		ctactecliente2.setDebe((float) (Math.round(Float.valueOf(total) * 100d) / 100d));
 		ctactecliente2.setHaber(0);
 		ctactecliente2.setSaldo((float) (Math.round(Float.valueOf(total) * 100d) / 100d));
-		
-		//ctactecliente2.setFecha(plan_pago.getFecha_inicio());
+		ctactecliente2.setCliente(c);
 		
 		ctacteclienteService.guardar(ctactecliente1);
 		ctacteclienteService.guardar(ctactecliente2);
 		
+		Actividad_Usuario actividad = new Actividad_Usuario();
+		actividad.setFecha(new Date());
+		actividad.setHora(new Date());
+		actividad.setUsuario(obtenerUsuario());
+		actividad.setDescripcion(
+				"Alta Cliente " + c.getId_cliente() + " por usuario: " + obtenerUsuario().getUsername());
 		
-		return "redirect:/planes_pagos/detalles/" + plan_pago.getId_plan_pago();
+		actividadService.guardar_actividad(actividad);
+		
+		Historial_Alta_Cliente historial = new Historial_Alta_Cliente();
+
+		historial.setCtactecliente(ctactecliente1);
+		historial.setConcepto("TRANSPORTE CLI/" + c.getId_cliente());
+		historial.setActividad_usuario(actividad);
+		
+		clienteService.guardar_historial(historial);
+		
+		Actividad_Usuario actividad2 = new Actividad_Usuario();
+		actividad2.setFecha(new Date());
+		actividad2.setHora(new Date());
+		actividad2.setUsuario(obtenerUsuario());
+		actividad2.setDescripcion(
+				"Alta Cliente " + c.getId_cliente() + " por usuario: " + obtenerUsuario().getUsername());
+		
+		actividadService.guardar_actividad(actividad2);
+		
+		Historial_Plan_Pago historial_alta_plan_pago = new Historial_Plan_Pago();
+		
+		historial_alta_plan_pago.setActividad_usuario(actividad2);
+		historial_alta_plan_pago.setCtactecliente(ctactecliente2);
+		historial_alta_plan_pago.setPlan_pago(plan_pago);
+		historial_alta_plan_pago.setConcepto("PLAN PAGO /" + plan_pago.getId_plan_pago());
+		
+		historialPlanPagoService.guardar(historial_alta_plan_pago);
+		
+		
+		
+		return "redirect:/planes_pagos/detalles/" + plan_pago.getId_plan_pago() + "/" + c.getId_cliente();
 	}
 
 	@PostMapping("/clientes/simular_cuotas")
@@ -350,7 +429,7 @@ public class planPagoController {
 	) {
 		
 		if(cliente == null) {
-			return "redirect/clientes/listar";
+			return "redirect:/clientes/listar";
 		}
 		
 		List<Historial_Plan_Pago> historiales = historialPlanPagoService.listar();
@@ -358,7 +437,7 @@ public class planPagoController {
 		for(Historial_Plan_Pago historial : historiales) {
 			if(historial.getPlan_pago().getId_proveedor().getId_proveedor() == plan_pago.getId_proveedor().getId_proveedor()) {
 				
-				return "redirect/clientes/detalles/" + cliente.getId_cliente();
+				return "redirect:/clientes/detalles/" + cliente.getId_cliente();
 				
 			}
 		}

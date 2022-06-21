@@ -1,48 +1,58 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head th:replace="layout :: head">
-
+	
 </head>
 
-<body>
-
-	<header th:replace="layout :: header">
-
-	</header>
-
-	<div class="container-fluid">
-		<div> class="row">
-			<nav th:replace="layout :: nav">
-
+<body class="sb-nav-fixed">
+	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark" >
+		<div th:replace="layout :: brand"></div>
+		<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+			
+		</form>
+	
+		<ul th:replace="layout :: navbar">
+			
+		</ul >
+	</nav>
+	<div id="layoutSidenav">
+		<div id="layoutSidenav_nav">
+			<nav class="sb-sidenav accordion text-dark" id="sidenavAccordion">
+				<div class="sb-sidenav-menu">
+					<div class="nav" th:replace="layout :: sidenav">
+						
+					</div>
+				</div>
+				<div th:replace="layout :: user">
+				
+				</div>
 			</nav>
-
-			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-
-				<br>
-				<nav aria-label="breadcrumb">
-					<ol class="breadcrumb">
-						<li class="breadcrumb-item"><a
-								th:href="@{/planes_pagos/detalles/} + ${plan_pago.id_plan_pago} + '/' + ${cliente.id_cliente}">Detalles
-								Plan de Pago</a></li>
-						<li class="breadcrumb-item active" aria-current="page">Generar Pago</li>
+		</div>
+		<div id="layoutSidenav_content">
+			<main>
+			
+			<div class="container-fluid px-4">
+					<h1 class="mt-4">Generar Pago </h1>
+					<ol class="breadcrumb mb-4">
+						<li class="breadcrumb-item"><a th:href="@{/planes_pagos/detalles/} + ${plan_pago.id_plan_pago} + '/' + ${cliente.id_cliente}">Detalles Plan de Pago</a></li>
+						<li class="breadcrumb-item active">Generar Pago</li>
 					</ol>
-				</nav>
-
-				<div class="alert alert-danger" role="alert" th:if="${error != null}" th:text="${error}"
-					style="margin:10px;">
-
-				</div>
-
-
-				<div
-					class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-
-				</div>
-
-				<h2 class="text-center">Generar Pago</h2>
-
-				<ol class="list-group list-group-numbered">
+					<div class="card mb-4">
+						<div class="card-body">
+							Aquí se realiza la generación de pagos. Puede consultar el Manual del Usuario en:
+							<a target="_blank" href="https://datatables.net/">Manual del Usuario</a>
+							.
+						</div>
+					</div>
+					<div class="card mb-4">
+						<div class="card-header">
+							<i class="fas fa-table me-1"></i>
+							Generar Pago
+						</div>
+						<div class="card-body">
+						
+						<ol class="list-group list-group-numbered">
 					<li class="list-group-item d-flex justify-content-between align-items-start"
 						th:each="cuota : ${cuotas}">
 						<div class="ms-2 me-auto">
@@ -99,6 +109,8 @@
 					</div>
 
 					<div class="table-responsive">
+							<a href="#"
+					onclick="eliminarImportes();"><i class="far fa-trash-alt text-danger text-center"></i></a>
 						<table id="cargarImportes" class="table table-sm table-striped table-hover text-center">
 							<thead>
 								<tr>
@@ -107,7 +119,7 @@
 									<th>Medio de Pago:</th>
 									<th class="d-none">Medio de Pago Value:</th >
 									<th>Importe:</th>
-									<th>Eliminar:</th>
+								
 								</tr>
 							</thead>
 							<tbody>
@@ -124,15 +136,21 @@
 
 				</form>
 
-				<br><br>
-
-
-
+						
+						
+						</div>
+					</div>
+				</div>
+				
 			</main>
+			<footer th:replace="layout :: footer">
+				
+			</footer>
 		</div>
 	</div>
-
-	<div th:replace="layout :: script"></div>
+	<div th:replace="layout :: script">
+		
+	</div>
 	<script>
 
 		var id = 1;
@@ -152,13 +170,10 @@
 
 		
 
-		function eliminarImporte(nro_importe) {
-			$("#importe_" + nro_importe).remove();
-			for (let importe in importes) {
-				if (importes[importe].nro_importe == nro_importe) {
-					importes.splice(importe, 1);
-				}
-			}
+		function eliminarImportes() {
+			$("#cargarImportes tbody tr").remove(); 
+			importes = [];
+				$("#pendiente").html('Pendiente: $ ' + parseFloat($("#total").val()).toFixed(2).replace(".", ","));
 		}
 		
 		function pendiente(){

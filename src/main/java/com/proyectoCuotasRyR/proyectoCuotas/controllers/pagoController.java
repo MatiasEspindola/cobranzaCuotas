@@ -27,24 +27,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Actividad_Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cliente;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.CtaCteCliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cuota;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Detalle_Recibo;
-
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Recibo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Importe;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Medio_Pago;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Recibo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Actividad_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Cliente_Service;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Concepto_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_CtaCteCliente_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Cuota_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_DetalleRecibo_Service;
-
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Historial_Recibo_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Importe_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Medio_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
@@ -87,6 +90,17 @@ public class pagoController {
 	
 	@Autowired
 	private I_Concepto_Service conceptoService;
+	
+	@Autowired
+	private I_Empresa_Service empresaService;
+	
+	@Autowired
+	private I_Actividad_Service actividadService;
+	
+	@Autowired
+	private I_Historial_Recibo_Service historialService;
+	
+	private Cliente cliente;
 
 	
 
@@ -100,17 +114,29 @@ public class pagoController {
 		return "pagos/listar";
 	}
 
-	@GetMapping("/generar_pago/{id_plan_pago}")
-	public String generar_pago(Model model, @PathVariable long id_plan_pago) {
+	@GetMapping("/generar_pago/{id_plan_pago}/{id_cliente}")
+	public String generar_pago(Model model, @PathVariable long id_plan_pago, @PathVariable long id_cliente) {
+		
 
-		if (cuotas == null) {
-			return "redirect:/planes_pagos/detalles/" + id_plan_pago;
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
 		}
+		
+		if (cuotas == null) {
+			return "redirect:/planes_pagos/detalles/" + id_plan_pago + '/' + id_cliente;
+		}
+		
+		cliente = clienteService.buscarPorId(id_cliente);
 
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("plan_pago", planPagoService.buscarPorId(id_plan_pago));
 		model.addAttribute("medios_pagos", medioPagoService.listar());
 		model.addAttribute("cuotas", cuotas);
+		model.addAttribute("cliente", cliente);
+		
+		model.addAttribute("usuario", obtenerUsuario());
+		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 
 		float total = 0;
 
@@ -125,9 +151,11 @@ public class pagoController {
 
 	@PostMapping("/generar_pago")
 	public String btn_generar_pago(@RequestParam(name = "cuotas[]", required = false) String[] cuotas,
-
-			@RequestParam(name = "plan_pago", required = false) long id_plan_pago) {
-
+			@RequestParam(name = "id_plan_pago", required = false) long id_plan_pago,
+		    @RequestParam(name = "id_cliente", required = false) long id_cliente){
+		
+		
+		
 		if (cuotas == null) {
 			return "redirect:/planes_pagos/detalles/" + id_plan_pago;
 		}
@@ -142,7 +170,7 @@ public class pagoController {
 			this.cuotas.add(cuota);
 		}
 
-		return "redirect:/pagos/generar_pago/" + id_plan_pago;
+		return "redirect:/pagos/generar_pago/" + id_plan_pago + "/" + id_cliente;
 	}
 
 	@PostMapping("/generar_importes")
@@ -158,15 +186,12 @@ public class pagoController {
 			total += importes[i];
 		}
 		
-		
-		
+
 		recibo.setDescripcion(
 				"RECIBIMOS (" + Convertir(String.valueOf(total), "PESOS", "PESOS", "CENTAVOS", "CENTAVOS", "CON", true)
 				+ ")"
 			);
 		
-		//recibo.setFecha(new Date());
-		//recibo.setHora(new Date());
 		recibo.setConcepto(conceptoService.listar().get(0));
 		
 		reciboService.guardar(recibo);
@@ -235,30 +260,41 @@ public class pagoController {
 			
 		}
 		
-
-	//	Cliente cliente = planPagoService.buscarPorId(id_plan_pago).getId_cliente();
-
-		
 		recibo.getId_recibo();
+		
+		List<CtaCteCliente> ctas_ctes = ctacteclienteService.buscarPorCliente(cliente);
 
+	    int size = ctas_ctes.size();
 
-	 
-	//	int size = cliente.getCtas_ctes_cliente().size();
-
-		//float saldo_cta_cte = cliente.getCtas_ctes_cliente().get(size -
-		//1).getSaldo();
+	    float saldo_cta_cte = ctas_ctes.get(size -
+		1).getSaldo();
 
 		CtaCteCliente ctactecliente = new CtaCteCliente();
-		 
-		//ctactecliente.setFecha(new Date());
-	
 
-		//ctactecliente.setSaldo(saldo_cta_cte - total);
+		ctactecliente.setSaldo(saldo_cta_cte - total);
 		ctactecliente.setHaber(total);
+		ctactecliente.setDebe(0);
+		ctactecliente.setCliente(cliente);
 		
 		ctacteclienteService.guardar(ctactecliente);
+		
+		Actividad_Usuario actividad = new Actividad_Usuario();
+		actividad.setFecha(new Date());
+		actividad.setHora(new Date());
+		actividad.setUsuario(obtenerUsuario());
+		actividad.setDescripcion("Recibo ID: " + recibo.getId_recibo() + ", generado con éxito");
+		
+		actividadService.guardar_actividad(actividad);
+		
+		Historial_Recibo historial = new Historial_Recibo();
+		historial.setActividad_usuario(actividad);
+		historial.setConcepto("RECIBO /" + recibo.getId_recibo());
+		historial.setCtactecliente(ctactecliente);
+		historial.setRecibo(recibo);
+		
+		historialService.guardar(historial);
 
-		return "redirect:/planes_pagos/detalles/" + id_plan_pago;
+		return "redirect:/planes_pagos/detalles/" + id_plan_pago + "/" + cliente.getId_cliente();
 	}
 
 	private Usuario obtenerUsuario() {
