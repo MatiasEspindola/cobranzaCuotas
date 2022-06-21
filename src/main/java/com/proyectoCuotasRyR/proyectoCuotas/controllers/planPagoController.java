@@ -279,16 +279,6 @@ public class planPagoController {
 
 	) {
 		
-		
-		List<Historial_Plan_Pago> historiales = historialPlanPagoService.listar();
-		
-		for(Historial_Plan_Pago historial : historiales) {
-			if(historial.getPlan_pago().getId_proveedor().getId_proveedor() == plan_pago.getId_proveedor().getId_proveedor()) {
-				
-				return "redirect:/";
-				
-			}
-		}
 
 		List<Cuota> cuotas = new ArrayList<>();
 
@@ -335,8 +325,10 @@ public class planPagoController {
 		c.setTipo_documento(tipo_documento);
 		c.setId_responsable(responsable_iva);
 
-		if(clienteService.existente(c, editar)) {
+		if(!clienteService.existente(c, editar)) {
 			clienteService.guardar(c, true);
+		} else {
+			return "redirect:/";
 		}
 
 	//	plan_pago.setId_cliente(c);
@@ -393,7 +385,8 @@ public class planPagoController {
 		actividad2.setHora(new Date());
 		actividad2.setUsuario(obtenerUsuario());
 		actividad2.setDescripcion(
-				"Alta Cliente " + c.getId_cliente() + " por usuario: " + obtenerUsuario().getUsername());
+				"Alta plan de pago " + plan_pago.getId_plan_pago() + " por usuario: " + obtenerUsuario().getUsername());
+		
 		
 		actividadService.guardar_actividad(actividad2);
 		

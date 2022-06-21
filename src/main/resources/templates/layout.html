@@ -36,7 +36,7 @@
 				<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
 					aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-					<li><a class="dropdown-item" href="#!">Configuración</a></li>
+					<li><a class="dropdown-item disabled" href="#!">Configuración</a></li>
 					<li><a class="dropdown-item" th:href="@{/actividades/actividad}">Actividad</a></li>
 					<li>
 						<hr class="dropdown-divider" />
@@ -63,7 +63,7 @@
 							<div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
 							Tablero
 						</a>
-						<a class="nav-link text-dark" th:href="@{/}">
+						<a class="nav-link text-dark disabled" th:href="@{/}">
 							<div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
 							Usuarios
 						</a>
@@ -136,7 +136,7 @@
 							</nav>
 						</div>
 						<div class="sb-sidenav-menu-heading">Administración</div>
-						<a class="nav-link text-dark" href="charts.html">
+						<a class="nav-link text-dark disabled" href="charts.html">
 							<div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
 							Pagos
 						</a>
