@@ -46,23 +46,32 @@ public class Cliente {
 	@JsonBackReference
 	private Responsable_Iva id_responsable;
 	
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+
+	
+	
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_cliente")
 	@JsonManagedReference
 	@JsonIgnore
-	private List<Plan_Pago> planes_pagos;
+	private List<CtaCteCliente> ctasctesclientes;
 	
+	
+	
+	public List<CtaCteCliente> getCtasctesclientes() {
+		return ctasctesclientes;
+	}
+
+	public void setCtasctesclientes(List<CtaCteCliente> ctasctesclientes) {
+		this.ctasctesclientes = ctasctesclientes;
+	}
+
+
+
+
 	private boolean activo;
 	
 
-	public List<Plan_Pago> getPlanes_pagos() {
-		return planes_pagos;
-	}
-
-	public void setPlanes_pagos(List<Plan_Pago> planes_pagos) {
-		this.planes_pagos = planes_pagos;
-	}
 	
 
 	private String direccion;

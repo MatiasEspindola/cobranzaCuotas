@@ -146,6 +146,7 @@ public class sucursalController {
 				actividad.setFecha(new Date());
 				actividad.setHora(new Date());
 				actividad.setDescripcion("Alta Sucursal " + sucursal.getId_sucursal() + " por usuario: " + obtenerUsuario().getUsername());
+				actividad.setUsuario(obtenerUsuario());
 				
 				actividadService.guardar_actividad(actividad);
 				
@@ -170,11 +171,22 @@ public class sucursalController {
 		
 		Sucursal sucursal = sucursalService.buscarPorId(id_sucursal);
 		
+		Actividad_Usuario actividad = new Actividad_Usuario();
+		
+		actividad.setFecha(new Date());
+		actividad.setHora(new Date());
+		actividad.setUsuario(obtenerUsuario());
+		
+		
 		if(sucursal.isActivo()) {
 			sucursalService.deshabilitar(sucursal, false);
+			actividad.setDescripcion("Sucursal " + sucursal.getId_sucursal() + " dado de baja por usuario: " + obtenerUsuario().getUsername());
 		}else {
 			sucursalService.deshabilitar(sucursal, true);
+			actividad.setDescripcion("Sucursal " + sucursal.getId_sucursal() + " dado de alta por usuario: " + obtenerUsuario().getUsername());
 		}
+		
+		actividadService.guardar_actividad(actividad);
 		
 		return "redirect:/sucursales/listar";
 	}

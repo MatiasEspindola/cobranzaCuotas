@@ -76,19 +76,27 @@ public class Sucursal {
 		this.puntoventaafip = puntoventaafip;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "fk_sucursal")
+	@JsonManagedReference
+	@JsonIgnore
+	private List<Historial_Sucursal> historiales;
 	
 	
+	
+	public List<Historial_Sucursal> getHistoriales() {
+		return historiales;
+	}
+
+	public void setHistoriales(List<Historial_Sucursal> historiales) {
+		this.historiales = historiales;
+	}
+
 	@JoinColumn(name = "id_localidad2", referencedColumnName = "id")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonBackReference
 	private Localidad id_localidad2;
 	
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
-	@JoinColumn(name = "id_sucursal")
-	@JsonManagedReference
-	@JsonIgnore
-	private List<Plan_Pago> planes_pagos;
 	
 	public Localidad getId_localidad2() {
 		return id_localidad2;
@@ -180,14 +188,5 @@ public class Sucursal {
 	public void setEs_casa_central(boolean es_casa_central) {
 		this.es_casa_central = es_casa_central;
 	}
-
-	public List<Plan_Pago> getPlanes_pagos() {
-		return planes_pagos;
-	}
-
-	public void setPlanes_pagos(List<Plan_Pago> planes_pagos) {
-		this.planes_pagos = planes_pagos;
-	}
-	
 
 }

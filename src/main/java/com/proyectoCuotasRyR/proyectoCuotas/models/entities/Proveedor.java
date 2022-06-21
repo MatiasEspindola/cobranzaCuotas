@@ -63,7 +63,21 @@ public class Proveedor {
 	@JsonIgnore
 	private List<Plan_Pago> planes_pagos;
 	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "fk_proveedor")
+	@JsonManagedReference
+	@JsonIgnore
+	private List<Historial_Proveedor> historiales;
 
+	
+	
+	public List<Historial_Proveedor> getHistoriales() {
+		return historiales;
+	}
+
+	public void setHistoriales(List<Historial_Proveedor> historiales) {
+		this.historiales = historiales;
+	}
 
 	public long getId_proveedor() {
 		return id_proveedor;

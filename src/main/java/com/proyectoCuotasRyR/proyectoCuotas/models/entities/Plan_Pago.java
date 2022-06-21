@@ -43,17 +43,12 @@ public class Plan_Pago {
 	@JsonManagedReference
 	@JsonIgnore
 	private List<Cuota> cuotas;
-
-	@JoinColumn(name = "id_cliente", referencedColumnName = "id_cliente")
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JsonBackReference
-	private Cliente id_cliente;
 	
-	@JoinColumn(name = "id_sucursal", referencedColumnName = "id_sucursal")
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JsonBackReference
-	private Sucursal id_sucursal;
-	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "fk_plan_pago")
+	@JsonManagedReference
+	@JsonIgnore
+	private List<Historial_Plan_Pago> historiales;
 	
 	@JoinColumn(name = "id_tipo_interes", referencedColumnName = "id_tipo_interes")
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -85,16 +80,6 @@ public class Plan_Pago {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "fecha_inicio")
 	private Date fecha_inicio;
-	
-	
-
-	public Sucursal getId_sucursal() {
-		return id_sucursal;
-	}
-
-	public void setId_sucursal(Sucursal id_sucursal) {
-		this.id_sucursal = id_sucursal;
-	}
 
 	private String pactora;
 	
@@ -164,15 +149,6 @@ public class Plan_Pago {
 		this.cuotas = cuotas;
 	}
 
-	
-
-	public Cliente getId_cliente() {
-		return id_cliente;
-	}
-
-	public void setId_cliente(Cliente id_cliente) {
-		this.id_cliente = id_cliente;
-	}
 
 	public Tipo_Interes getId_tipo_interes() {
 		return id_tipo_interes;
@@ -268,6 +244,14 @@ public class Plan_Pago {
 
 	public void setNro_expediente(String nro_expediente) {
 		this.nro_expediente = nro_expediente;
+	}
+
+	public List<Historial_Plan_Pago> getHistoriales() {
+		return historiales;
+	}
+
+	public void setHistoriales(List<Historial_Plan_Pago> historiales) {
+		this.historiales = historiales;
 	}
 	
 	

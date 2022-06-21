@@ -37,23 +37,37 @@ public class CtaCteCliente{
 	private float saldo;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "fk_ctactecliente_cliente")
+	@JoinColumn(name = "id_ctactecliente_cliente")
 	@JsonManagedReference
 	@JsonIgnore
 	private List<Historial_Alta_Cliente> historiales_altas_clientes;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "fk_ctactecliente_cliente")
+	@JoinColumn(name = "id_ctactecliente_plan_pago")
 	@JsonManagedReference
 	@JsonIgnore
 	private List<Historial_Plan_Pago> historiales_planes_pagos;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "id_ctactecliente")
+	@JoinColumn(name = "id_ctactecliente_recibo")
 	@JsonManagedReference
 	@JsonIgnore
 	private List<Historial_Recibo> historiales_recibos;
 	
+	@JoinColumn(name = "id_cliente", referencedColumnName = "id_cliente")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonBackReference
+	private Cliente cliente;
+	
+	
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
 
 	public long getId_ctactecliente() {
 		return id_ctactecliente;

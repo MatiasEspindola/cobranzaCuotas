@@ -130,6 +130,14 @@ public class Usuario {
 	public void setRespuesta(String respuesta) {
 		this.respuesta = respuesta;
 	}
+
+	public List<Actividad_Usuario> getActividades() {
+		return actividades;
+	}
+
+	public void setActividades(List<Actividad_Usuario> actividades) {
+		this.actividades = actividades;
+	}
 	
 	
 }

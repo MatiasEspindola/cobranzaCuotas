@@ -25,10 +25,7 @@ public class Historial_Alta_Cliente {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id_historial_cliente;
 	
-	@JoinColumn(name = "fk_cliente", referencedColumnName = "id_cliente")
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JsonBackReference
-	private Cliente cliente;
+	
 	
 	private String concepto;
 	
@@ -51,15 +48,6 @@ public class Historial_Alta_Cliente {
 		this.id_historial_cliente = id_historial_cliente;
 	}
 
-	public Cliente getCliente() {
-		return cliente;
-	}
-
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
-	}
-
-	
 
 	public String getConcepto() {
 		return concepto;

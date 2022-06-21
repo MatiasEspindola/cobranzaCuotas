@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Actividad_Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cliente;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.CtaCteCliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Alta_Cliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Actividad_Repo;
@@ -93,6 +94,14 @@ public class ClienteService implements I_Cliente_Service {
 		// TODO Auto-generated method stub
 		historial_repo.save(historial);
 	}
+
+	@Override
+	public Historial_Alta_Cliente buscarPorCtaCte(CtaCteCliente ctactecliente) {
+		// TODO Auto-generated method stub
+		return historial_repo.buscarPorCtaCte(ctactecliente);
+	}
+
+	
 
 
 }

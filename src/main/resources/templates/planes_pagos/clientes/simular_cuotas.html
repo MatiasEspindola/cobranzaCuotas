@@ -1,38 +1,50 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head th:replace="layout :: head">
-
+	
 </head>
 
-<body>
-
-	<header th:replace="layout :: header">
-
-	</header>
-
-	<div class="container-fluid">
-		<div class="row">
-			<nav th:replace="layout :: nav">
-
-			</nav>
-
-			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-
-				<br>
-				<nav aria-label="breadcrumb">
-					<ol class="breadcrumb">
-						<li class="breadcrumb-item"><a th:href="@{/}">Tablero</a></li>
-						<li class="breadcrumb-item active" aria-current="page">Simular Cuotas</li>
-					</ol>
-				</nav>
-
-				<div class="alert alert-danger" role="alert" th:if="${error != null}" th:text="${error}"
-					style="margin:10px;">
-
+<body class="sb-nav-fixed">
+	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark" >
+		<div th:replace="layout :: brand"></div>
+		<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+			
+		</form>
+	
+		<ul th:replace="layout :: navbar">
+			
+		</ul >
+	</nav>
+	<div id="layoutSidenav">
+		<div id="layoutSidenav_nav">
+			<nav class="sb-sidenav accordion text-dark" id="sidenavAccordion">
+				<div class="sb-sidenav-menu">
+					<div class="nav" th:replace="layout :: sidenav">
+						
+					</div>
 				</div>
-
-				<form th:action="@{/planes_pagos/clientes/simular_cuotas}" th:object="${plan_pago}" method="post">
+				<div th:replace="layout :: user">
+				
+				</div>
+			</nav>
+		</div>
+		<div id="layoutSidenav_content">
+			<main>
+			
+				<div class="container-fluid px-4">
+					<h1 class="mt-4">Simular Cuotas</h1>
+					<ol class="breadcrumb mb-4">
+						<li class="breadcrumb-item"><a th:href="@{/clientes/detalles/} + ${cliente.id_cliente}">Detalles Cliente</a></li>
+						<li class="breadcrumb-item active">Simular Cuotas</li>
+					</ol>
+					<div class="card mb-4">
+						<div class="card-body">
+							<span>Estas simulando cuotas, para añadir plan de pago al cliente: <span th:text="${cliente.cliente}"></span > </span>
+						</div>
+					</div>
+					
+					<form th:action="@{/planes_pagos/clientes/simular_cuotas}" th:object="${plan_pago}" method="post">
 					<div class="accordion-item">
 						<h2 class="accordion-header" id="headingOne">
 							<button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -274,25 +286,18 @@
 
 
 		</form>
-
-
-
-
-
-		<br> <br> <br> <br>
+					
+			<br><br>
+				
+			</main>
+			<footer th:replace="layout :: footer">
+				
+			</footer>
+		</div>
 	</div>
-
-
-
-	</main>
-
-
-
+	<div th:replace="layout :: script">
+		
 	</div>
-	</div>
-
-	<div th:replace="layout :: script"></div>
-
 	<script>
 
 		$(document).ready(function () {
@@ -538,8 +543,6 @@
 
 
 	</script>
-
-
 </body>
 
 </html>

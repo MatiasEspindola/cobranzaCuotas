@@ -62,6 +62,7 @@
 										<th>Contacto</th>
 										<th>Resp. IVA.</th>
 										<th>¿Activo?</th>
+										<th>Detalles</th>
 									</tr>
 								</thead>
 								<tfoot>
@@ -73,6 +74,7 @@
 										<th>Contacto</th>
 										<th>Resp. IVA.</th>
 										<th>¿Activo?</th>
+										<th>Detalles</th>
 									</tr>
 								</tfoot>
 								<tbody>
@@ -93,6 +95,10 @@
 										<td>
 										<a th:text="${cliente.activo ? 'Si':'No'}" th:classappend="${cliente.activo ? 'text-success':'text-danger'}"
 										th:href="@{/clientes/deshabilitar/} + ${cliente.id_cliente}"> </a>
+										</td>
+										<td>
+										<a 
+										th:href="@{/clientes/detalles/} + ${cliente.id_cliente}" th:if="${cliente.activo}"> Detalles </a>
 										</td>
 									</tr>
 

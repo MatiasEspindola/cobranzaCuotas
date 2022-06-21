@@ -6,4 +6,6 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Actividad_Usuario;
 
 public interface I_Actividad_Repo extends CrudRepository<Actividad_Usuario, Long> {
 
+	
+	
 }

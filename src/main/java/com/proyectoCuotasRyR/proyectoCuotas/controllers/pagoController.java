@@ -236,7 +236,7 @@ public class pagoController {
 		}
 		
 
-		Cliente cliente = planPagoService.buscarPorId(id_plan_pago).getId_cliente();
+	//	Cliente cliente = planPagoService.buscarPorId(id_plan_pago).getId_cliente();
 
 		
 		recibo.getId_recibo();

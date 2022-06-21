@@ -32,8 +32,22 @@ public class Recibo{
 	
 	private String descripcion;
 	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "fk_recibo")
+	@JsonManagedReference
+	@JsonIgnore
+	private List<Historial_Recibo> historiales;
 	
 	
+	
+	public List<Historial_Recibo> getHistoriales() {
+		return historiales;
+	}
+
+	public void setHistoriales(List<Historial_Recibo> historiales) {
+		this.historiales = historiales;
+	}
+
 	@JoinColumn(name = "id_concepto", referencedColumnName = "id_concepto")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonBackReference

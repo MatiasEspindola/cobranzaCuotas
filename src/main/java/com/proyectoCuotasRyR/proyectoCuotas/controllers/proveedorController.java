@@ -25,6 +25,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Proveedor;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Localidad;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Proveedor;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Provincia;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Actividad_Service;
@@ -55,7 +56,7 @@ public class proveedorController {
 
 	@Autowired
 	private I_Empresa_Service empresaService;
-	
+
 	@Autowired
 	private I_Actividad_Service actividadService;
 
@@ -77,6 +78,11 @@ public class proveedorController {
 	@GetMapping("/registrar/{id}")
 	public String formulario(Model model, @PathVariable(name = "id") long id_proveedor) {
 
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
+
 		model.addAttribute("proveedor", proveedor_Service.buscarPorId(id_proveedor));
 
 		model.addAttribute("tipos_documentos", tipoDocumentoService.listarTodo());
@@ -93,19 +99,41 @@ public class proveedorController {
 	@GetMapping("/deshabilitar/{id_proveedor}")
 	public String deshabilitar(Model model, @PathVariable long id_proveedor) {
 
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
+
 		Proveedor proveedor = proveedor_Service.buscarPorId(id_proveedor);
+
+		Actividad_Usuario actividad = new Actividad_Usuario();
+
+		actividad.setFecha(new Date());
+		actividad.setHora(new Date());
+		actividad.setUsuario(obtenerUsuario());
 
 		if (proveedor.isActivo()) {
 			proveedor_Service.deshabilitar(proveedor, false);
+			actividad.setDescripcion("Proveedor " + proveedor.getId_proveedor() + " dado de baja por usuario: "
+					+ obtenerUsuario().getUsername());
 		} else {
 			proveedor_Service.deshabilitar(proveedor, true);
+			actividad.setDescripcion("Proveedor " + proveedor.getId_proveedor() + " dado de alta por usuario: "
+					+ obtenerUsuario().getUsername());
 		}
+
+		actividadService.guardar_actividad(actividad);
 
 		return "redirect:/proveedores/listar";
 	}
 
 	@GetMapping("/listar")
 	public String listar(Model model) {
+
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
 
 		model.addAttribute("proveedores", proveedor_Service.listarTodo());
 
@@ -118,6 +146,11 @@ public class proveedorController {
 
 	@GetMapping("/registrar")
 	public String formulario(Model model) {
+
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
 
 		model.addAttribute("proveedor", new Proveedor());
 
@@ -138,19 +171,22 @@ public class proveedorController {
 		if (!proveedor_Service.existente(proveedor, editar)) {
 			if (!editar) {
 				proveedor_Service.guardar(proveedor, true);
-				
+
 				Actividad_Usuario actividad = new Actividad_Usuario();
 				actividad.setFecha(new Date());
 				actividad.setHora(new Date());
 				actividad.setUsuario(obtenerUsuario());
-				actividad.setDescripcion("Alta proveedor " + proveedor.getId_proveedor() + " por usuario: " + obtenerUsuario().getUsername());
-				
+				actividad.setDescripcion("Alta proveedor " + proveedor.getId_proveedor() + " por usuario: "
+						+ obtenerUsuario().getUsername());
+
+				actividadService.guardar_actividad(actividad);
+
 				Historial_Proveedor historial = new Historial_Proveedor();
 				historial.setActividad_usuario(actividad);
 				historial.setProveedor(proveedor);
-				
+
 				proveedor_Service.guardar_historial(historial);
-				
+
 			} else {
 				proveedor_Service.guardar(proveedor, proveedor.isActivo());
 			}

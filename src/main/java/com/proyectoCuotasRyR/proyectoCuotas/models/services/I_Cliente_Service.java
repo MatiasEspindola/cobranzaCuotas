@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Actividad_Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cliente;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.CtaCteCliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Alta_Cliente;
 
 public interface I_Cliente_Service {
@@ -24,5 +25,5 @@ public interface I_Cliente_Service {
 	
 	public void guardar_historial(Historial_Alta_Cliente historial);
 	
-	
+	public Historial_Alta_Cliente buscarPorCtaCte(CtaCteCliente ctactecliente);
 }

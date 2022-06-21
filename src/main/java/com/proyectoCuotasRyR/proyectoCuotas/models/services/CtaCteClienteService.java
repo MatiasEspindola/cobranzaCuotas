@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.CtaCteCliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_CtaCteCliente_Repo;
 
@@ -36,6 +37,12 @@ public class CtaCteClienteService implements I_CtaCteCliente_Service {
 	public void guardar(CtaCteCliente ctactecliente) {
 		// TODO Auto-generated method stub
 		repo.save(ctactecliente);
+	}
+
+	@Override
+	public List<CtaCteCliente> buscarPorCliente(Cliente cliente) {
+		// TODO Auto-generated method stub
+		return repo.buscarPorCliente(cliente);
 	}
 
 }

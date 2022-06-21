@@ -88,7 +88,7 @@ public class reciboController {
 		
 		model.addAttribute("usuario", usuario);
 		model.addAttribute("recibo", reciboService.buscarPorId(id_recibo));
-		model.addAttribute("cliente", reciboService.buscarPorId(id_recibo).getDetalles_recibos().get(0).getImporte().getCuota().getId_plan_pago().getId_cliente());
+	//	model.addAttribute("cliente", reciboService.buscarPorId(id_recibo).getDetalles_recibos().get(0).getImporte().getCuota().getId_plan_pago().getId_cliente());
 		model.addAttribute("total", reciboService.buscarPorId(id_recibo).getTotal());
 
 		return "recibos/ver";

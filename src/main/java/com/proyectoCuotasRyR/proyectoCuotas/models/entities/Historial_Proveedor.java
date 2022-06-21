@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name="historiales_proveedor")
+@Table(name="historiales_proveedores")
 public class Historial_Proveedor {
 
 	@Id

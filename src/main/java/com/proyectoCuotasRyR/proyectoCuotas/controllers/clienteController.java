@@ -83,7 +83,7 @@ public class clienteController {
 	private I_GeoService geoService;
 
 	private List<Localidad> localidades;
-	
+
 	@Autowired
 	private I_Empresa_Service empresaService;
 
@@ -100,7 +100,7 @@ public class clienteController {
 
 	@Autowired
 	private I_Actividad_Service actividadService;
-	
+
 	@Autowired
 	private I_Responsable_Iva_Service responsableIvaService;
 
@@ -126,15 +126,31 @@ public class clienteController {
 
 	@GetMapping("/detalles/{id_cliente}")
 	public String detalle(Model model, @PathVariable("id_cliente") long id_cliente) {
+
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
+
 		model.addAttribute("cliente", cliente_Service.buscarPorId(id_cliente));
 		Usuario usuario = obtenerUsuario();
-
+		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 		model.addAttribute("usuario", usuario);
+ 
+		List<CtaCteCliente> ctas_ctes = ctacteclienteService.buscarPorCliente(cliente_Service.buscarPorId(id_cliente));
+		
+		model.addAttribute("ctas_ctes", ctas_ctes);
+
 		return "clientes/detalles";
 	}
 
 	@GetMapping("/listar")
 	public String listar(Model model) {
+
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
 
 		model.addAttribute("clientes", cliente_Service.listarTodo());
 		model.addAttribute("usuario", obtenerUsuario());
@@ -145,6 +161,11 @@ public class clienteController {
 
 	@GetMapping("/registrar/{id}")
 	public String formulario(Model model, @PathVariable(name = "id") long id_cliente) {
+
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
 
 		model.addAttribute("cliente", cliente_Service.buscarPorId(id_cliente));
 		model.addAttribute("tipos_documentos", tipo_documento_Service.listarTodo());
@@ -160,13 +181,30 @@ public class clienteController {
 	@GetMapping("/deshabilitar/{id}")
 	public String deshabilitar(Model model, @PathVariable(name = "id") long id_cliente) {
 
-		Cliente cliente = cliente_Service.buscarPorId(id_cliente);
-		
-		if(cliente.isActivo()) {
-			cliente_Service.deshabilitar(cliente, false);
-		}else {
-			cliente_Service.deshabilitar(cliente, true);
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
 		}
+
+		Cliente cliente = cliente_Service.buscarPorId(id_cliente);
+
+		Actividad_Usuario actividad = new Actividad_Usuario();
+
+		actividad.setFecha(new Date());
+		actividad.setHora(new Date());
+		actividad.setUsuario(obtenerUsuario());
+
+		if (cliente.isActivo()) {
+			cliente_Service.deshabilitar(cliente, false);
+			actividad.setDescripcion("Cliente " + cliente.getId_cliente() + " dado de baja por usuario: "
+					+ obtenerUsuario().getUsername());
+		} else {
+			cliente_Service.deshabilitar(cliente, true);
+			actividad.setDescripcion("Cliente " + cliente.getId_cliente() + " dado de alta por usuario: "
+					+ obtenerUsuario().getUsername());
+		}
+
+		actividadService.guardar_actividad(actividad);
 
 		return "redirect:/clientes/listar";
 	}
@@ -174,17 +212,21 @@ public class clienteController {
 	@GetMapping("/registrar")
 	public String formulario(Model model) {
 
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
+
 		Cliente cliente = new Cliente();
 
 		model.addAttribute("tipos_documentos", tipo_documento_Service.listarTodo());
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("responsables_iva", responsableIvaService.listar_todo());
-		
+
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
-		
 
 		model.addAttribute("cliente", cliente);
-		
+
 		editar = false;
 
 		return "clientes/registrar";
@@ -192,42 +234,42 @@ public class clienteController {
 
 	@PostMapping("/registrar")
 	public String guardar(@Valid Cliente cliente, RedirectAttributes redirAttrs) {
-		
-		if(!cliente_Service.existente(cliente, editar)) {
-			
-			if(!editar) {
-				
+
+		if (!cliente_Service.existente(cliente, editar)) {
+
+			if (!editar) {
+
 				cliente_Service.guardar(cliente, true);
-				
+
 				CtaCteCliente ctactecliente = new CtaCteCliente();
-				
+
 				ctactecliente.setDebe(0);
 				ctactecliente.setHaber(0);
 				ctactecliente.setSaldo(0);
-				
+				ctactecliente.setCliente(cliente);
+
 				Actividad_Usuario actividad = new Actividad_Usuario();
-				
+
 				actividad.setFecha(new Date());
 				actividad.setHora(new Date());
 				actividad.setUsuario(obtenerUsuario());
-				actividad.setDescripcion("Alta Cliente " + cliente.getId_cliente() + " por usuario: " + obtenerUsuario().getUsername());
-				
+				actividad.setDescripcion(
+						"Alta Cliente " + cliente.getId_cliente() + " por usuario: " + obtenerUsuario().getUsername());
+
 				Historial_Alta_Cliente historial = new Historial_Alta_Cliente();
-				historial.setCliente(cliente);
+
 				historial.setCtactecliente(ctactecliente);
 				historial.setConcepto("TRANSPORTE CLI/" + cliente.getId_cliente());
 				historial.setActividad_usuario(actividad);
-				
+
 				ctacteclienteService.guardar(ctactecliente);
 				actividadService.guardar_actividad(actividad);
 				cliente_Service.guardar_historial(historial);
 			} else {
 				cliente_Service.guardar(cliente, cliente.isActivo());
 			}
-			 
-			
-		}
 
+		}
 
 		return "redirect:/clientes/listar";
 	}
