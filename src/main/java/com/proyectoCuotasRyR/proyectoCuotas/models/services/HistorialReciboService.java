@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Recibo;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Recibo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Historial_Recibo_Repo;
 
 @Service
@@ -24,6 +25,12 @@ public class HistorialReciboService implements I_Historial_Recibo_Service {
 	public List<Historial_Recibo> listarTodo() {
 		// TODO Auto-generated method stub
 		return (List<Historial_Recibo>) repo.findAll();
+	}
+
+	@Override
+	public Historial_Recibo buscarPorRecibo(Recibo recibo) {
+		// TODO Auto-generated method stub
+		return repo.buscarPorRecibo(recibo);
 	}
 
 }
