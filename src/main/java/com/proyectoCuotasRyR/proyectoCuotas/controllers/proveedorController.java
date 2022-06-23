@@ -82,6 +82,11 @@ public class proveedorController {
 
 			return "redirect:/empresas/registrar";
 		}
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
+			return "redirect:/401";
+		}
 
 		model.addAttribute("proveedor", proveedor_Service.buscarPorId(id_proveedor));
 
@@ -102,6 +107,11 @@ public class proveedorController {
 		if (empresaService.listar_todo().size() == 0) {
 
 			return "redirect:/empresas/registrar";
+		}
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
+			return "redirect:/401";
 		}
 
 		Proveedor proveedor = proveedor_Service.buscarPorId(id_proveedor);
@@ -150,6 +160,11 @@ public class proveedorController {
 		if (empresaService.listar_todo().size() == 0) {
 
 			return "redirect:/empresas/registrar";
+		}
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
+			return "redirect:/401";
 		}
 
 		model.addAttribute("proveedor", new Proveedor());

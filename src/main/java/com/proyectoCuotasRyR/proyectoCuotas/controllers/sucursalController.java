@@ -94,6 +94,11 @@ public class sucursalController {
 			return "redirect:/empresas/registrar"; 
 		}
 		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
+			return "redirect:/401";
+		}
+		
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("sucursal", new Sucursal());
@@ -108,6 +113,11 @@ public class sucursalController {
 		
 		if(empresaService.listar_todo().size() == 0) {
 			return "redirect:/empresas/registrar"; 
+		}
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
+			return "redirect:/401";
 		}
 		
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
@@ -168,6 +178,11 @@ public class sucursalController {
 	
 	@GetMapping("/deshabilitar/{id_sucursal}")
 	public String deshabilitar(@PathVariable long id_sucursal){
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
+			return "redirect:/401";
+		}
 		
 		Sucursal sucursal = sucursalService.buscarPorId(id_sucursal);
 		

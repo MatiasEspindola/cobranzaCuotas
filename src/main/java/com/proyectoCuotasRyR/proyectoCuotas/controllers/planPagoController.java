@@ -428,7 +428,7 @@ public class planPagoController {
 		List<Historial_Plan_Pago> historiales = historialPlanPagoService.listar();
 		
 		for(Historial_Plan_Pago historial : historiales) {
-			if(historial.getPlan_pago().getId_proveedor().getId_proveedor() == plan_pago.getId_proveedor().getId_proveedor()) {
+			if(historial.getCtactecliente().getCliente().getId_cliente() == cliente.getId_cliente() && historial.getPlan_pago().getId_proveedor().getId_proveedor() == plan_pago.getId_proveedor().getId_proveedor()) {
 				
 				return "redirect:/clientes/detalles/" + cliente.getId_cliente();
 				

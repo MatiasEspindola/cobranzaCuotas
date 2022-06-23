@@ -57,7 +57,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Recibo_Service;
 @Controller
 @RequestMapping("pagos")
 public class pagoController {
-
+ 
 	@Autowired
 	private I_Usuario_Repo usuarioRepo;
 

@@ -62,6 +62,22 @@ public class indexController {
 
 		return "index";
 	}
+	
+	@GetMapping("/401")
+	public String error_401(Model model) {
+
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "empresas/registrar";
+		}
+
+		model.addAttribute("usuario", obtenerUsuario());
+
+		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+
+		return "401";
+	}
+
 
 	private Usuario obtenerUsuario() {
 

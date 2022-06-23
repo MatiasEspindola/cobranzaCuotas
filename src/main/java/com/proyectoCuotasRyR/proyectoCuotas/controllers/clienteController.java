@@ -185,6 +185,11 @@ public class clienteController {
 
 			return "redirect:/empresas/registrar";
 		}
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
+			return "redirect:/401";
+		}
 
 		Cliente cliente = cliente_Service.buscarPorId(id_cliente);
 
