@@ -99,6 +99,7 @@ public class registrarController {
 
 		usuario.setPassword(bcryptPassword);
 		usuario.setFecha_alta(new Date());
+		usuario.setActivo(false);
 		usuarioRepo.save(usuario);
 
 		Authority authority = new Authority();

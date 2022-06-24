@@ -32,6 +32,35 @@
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid px-4">
+				
+					<div class="alert alert-danger alert-dismissible fade show" role="alert"
+										style="margin:15px;" th:if="${alerta != null}">
+										<span th:text="${alerta}"></span>
+										<button type="button" class="btn-close" data-bs-dismiss="alert"
+											aria-label="Close"></button>
+									</div>
+
+									<div class="alert alert-danger alert-dismissible fade show" role="alert"
+										style="margin:15px;" th:if="${error != null}">
+										<span th:text="${error}"></span>
+										<button type="button" class="btn-close" data-bs-dismiss="alert"
+											aria-label="Close"></button>
+									</div>
+
+									<div class="alert alert-success alert-dismissible fade show" role="alert"
+										style="margin:15px;" th:if="${success != null}">
+										<span th:text="${success}"></span>
+										<button type="button" class="btn-close" data-bs-dismiss="alert"
+											aria-label="Close"></button>
+									</div>
+
+									<div class="alert alert-primary alert-dismissible fade show" role="alert"
+										style="margin:15px;" th:if="${info != null}">
+										<span th:text="${info}"></span>
+										<button type="button" class="btn-close" data-bs-dismiss="alert"
+											aria-label="Close"></button>
+									</div>
+				
 					<h1 class="mt-4">Tablero</h1>
 					<ol class="breadcrumb mb-4">
 						<li class="breadcrumb-item active">Tablero</li>

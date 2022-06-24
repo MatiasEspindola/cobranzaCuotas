@@ -85,6 +85,10 @@ public class empresaController {
 	@GetMapping("/registrar")
 	public String formulario(Model model) {
 		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
 			return "redirect:/401";
@@ -107,6 +111,10 @@ public class empresaController {
 
 	@GetMapping("/registrar/{id_empresa}")
 	public String formulario(Model model, @PathVariable long id_empresa) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {

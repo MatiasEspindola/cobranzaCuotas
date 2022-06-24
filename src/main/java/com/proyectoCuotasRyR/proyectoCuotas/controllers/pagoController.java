@@ -106,6 +106,10 @@ public class pagoController {
 
 	@GetMapping("/pagos/listar")
 	public String listar(Model model) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("planes_pagos", planPagoService.listarTodo());
@@ -116,6 +120,10 @@ public class pagoController {
 
 	@GetMapping("/generar_pago/{id_plan_pago}/{id_cliente}")
 	public String generar_pago(Model model, @PathVariable long id_plan_pago, @PathVariable long id_cliente) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 		
 
 		if (empresaService.listar_todo().size() == 0) {

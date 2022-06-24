@@ -91,6 +91,10 @@ public class reciboController {
 	@GetMapping("/ver/{id_recibo}")
 	public String ver(@PathVariable long id_recibo, HttpServletResponse response, Map map) throws IOException {
 
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+		
 		Usuario usuario = obtenerUsuario();
 		Historial_Recibo historial = historialRecibo.buscarPorRecibo(reciboService.buscarPorId(id_recibo));
 

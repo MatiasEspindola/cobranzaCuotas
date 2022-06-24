@@ -90,6 +90,10 @@ public class sucursalController {
 	@GetMapping("/registrar")
 	public String registrar(Model model) {
 		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+		
 		if(empresaService.listar_todo().size() == 0) {
 			return "redirect:/empresas/registrar"; 
 		}
@@ -111,6 +115,10 @@ public class sucursalController {
 	@GetMapping("/registrar/{id_sucursal}")
 	public String registrar(Model model, @PathVariable long id_sucursal) {
 		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+		
 		if(empresaService.listar_todo().size() == 0) {
 			return "redirect:/empresas/registrar"; 
 		}
@@ -131,6 +139,10 @@ public class sucursalController {
 	
 	@GetMapping("/listar")
 	public String listar(Model model) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 		
 		if(empresaService.listar_todo().size() == 0) {
 			return "redirect:/empresas/registrar"; 
@@ -178,6 +190,10 @@ public class sucursalController {
 	
 	@GetMapping("/deshabilitar/{id_sucursal}")
 	public String deshabilitar(@PathVariable long id_sucursal){
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {

@@ -77,6 +77,10 @@ public class proveedorController {
 
 	@GetMapping("/registrar/{id}")
 	public String formulario(Model model, @PathVariable(name = "id") long id_proveedor) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 
 		if (empresaService.listar_todo().size() == 0) {
 
@@ -103,6 +107,10 @@ public class proveedorController {
 
 	@GetMapping("/deshabilitar/{id_proveedor}")
 	public String deshabilitar(Model model, @PathVariable long id_proveedor) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 
 		if (empresaService.listar_todo().size() == 0) {
 
@@ -139,6 +147,10 @@ public class proveedorController {
 
 	@GetMapping("/listar")
 	public String listar(Model model) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 
 		if (empresaService.listar_todo().size() == 0) {
 
@@ -156,6 +168,10 @@ public class proveedorController {
 
 	@GetMapping("/registrar")
 	public String formulario(Model model) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 
 		if (empresaService.listar_todo().size() == 0) {
 

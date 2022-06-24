@@ -6,9 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>401 Error - Sistema Cobranza Cuotas</title>
+             <title>Inactivo - Sistema Cobranza Cuotas</title>
         <link href="css/styles.css" rel="stylesheet" />
-      <script th:src="@{/js/all.js}" crossorigin="anonymous"></script>
+        <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <div id="layoutError">
@@ -18,12 +18,11 @@
                         <div class="row justify-content-center">
                             <div class="col-lg-6">
                                 <div class="text-center mt-4">
-                                    <h1 class="display-1">401</h1>
-                                    <p class="lead">¡Acceso no autorizado!</p>
-                                    <p>Su usuario no tiene permiso para realizar esta acción.</p>
-                                    <a th:href="@{/}">
+                                    <h1 class="display-1">Usuario Inactivo</h1>
+                                    <p class="lead">Su usuario aún no fue activado</p>
+                                     <a th:href="@{/logout}">
                                          <i class="fas fa-arrow-left me-1" ></i>
-                                        Volver al tablero
+                                      	 Cerrar Sesión
                                     </a>
                                 </div>
                             </div>
@@ -32,7 +31,7 @@
                 </main>
             </div>
             <div id="layoutError_footer">
-               <footer class="py-4 bg-dark mt-auto" th:fragment="footer">
+                <footer class="py-4 bg-dark mt-auto" th:fragment="footer">
 				<div class="container-fluid px-4">
 					<div class="d-flex align-items-center justify-content-between small">
 						<div class="text-white">Copyright &copy; Creado por RyR Computación 2022</div>
@@ -46,8 +45,7 @@
 			</footer>
             </div>
         </div>
-       <script th:src="@{/js/bootstrap.bundle.min.js}"
-			crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
     </body>
 </html>

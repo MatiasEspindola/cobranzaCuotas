@@ -120,6 +120,11 @@ public class planPagoController {
 	@GetMapping("/detalles/{id}/{id_cliente}")
 	public String detalle_plan_pago(@PathVariable Long id, @PathVariable Long id_cliente, Model model, RedirectAttributes redirAttrs) {
 		
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+		
 		if (empresaService.listar_todo().size() == 0) {
 
 			return "redirect:/empresas/registrar";
@@ -179,6 +184,10 @@ public class planPagoController {
 	@GetMapping("/simular_cuotas")
 	public String simular_cuotas(Model model) {
 		
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 
 		if (empresaService.listar_todo().size() == 0) {
 
@@ -208,6 +217,10 @@ public class planPagoController {
 
 	@GetMapping("/clientes/simular_cuotas/{id_cliente}")
 	public String simular_cuotas(Model model, @PathVariable(name = "id_cliente") long id_cliente) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 		
 		if (empresaService.listar_todo().size() == 0) {
 
@@ -244,6 +257,10 @@ public class planPagoController {
 	@GetMapping("/deshabilitar/{id_plan_pago}")
 	public String eliminar(Model model, @PathVariable(name = "id_plan_pago") long id_plan_pago) {
 
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+		
 		planPagoService.eliminar(planPagoService.buscarPorId(id_plan_pago));
 
 		return "redirect:/planes_pagos/simular_cuotas";

@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.proyectoCuotasRyR.proyectoCuotas.auth.handler.LoginSuccessHandler;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.UsuarioService;
@@ -41,6 +42,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 		    .permitAll()
 		.and()
 		.logout().permitAll()
+		 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 		.and()
 		.exceptionHandling().accessDeniedPage("/error_403");
 

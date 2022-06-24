@@ -63,6 +63,18 @@ public class Usuario {
 	private Pregunta id_pregunta;
 	
 	private String respuesta;
+	
+	private boolean activo;
+	
+	
+
+	public boolean isActivo() {
+		return activo;
+	}
+
+	public void setActivo(boolean activo) {
+		this.activo = activo;
+	}
 
 	public long getId_usuario() {
 		return id_usuario;

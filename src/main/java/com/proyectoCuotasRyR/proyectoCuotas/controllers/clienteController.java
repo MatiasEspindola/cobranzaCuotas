@@ -126,6 +126,10 @@ public class clienteController {
 
 	@GetMapping("/detalles/{id_cliente}")
 	public String detalle(Model model, @PathVariable("id_cliente") long id_cliente) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 
 		if (empresaService.listar_todo().size() == 0) {
 
@@ -146,6 +150,10 @@ public class clienteController {
 
 	@GetMapping("/listar")
 	public String listar(Model model) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 
 		if (empresaService.listar_todo().size() == 0) {
 
@@ -161,6 +169,10 @@ public class clienteController {
 
 	@GetMapping("/registrar/{id}")
 	public String formulario(Model model, @PathVariable(name = "id") long id_cliente) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 
 		if (empresaService.listar_todo().size() == 0) {
 
@@ -216,6 +228,10 @@ public class clienteController {
 
 	@GetMapping("/registrar")
 	public String formulario(Model model) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 
 		if (empresaService.listar_todo().size() == 0) {
 

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="layout :: head">
+	
+</head>
+
+<body class="sb-nav-fixed">
+	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark" >
+		<div th:replace="layout :: brand"></div>
+		<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+			
+		</form>
+	
+		<ul th:replace="layout :: navbar">
+			
+		</ul >
+	</nav>
+	<div id="layoutSidenav">
+		<div id="layoutSidenav_nav">
+			<nav class="sb-sidenav accordion text-dark" id="sidenavAccordion">
+				<div class="sb-sidenav-menu">
+					<div class="nav" th:replace="layout :: sidenav">
+						
+					</div>
+				</div>
+				<div th:replace="layout :: user">
+				
+				</div>
+			</nav>
+		</div>
+		<div id="layoutSidenav_content">
+			<main>
+				<div class="container-fluid px-4">
+					<h1 class="mt-4">Listar Usuarios </h1>
+					<ol class="breadcrumb mb-4">
+						<li class="breadcrumb-item"><a th:href="@{/}">Tablero</a></li>
+						<li class="breadcrumb-item active">Listar Usuarios</li>
+					</ol>
+					<div class="card mb-4">
+						<div class="card-body">
+							Aquí se detallan los usuarios registrados. Puede consultar el Manual del Usuario en:
+							<a target="_blank" href="https://datatables.net/">Manual del Usuario</a>
+							.
+						</div>
+					</div>
+					<div class="card mb-4">
+						<div class="card-header">
+							<i class="fas fa-table me-1"></i> Listar Usuarios
+							
+						</div>
+						<div class="card-body">
+						
+						<div class="table-responsive">
+							<table class="table table-striped table-sm text-center" id="datatablesSimple">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Usuario</th>
+										<th>Rol</th>
+										<th>Activo</th>
+										
+									</tr>
+								</thead>
+								<tfoot>
+									<tr>
+										<th>ID</th>
+										<th>Usuario</th>
+										<th>Rol</th>
+										<th>Activo</th>
+									</tr>
+								</tfoot>
+								<tbody>
+
+									<tr th:each="us : ${usuarios}">
+										<td th:text="${us.id_usuario}" >
+										
+										</td>
+										<td th:text="${us.username}"></td>
+										<td th:text="${us.authorities.get(0).id_rol_auth.rol}"></td>
+										<td>
+										<a th:if="${us.id_usuario != usuario.id_usuario}" th:href="@{/usuarios/deshabilitar/} + ${us.id_usuario}" th:text="${us.activo ? 'Si':'No'}"
+										 th:classappend="${us.activo ? 'text-success':'text-danger'}"></a>
+										</td>
+									
+										
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+						
+						
+						</div>
+					</div>
+				</div>
+			</main>
+			<footer th:replace="layout :: footer">
+				
+			</footer>
+		</div>
+	</div>
+	<div th:replace="layout :: script">
+		
+	</div>
+</body>
+
+</html>

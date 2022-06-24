@@ -29,6 +29,10 @@ public class actividadController {
 	@GetMapping("/actividad")
 	public String actividad(Model model) {
 		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+		
 		model.addAttribute("usuario", obtenerUsuario());
 		
 		if (empresaService.listar_todo().size() == 0) {

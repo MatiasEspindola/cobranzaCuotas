@@ -63,6 +63,10 @@ public class escenarioController {
 	@GetMapping("/seleccionar_opcion/{id_plan_pago}")
 	public String seleccionarOpcion(Model model, @PathVariable(name="id_plan_pago") long id_plan_pago) {
 		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+		
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("plan_pago", plan_pago_Service.buscarPorId(id_plan_pago));
 		
@@ -71,6 +75,10 @@ public class escenarioController {
 	
 	@GetMapping("clientes/formulario/{id_plan_pago}")
 	public String formulario(Model model, @PathVariable(name="id_plan_pago") long id_plan_pago) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 		
 		model.addAttribute("plan_pago", plan_pago_Service.buscarPorId(id_plan_pago));
 		

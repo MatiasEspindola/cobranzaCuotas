@@ -16,6 +16,7 @@ public class loginController {
 	public String login(
 			@RequestParam(value="error", required=false) String error,
 			@RequestParam(value="logout", required = false) String logout,
+			@RequestParam(value="info", required = false) String info,
 			Model model, Principal principal, RedirectAttributes flash) {
 		
 		if(principal != null) {
