@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,7 +17,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.services.UsuarioService;
 
 
 
-
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled=true, prePostEnabled=true)
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
@@ -33,7 +34,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.authorizeRequests().antMatchers( "/css/**", "/js/**", "/img/**", "/registrar", "/locale", "/error_403").permitAll()
+		http.authorizeRequests().antMatchers( "/css/**", "/js/**", "/img/**", "/registrar", "/locale", "/403").permitAll()
 		.anyRequest().authenticated()
 		.and()
 		    .formLogin()
@@ -44,7 +45,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 		.logout().permitAll()
 		 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 		.and()
-		.exceptionHandling().accessDeniedPage("/error_403");
+		.exceptionHandling().accessDeniedPage("/403");
 
 	}
 

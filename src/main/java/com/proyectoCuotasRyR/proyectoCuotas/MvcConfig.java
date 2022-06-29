@@ -18,7 +18,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 public class MvcConfig implements WebMvcConfigurer {
 	
 	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/error_404").setViewName("error_403");
+		registry.addViewController("/403").setViewName("403");
 	}
 
 	@Bean

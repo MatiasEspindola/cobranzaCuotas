@@ -21,9 +21,14 @@ import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.SessionFlashMapManager;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Empresa;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario_Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
+import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Sucursal_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
 
 @Controller
@@ -37,6 +42,9 @@ public class indexController {
 
 	@Autowired
 	private I_UploadFile_Service upl;
+
+	@Autowired
+	private I_Sucursal_Service sucursalService;
 
 	@GetMapping(value = "/uploads/{filename:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
@@ -54,52 +62,34 @@ public class indexController {
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
 				.body(recurso);
 	}
-	
+
 	@GetMapping("/inactivo")
 	public String inactivo() {
-		
+
 		return "inactivo";
 	}
 
 	@GetMapping({ "/", "/index" })
-	public String index(Model model,
-			@RequestParam(value="logout", required = false) String logout,
+	public String index(Model model, @RequestParam(value = "logout", required = false) String logout,
 			RedirectAttributes redirectAttrs) {
 
-		if (empresaService.listar_todo().size() == 0) {
-			return "empresas/registrar";
-		}
-
-		model.addAttribute("usuario", obtenerUsuario());
-		
 		if(!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
 		}
+		
+		
+		Empresa empresa = null;
+		if(empresaService.listar_todo().size() > 0) {
+			empresa	= empresaService.listar_todo().get(0);
+		}
 
-		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+		model.addAttribute("empresa", empresa);
+		model.addAttribute("usuario", obtenerUsuario());
 
 		return "index";
 	}
+
 	
-	@GetMapping("/401")
-	public String error_401(Model model) {
-		
-		if(!obtenerUsuario().isActivo()) {
-			return "redirect:/inactivo";
-		}
-
-		if (empresaService.listar_todo().size() == 0) {
-
-			return "empresas/registrar";
-		}
-
-		model.addAttribute("usuario", obtenerUsuario());
-
-		model.addAttribute("empresa", empresaService.listar_todo().get(0));
-
-		return "401";
-	}
-
 
 	private Usuario obtenerUsuario() {
 
@@ -111,5 +101,7 @@ public class indexController {
 
 		return usuarioRepo.findByUsername(userDetail.getUsername());
 	}
+	
+	
 
 }

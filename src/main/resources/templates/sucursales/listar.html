@@ -56,6 +56,7 @@
 								<thead>
 									<tr>
 										<th>ID</th>
+										<th>Nombre</th>
 										<th>Dirección</th>
 										<th>Localidad</th>
 										<th>¿Central?</th>
@@ -67,6 +68,7 @@
 								<tfoot>
 									<tr>
 										<th>ID</th>
+										<th>Nombre</th>
 										<th>Dirección</th>
 										<th>Localidad</th>
 										<th>¿Central?</th>
@@ -82,6 +84,7 @@
 										<a th:text="${sucursal.id_sucursal}" 
 										th:href="@{/sucursales/registrar/} + ${sucursal.id_sucursal}"> </a>
 										</td>
+										<td th:text="${sucursal.nombre_sucursal}"></td>
 										<td th:text="${sucursal.direccion}"></td>
 										<td th:text="${sucursal.id_localidad2.localidad + ', ' + sucursal.id_localidad2.provincia.prov}">Software Engineer</td>
 										<td th:text="${sucursal.es_casa_central ? 'Si':'No'}" th:classappend="${sucursal.es_casa_central ? 'text-success':'text-primary'}"></td>

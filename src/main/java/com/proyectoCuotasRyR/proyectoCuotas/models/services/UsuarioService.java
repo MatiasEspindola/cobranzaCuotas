@@ -36,23 +36,29 @@ public class UsuarioService implements UserDetailsService{
 		usuarioDao.save(usuario);
 	}
 	
+	@Transactional(readOnly=true)
+	public Usuario buscarPorId(long id_usuario) {
+		return usuarioDao.findById(id_usuario).orElse(null);
+	}
+	
 	@Override
 	@Transactional(readOnly=true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
         Usuario usuario = usuarioDao.findByUsername(username);
         
+       
         if(usuario == null) {
         	logger.error("Error en el Login: no existe el usuario '" + username + "' en el sistema!");
         	throw new UsernameNotFoundException("Username: " + username + " no existe en el sistema!");
         }
         
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-
-        for(Authority role: usuario.getAuthorities()) {
-        	logger.info("Role: ".concat(role.getId_rol_auth().getRol()));
-        	authorities.add(new SimpleGrantedAuthority(role.getId_rol_auth().getRol()));
-        }
+        List<GrantedAuthority> authorities
+        = new ArrayList<>();
+        
+      for (Authority role: usuario.getAuthorities()) {
+          authorities.add(new SimpleGrantedAuthority(role.getId_rol_auth().getRol()));
+      }
         
         
         if(authorities.isEmpty()) {
@@ -61,6 +67,10 @@ public class UsuarioService implements UserDetailsService{
         }
         
 		return new User(usuario.getUsername(), usuario.getPassword(), true, true, true, true, authorities);
+	}
+	
+	String inactivo() {
+		return "redirect:/login?logout";
 	}
 	
 }

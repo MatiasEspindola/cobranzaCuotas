@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
@@ -23,12 +26,22 @@ public class ProyectoCuotasApplication implements CommandLineRunner {
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private I_Usuario_Repo usuarioRepo;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProyectoCuotasApplication.class, args);
+		
 	}
 
 	public void run(String... args) throws Exception {
+		
+		
+		
+		
+		
+		
 		// TODO Auto-generated method stub
 		// uploadFileService.deleteAll();
 		// uploadFileService.init();
@@ -49,6 +62,18 @@ public class ProyectoCuotasApplication implements CommandLineRunner {
 		
 		*/
 
+	}
+	
+	
+	private Usuario obtenerUsuario() {
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		UserDetails userDetail = (UserDetails) auth.getPrincipal();
+
+		System.out.println(userDetail.getUsername());
+
+		return usuarioRepo.findByUsername(userDetail.getUsername());
 	}
 
 }

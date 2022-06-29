@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,10 +17,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
 
 @Controller
@@ -34,6 +39,9 @@ public class usuarioController {
 	
 	@Autowired
     private I_UploadFile_Service upl;
+	
+	@Autowired
+	private I_Sucursal_Service sucursalService;
 	
 	@GetMapping(value = "/uploads/{filename:.+}")
     public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
@@ -52,21 +60,14 @@ public class usuarioController {
                 .body(recurso);
     }
 	
+	@PreAuthorize("hasAuthority('Admin')")
 	@GetMapping("/listar")
-	public String listar(Model model) {
+	public String listar(Model model, RedirectAttributes redirectAttrs) {
 		
-		if(!obtenerUsuario().isActivo()) {
-			return "redirect:/inactivo";
-		}
-		
-		
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
-			return "redirect:/401";
-		}
-		
-		if(empresaService.listar_todo().size() == 0) {
-			return "redirect:/empresas/registrar"; 
+	
+		if (empresaService.listar_todo().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Debe primero registrar una empresa");
+			return "redirect:/";
 		}
 		
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
@@ -76,22 +77,16 @@ public class usuarioController {
 		return "usuarios/listar";
 	}
 	
+	@PreAuthorize("hasAuthority('Admin')")
 	@GetMapping("/deshabilitar/{id_usuario}")
-	public String listar(Model model, @PathVariable long id_usuario) {
+	public String listar(Model model, @PathVariable long id_usuario, RedirectAttributes redirectAttrs) {
 		
-		if(!obtenerUsuario().isActivo()) {
-			return "redirect:/inactivo";
+		if (empresaService.listar_todo().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Debe primero registrar una empresa");
+			return "redirect:/";
 		}
-		
-		
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
-			return "redirect:/401";
-		}
-		
-		if(empresaService.listar_todo().size() == 0) {
-			return "redirect:/empresas/registrar"; 
-		}
+	
+
 		
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 		
@@ -120,5 +115,7 @@ public class usuarioController {
 		
 		return usuarioRepo.findByUsername(userDetail.getUsername());
 	}
+	
+
 
 }

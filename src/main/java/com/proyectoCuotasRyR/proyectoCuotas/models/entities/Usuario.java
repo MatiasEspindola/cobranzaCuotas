@@ -52,10 +52,12 @@ public class Usuario {
 	
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
-	@JoinColumn(name = "id_us")
+	@JoinColumn(name = "fk_usuario")
 	@JsonManagedReference
 	@JsonIgnore
-	private List<Actividad_Usuario> actividades;
+	private List<Usuario_Sucursal> usuarios_sucursales;
+	
+	
 	
 	@JoinColumn(name = "id_pregunta", referencedColumnName = "id_pregunta")
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -143,13 +145,15 @@ public class Usuario {
 		this.respuesta = respuesta;
 	}
 
-	public List<Actividad_Usuario> getActividades() {
-		return actividades;
+	public List<Usuario_Sucursal> getUsuarios_sucursales() {
+		return usuarios_sucursales;
 	}
 
-	public void setActividades(List<Actividad_Usuario> actividades) {
-		this.actividades = actividades;
+	public void setUsuarios_sucursales(List<Usuario_Sucursal> usuarios_sucursales) {
+		this.usuarios_sucursales = usuarios_sucursales;
 	}
+
+	
 	
 	
 }

@@ -51,8 +51,18 @@ public class Sucursal {
 	
 	private boolean activo;
 	
+	private String nombre_sucursal;
 	
 	
+	
+	public String getNombre_sucursal() {
+		return nombre_sucursal;
+	}
+
+	public void setNombre_sucursal(String nombre_sucursal) {
+		this.nombre_sucursal = nombre_sucursal;
+	}
+
 	public boolean isActivo() {
 		return activo;
 	}

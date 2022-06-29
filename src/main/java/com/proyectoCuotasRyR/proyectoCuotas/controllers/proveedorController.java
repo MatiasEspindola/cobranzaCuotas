@@ -6,6 +6,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,8 +34,10 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Actividad_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_GeoService;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Proveedor_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Tipo_Documento_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Usuario_Sucursal_Service;
 
 @Controller
 @SessionAttributes("proveedor")
@@ -59,6 +63,12 @@ public class proveedorController {
 
 	@Autowired
 	private I_Actividad_Service actividadService;
+	
+	@Autowired
+	private I_Sucursal_Service sucursalService;
+	
+	@Autowired
+	private I_Usuario_Sucursal_Service usuarioSucursalService;
 
 	@GetMapping(value = "/cargar_proveedor/{term}", produces = { "application/json" })
 	public @ResponseBody List<Proveedor> autocompleteProveedor(String term) {
@@ -75,22 +85,22 @@ public class proveedorController {
 		return geoService.buscarPorId(Integer.valueOf(id_provincia)).getLocalidades();
 	}
 
+	@PreAuthorize("hasAuthority('Admin')")
 	@GetMapping("/registrar/{id}")
-	public String formulario(Model model, @PathVariable(name = "id") long id_proveedor) {
+	public String formulario(Model model, @PathVariable(name = "id") long id_proveedor, RedirectAttributes redirectAttrs) {
 		
-		if(!obtenerUsuario().isActivo()) {
-			return "redirect:/inactivo";
+		if(proveedor_Service.buscarPorId(id_proveedor) == null) {
+			redirectAttrs.addFlashAttribute("error", "Proveedor con ese ID no existe");
+			
+			return "redirect:/";
 		}
 
-		if (empresaService.listar_todo().size() == 0) {
-
-			return "redirect:/empresas/registrar";
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
 		}
 		
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
-			return "redirect:/401";
-		}
 
 		model.addAttribute("proveedor", proveedor_Service.buscarPorId(id_proveedor));
 
@@ -105,30 +115,32 @@ public class proveedorController {
 		return "proveedores/registrar";
 	}
 
+	@PreAuthorize("hasAuthority('Admin')")
 	@GetMapping("/deshabilitar/{id_proveedor}")
-	public String deshabilitar(Model model, @PathVariable long id_proveedor) {
+	public String deshabilitar(Model model, @PathVariable long id_proveedor, RedirectAttributes redirectAttrs) {
 		
-		if(!obtenerUsuario().isActivo()) {
-			return "redirect:/inactivo";
-		}
-
-		if (empresaService.listar_todo().size() == 0) {
-
-			return "redirect:/empresas/registrar";
+	
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
 		}
 		
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
-			return "redirect:/401";
+		if(proveedor_Service.buscarPorId(id_proveedor) == null) {
+			redirectAttrs.addFlashAttribute("error", "Proveedor con ese ID no existe");
+			
+			return "redirect:/";
 		}
 
 		Proveedor proveedor = proveedor_Service.buscarPorId(id_proveedor);
+		
+		
 
 		Actividad_Usuario actividad = new Actividad_Usuario();
 
 		actividad.setFecha(new Date());
 		actividad.setHora(new Date());
-		actividad.setUsuario(obtenerUsuario());
+		actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
 
 		if (proveedor.isActivo()) {
 			proveedor_Service.deshabilitar(proveedor, false);
@@ -146,15 +158,16 @@ public class proveedorController {
 	}
 
 	@GetMapping("/listar")
-	public String listar(Model model) {
+	public String listar(Model model, RedirectAttributes redirectAttrs) {
 		
 		if(!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
 		}
 
-		if (empresaService.listar_todo().size() == 0) {
-
-			return "redirect:/empresas/registrar";
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
 		}
 
 		model.addAttribute("proveedores", proveedor_Service.listarTodo());
@@ -166,22 +179,21 @@ public class proveedorController {
 		return "proveedores/listar";
 	}
 
+	@PreAuthorize("hasAuthority('Admin')")
 	@GetMapping("/registrar")
-	public String formulario(Model model) {
+	public String formulario(Model model, RedirectAttributes redirectAttrs) {
 		
 		if(!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
 		}
-
-		if (empresaService.listar_todo().size() == 0) {
-
-			return "redirect:/empresas/registrar";
+		
+		
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
 		}
 		
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
-			return "redirect:/401";
-		}
 
 		model.addAttribute("proveedor", new Proveedor());
 
@@ -196,8 +208,20 @@ public class proveedorController {
 		return "proveedores/registrar";
 	}
 
+	@PreAuthorize("hasAuthority('Admin')")
 	@PostMapping("/registrar")
-	public String guardar(@Valid Proveedor proveedor, RedirectAttributes redirAttrs) {
+	public String guardar(@Valid Proveedor proveedor, RedirectAttributes redirectAttrs) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		} 
+		
+		
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
+		}
 
 		if (!proveedor_Service.existente(proveedor, editar)) {
 			if (!editar) {
@@ -206,7 +230,7 @@ public class proveedorController {
 				Actividad_Usuario actividad = new Actividad_Usuario();
 				actividad.setFecha(new Date());
 				actividad.setHora(new Date());
-				actividad.setUsuario(obtenerUsuario());
+				actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
 				actividad.setDescripcion("Alta proveedor " + proveedor.getId_proveedor() + " por usuario: "
 						+ obtenerUsuario().getUsername());
 
@@ -221,6 +245,8 @@ public class proveedorController {
 			} else {
 				proveedor_Service.guardar(proveedor, proveedor.isActivo());
 			}
+		} else {
+			redirectAttrs.addFlashAttribute("error", "Se están repitiendo los datos con un proveedor que ya existe en el Sistema");
 		}
 
 		return "redirect:/proveedores/listar";
@@ -236,5 +262,7 @@ public class proveedorController {
 
 		return usuarioRepo.findByUsername(userDetail.getUsername());
 	}
+	
+
 
 }

@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,15 +26,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Empresa;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Localidad;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Provincia;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_GeoService;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Responsable_Iva_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
 
 @Controller
@@ -42,6 +47,9 @@ public class empresaController {
 
 	@Autowired
 	private I_Empresa_Service empresaService;
+
+	@Autowired
+	private I_Sucursal_Service sucursalService;
 
 	@Autowired
 	private I_Responsable_Iva_Service responsableIvaService;
@@ -54,6 +62,8 @@ public class empresaController {
 
 	@Autowired
 	private I_UploadFile_Service upl;
+
+	private boolean editar;
 
 	@GetMapping(value = "/provincias", produces = { "application/json" })
 	public @ResponseBody List<Provincia> provincias() {
@@ -82,21 +92,11 @@ public class empresaController {
 				.body(recurso);
 	}
 
+	@PreAuthorize("hasAuthority('Admin')")
 	@GetMapping("/registrar")
 	public String formulario(Model model) {
-		
-		if(!obtenerUsuario().isActivo()) {
-			return "redirect:/inactivo";
-		}
-		
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
-			return "redirect:/401";
-		}
 
-		if (empresaService.listar_todo().size() > 0) {
-			return "redirect:/index";
-		}
+		editar = false;
 
 		Empresa empresa = new Empresa();
 
@@ -109,16 +109,20 @@ public class empresaController {
 		return "empresas/registrar";
 	}
 
+	@PreAuthorize("hasAuthority('Admin')")
 	@GetMapping("/registrar/{id_empresa}")
-	public String formulario(Model model, @PathVariable long id_empresa) {
+	public String formulario(Model model, @PathVariable long id_empresa, RedirectAttributes redirectAttrs) {
+
+		editar = true;
 		
-		if(!obtenerUsuario().isActivo()) {
-			return "redirect:/inactivo";
+		if(empresaService.buscarPorId(id_empresa) == null) {
+			redirectAttrs.addFlashAttribute("error", "Empresa con ese ID no existe");
+			return "redirect:/";
 		}
-		
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
-			return "redirect:/401";
+
+		if (empresaService.listar_todo().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "No hay ninguna empresa registrada");
+			return "redirect:/";
 		}
 
 		Empresa empresa = empresaService.buscarPorId(id_empresa);
@@ -132,8 +136,16 @@ public class empresaController {
 		return "empresas/registrar";
 	}
 
+	@PreAuthorize("hasAuthority('Admin')")
 	@PostMapping("/registrar")
-	public String guardar(@Valid Empresa empresa, @RequestParam("file") MultipartFile foto) {
+	public String guardar(@Valid Empresa empresa, @RequestParam("file") MultipartFile foto,
+			RedirectAttributes redirectAttrs) {
+
+		if (empresaService.listar_todo().size() > 0 && !editar) {
+			redirectAttrs.addFlashAttribute("error", "Sólo puede registrar una empresa");
+
+			return "redirect:/";
+		}
 
 		if (!foto.isEmpty()) {
 			if (empresa.getId_empresa() > 0 && empresa.getLogo() != null && empresa.getLogo().length() > 0) {
@@ -150,6 +162,8 @@ public class empresaController {
 
 			empresa.setLogo(uniqueFilename);
 		}
+
+		redirectAttrs.addFlashAttribute("success", "Los datos se han guardado éxito");
 
 		empresaService.guardar(empresa);
 

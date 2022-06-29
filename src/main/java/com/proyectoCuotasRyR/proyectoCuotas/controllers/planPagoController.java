@@ -35,6 +35,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Medio_Pago;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Plan_Pago;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Provincia;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Responsable_Iva;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Tipo_Documento;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
@@ -50,8 +51,9 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Medio_Pago_Service
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Proveedor_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Responsable_Iva_Service;
-
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Tipo_Interes_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Usuario_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.Tipo_DocumentoService;
 
 @Controller
@@ -101,6 +103,12 @@ public class planPagoController {
 	@Autowired
 	private I_Actividad_Service actividadService;
 	
+	@Autowired
+	private I_Sucursal_Service sucursalService;
+	
+	@Autowired
+	private I_Usuario_Sucursal_Service usuarioSucursalService;
+	
 	
 	private Cliente cliente;
 
@@ -118,16 +126,30 @@ public class planPagoController {
 	private boolean editar;
 
 	@GetMapping("/detalles/{id}/{id_cliente}")
-	public String detalle_plan_pago(@PathVariable Long id, @PathVariable Long id_cliente, Model model, RedirectAttributes redirAttrs) {
-		
+	public String detalle_plan_pago(@PathVariable Long id, @PathVariable Long id_cliente, Model model, RedirectAttributes redirectAttrs) {
 		
 		if(!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
 		}
 		
-		if (empresaService.listar_todo().size() == 0) {
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
 
-			return "redirect:/empresas/registrar";
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			
+			return "redirect:/";
+			
+			
+		}
+		
+		if (planPagoService.buscarPorId(id) == null) {
+			redirectAttrs.addFlashAttribute("error", "No existe un plan de pago con ese ID");
+			return "redirect:/";
+		}
+		
+		if (clienteService.buscarPorId(id_cliente) == null) {
+			redirectAttrs.addFlashAttribute("error", "No existe un cliente con ese ID");
+			return "redirect:/";
 		}
 
 		Plan_Pago plan_pago = planPagoService.buscarPorId(id);
@@ -138,10 +160,7 @@ public class planPagoController {
 		
 		
 
-		if (plan_pago == null) {
-			redirAttrs.addFlashAttribute("error", "No existe un plan de pago con este id: " + id);
-			return "redirect:/planes_pagos/simular_cuotas";
-		}
+		
 
 		model.addAttribute("plan_pago", plan_pago);
 		
@@ -182,16 +201,20 @@ public class planPagoController {
 	}
 
 	@GetMapping("/simular_cuotas")
-	public String simular_cuotas(Model model) {
-		
+	public String simular_cuotas(Model model, RedirectAttributes redirectAttrs) {
 		
 		if(!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
 		}
 
-		if (empresaService.listar_todo().size() == 0) {
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
 
-			return "redirect:/empresas/registrar";
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			
+			return "redirect:/";
+			
+			
 		}
 		
 		
@@ -216,15 +239,23 @@ public class planPagoController {
 	}
 
 	@GetMapping("/clientes/simular_cuotas/{id_cliente}")
-	public String simular_cuotas(Model model, @PathVariable(name = "id_cliente") long id_cliente) {
+	public String simular_cuotas(Model model, @PathVariable(name = "id_cliente") long id_cliente,
+			RedirectAttributes redirectAttrs) {
 		
 		if(!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
 		}
 		
-		if (empresaService.listar_todo().size() == 0) {
-
-			return "redirect:/empresas/registrar";
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
+		}
+		
+		
+		if (clienteService.buscarPorId(id_cliente) == null) {
+			redirectAttrs.addFlashAttribute("error", "No existe un cliente con ese ID");
+			return "redirect:/";
 		}
 
 		Plan_Pago plan_pago = new Plan_Pago();
@@ -261,6 +292,11 @@ public class planPagoController {
 			return "redirect:/inactivo";
 		}
 		
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+
+			return "redirect:/";
+		}
+		
 		planPagoService.eliminar(planPagoService.buscarPorId(id_plan_pago));
 
 		return "redirect:/planes_pagos/simular_cuotas";
@@ -292,11 +328,22 @@ public class planPagoController {
 			@RequestParam(name = "cel", required = true) String cel,
 			@RequestParam(name = "cel2", required = true) String cel2,
 			@RequestParam(name = "mail", required = true) String mail,
-			@RequestParam(name = "mail2", required = true) String mail2
+			@RequestParam(name = "mail2", required = true) String mail2,
+			RedirectAttributes redirectAttrs
 
 	) {
 		
 
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+		
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
+		}
+		
 		List<Cuota> cuotas = new ArrayList<>();
 
 		int mes = plan_pago.getFecha_inicio().getMonth();
@@ -345,7 +392,9 @@ public class planPagoController {
 		if(!clienteService.existente(c, editar)) {
 			clienteService.guardar(c, true);
 		} else {
-			return "redirect:/";
+			redirectAttrs.addFlashAttribute("error", "Se están repitiendo los datos con un cliente que ya existe en el Sistema.");
+			
+			return "redirect:/clientes/listar";
 		}
 
 	//	plan_pago.setId_cliente(c);
@@ -383,7 +432,7 @@ public class planPagoController {
 		Actividad_Usuario actividad = new Actividad_Usuario();
 		actividad.setFecha(new Date());
 		actividad.setHora(new Date());
-		actividad.setUsuario(obtenerUsuario());
+		actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
 		actividad.setDescripcion(
 				"Alta Cliente " + c.getId_cliente() + " por usuario: " + obtenerUsuario().getUsername());
 		
@@ -400,7 +449,7 @@ public class planPagoController {
 		Actividad_Usuario actividad2 = new Actividad_Usuario();
 		actividad2.setFecha(new Date());
 		actividad2.setHora(new Date());
-		actividad2.setUsuario(obtenerUsuario());
+		actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
 		actividad2.setDescripcion(
 				"Alta plan de pago " + plan_pago.getId_plan_pago() + " por usuario: " + obtenerUsuario().getUsername());
 		
@@ -434,19 +483,31 @@ public class planPagoController {
 			@RequestParam(name = "gastos_administrativos[]", required = true) String[] gastos_administrativos,
 			@RequestParam(name = "v_cuota[]", required = true) String[] valor_cuota,
 			@RequestParam(name = "total", required = true) Float total,
-			@RequestParam(name = "vcuota", required = true) Float vcuota
+			@RequestParam(name = "vcuota", required = true) Float vcuota,
+			RedirectAttributes redirectAttrs
 
 	) {
 		
 		if(cliente == null) {
+			redirectAttrs.addFlashAttribute("error", "No se asignó correctamente un cliente");
 			return "redirect:/clientes/listar";
+		}
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+		
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
 		}
 		
 		List<Historial_Plan_Pago> historiales = historialPlanPagoService.listar();
 		
 		for(Historial_Plan_Pago historial : historiales) {
 			if(historial.getCtactecliente().getCliente().getId_cliente() == cliente.getId_cliente() && historial.getPlan_pago().getId_proveedor().getId_proveedor() == plan_pago.getId_proveedor().getId_proveedor()) {
-				
+				redirectAttrs.addFlashAttribute("error", "Este cliente ya tiene un plan de pago asignado con este proveedor");
 				return "redirect:/clientes/detalles/" + cliente.getId_cliente();
 				
 			}
@@ -514,7 +575,7 @@ public class planPagoController {
 		Actividad_Usuario actividad = new Actividad_Usuario();
 		
 		actividad.setFecha(new Date());
-		actividad.setUsuario(obtenerUsuario());
+		actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
 		actividad.setHora(new Date());
 		actividad.setDescripcion("Alta plan de pago " + plan_pago.getId_plan_pago() + " por usuario: " + obtenerUsuario().getUsername());
 		
@@ -552,5 +613,6 @@ public class planPagoController {
 
 		return num + "/" + (fecha.getYear() - 100);
 	}
+	
 
 }

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Actividad_Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cliente;
@@ -37,6 +38,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Recibo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Importe;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Medio_Pago;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Recibo;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Actividad_Service;
@@ -52,6 +54,8 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Importe_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Medio_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Recibo_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Usuario_Sucursal_Service;
 
 
 @Controller
@@ -100,7 +104,13 @@ public class pagoController {
 	@Autowired
 	private I_Historial_Recibo_Service historialService;
 	
+	@Autowired
+	private I_Sucursal_Service sucursalService;
+	
 	private Cliente cliente;
+	
+	@Autowired
+	private I_Usuario_Sucursal_Service usuarioSucursalService;
 
 	
 
@@ -110,7 +120,12 @@ public class pagoController {
 		if(!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
 		}
+		
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
 
+			return "redirect:/";
+		}
+		
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("planes_pagos", planPagoService.listarTodo());
 		model.addAttribute("clientes", clienteService.listarTodo());
@@ -119,21 +134,36 @@ public class pagoController {
 	}
 
 	@GetMapping("/generar_pago/{id_plan_pago}/{id_cliente}")
-	public String generar_pago(Model model, @PathVariable long id_plan_pago, @PathVariable long id_cliente) {
+	public String generar_pago(Model model, @PathVariable long id_plan_pago, @PathVariable long id_cliente,
+			RedirectAttributes redirectAttrs) {
 		
 		if(!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
 		}
 		
+		if(planPagoService.buscarPorId(id_plan_pago) == null) {
+			redirectAttrs.addFlashAttribute("error", "No se encontró plan de pago con este ID");
+			return "redirect:/";
+		}
+		
 
-		if (empresaService.listar_todo().size() == 0) {
-
-			return "redirect:/empresas/registrar";
+		if(clienteService.buscarPorId(id_cliente) == null) {
+			redirectAttrs.addFlashAttribute("error", "No se encontró cliente con este ID");
+			return "redirect:/";
+		}
+		
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
 		}
 		
 		if (cuotas == null) {
+			redirectAttrs.addFlashAttribute("error", "No hay cuotas seleccionadas");
 			return "redirect:/planes_pagos/detalles/" + id_plan_pago + '/' + id_cliente;
 		}
+		
+
 		
 		cliente = clienteService.buscarPorId(id_cliente);
 
@@ -160,13 +190,36 @@ public class pagoController {
 	@PostMapping("/generar_pago")
 	public String btn_generar_pago(@RequestParam(name = "cuotas[]", required = false) String[] cuotas,
 			@RequestParam(name = "id_plan_pago", required = false) long id_plan_pago,
-		    @RequestParam(name = "id_cliente", required = false) long id_cliente){
+		    @RequestParam(name = "id_cliente", required = false) long id_cliente,
+		    RedirectAttributes redirectAttrs){
 		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
 		
+		if(planPagoService.buscarPorId(id_plan_pago) == null) {
+			redirectAttrs.addFlashAttribute("error", "No se encontró plan de pago con este ID");
+			return "redirect/";
+		}
+		
+
+		if(clienteService.buscarPorId(id_cliente) == null) {
+			redirectAttrs.addFlashAttribute("error", "No se encontró cliente con este ID");
+			return "redirect/";
+		}
+		
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
+		}
 		
 		if (cuotas == null) {
-			return "redirect:/planes_pagos/detalles/" + id_plan_pago;
+			redirectAttrs.addFlashAttribute("error", "No hay cuotas seleccionadas");
+			return "redirect:/planes_pagos/detalles/" + id_plan_pago + '/' + id_cliente;
 		}
+		
+		
 
 		System.out.println("Id Plan de Pago: " + id_plan_pago);
 		System.out.println("Cuotas: " + cuotas.length);
@@ -184,8 +237,25 @@ public class pagoController {
 	@PostMapping("/generar_importes")
 	public String generar_importes(@RequestParam(name = "plan_pago", required = true) long id_plan_pago,
 			@RequestParam(name = "importes[]", required = true) Float[] importes,
-			@RequestParam(name = "medios_pagos[]", required = false) String[] medios_pagos) {
+			@RequestParam(name = "medios_pagos[]", required = false) String[] medios_pagos,
+			RedirectAttributes redirectAttrs) {
 
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+		
+		if(planPagoService.buscarPorId(id_plan_pago) == null) {
+			redirectAttrs.addFlashAttribute("error", "No se encontró plan de pago con este ID");
+			return "redirect/";
+		}
+		
+
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
+		}
+		
 		float total = 0;
 		
 		Recibo recibo = new Recibo();
@@ -289,7 +359,7 @@ public class pagoController {
 		Actividad_Usuario actividad = new Actividad_Usuario();
 		actividad.setFecha(new Date());
 		actividad.setHora(new Date());
-		actividad.setUsuario(obtenerUsuario());
+		actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
 		actividad.setDescripcion("Recibo ID: " + recibo.getId_recibo() + ", generado con éxito");
 		
 		actividadService.guardar_actividad(actividad);
@@ -481,7 +551,6 @@ public class pagoController {
 	    return n + getMillones(miles);
 	}
 
-	
 
 	
 

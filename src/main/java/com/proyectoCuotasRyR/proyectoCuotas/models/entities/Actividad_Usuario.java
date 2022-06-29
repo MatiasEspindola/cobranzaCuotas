@@ -39,10 +39,10 @@ public class Actividad_Usuario {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fecha;
 	
-	@JoinColumn(name = "id_us", referencedColumnName = "id_usuario")
+	@JoinColumn(name = "id_usuario_sucursal", referencedColumnName = "id_usuario_sucursal")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonBackReference
-	private Usuario usuario;
+	private Usuario_Sucursal usuario;
 	
 	private String descripcion;
 	
@@ -93,11 +93,13 @@ public class Actividad_Usuario {
 		this.fecha = fecha;
 	}
 
-	public Usuario getUsuario() {
+	
+
+	public Usuario_Sucursal getUsuario() {
 		return usuario;
 	}
 
-	public void setUsuario(Usuario usuario) {
+	public void setUsuario(Usuario_Sucursal usuario) {
 		this.usuario = usuario;
 	}
 

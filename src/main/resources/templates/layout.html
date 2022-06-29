@@ -36,8 +36,8 @@
 				<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
 					aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-					<li><a class="dropdown-item disabled" href="#!">Configuración</a></li>
-					<li><a class="dropdown-item" th:href="@{/actividades/actividad}">Actividad</a></li>
+					<li ><a class="dropdown-item" th:href="@{/configuraciones/configuracion}">Configuración</a></li>
+					<li th:if="${empresa != null}"><a class="dropdown-item" th:href="@{/actividades/actividad}">Actividad</a></li>
 					<li>
 						<hr class="dropdown-divider" />
 					</li>
@@ -52,10 +52,11 @@
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
 			<nav class="sb-sidenav accordion text-dark" id="sidenavAccordion">
-				<div class="sb-sidenav-menu">
-					<div class="nav" th:fragment="sidenav">
-						<div>
-							<img style="max-width: 100%;" th:if="${empresa != null}"
+				<div class="sb-sidenav-menu bg-white">
+					<div class="nav bg-white" th:fragment="sidenav">
+						<div th:if="${empresa != null}" >
+							<img style="max-width: 100%;" th:if="${empresa.logo != null}"
+							
 								th:src="@{/uploads/} + ${empresa.logo}" />
 						</div>
 						<div class="sb-sidenav-menu-heading">Inicio</div>
@@ -63,13 +64,14 @@
 							<div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
 							Tablero
 						</a>
-						<a class="nav-link text-dark" th:href="@{/usuarios/listar}">
+						<a class="nav-link text-dark" th:href="@{/usuarios/listar}"
+						sec:authorize="hasAuthority('Admin')" th:if="${empresa != null}">
 							<div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
 							Usuarios
 						</a>
-						<div class="sb-sidenav-menu-heading">Controles</div>
+						<div class="sb-sidenav-menu-heading" th:if="${empresa != null}">Controles</div>
 
-						<a class="nav-link text-dark collapsed" href="#" data-bs-toggle="collapse"
+						<a class="nav-link text-dark collapsed" href="#" data-bs-toggle="collapse" th:if="${empresa != null}"
 							data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
 							<div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
 							Páginas
@@ -77,70 +79,53 @@
 						</a>
 						<div class="collapse" id="collapsePages" aria-labelledby="headingTwo"
 							data-bs-parent="#sidenavAccordion">
-							<nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-								<a class="nav-link text-dark collapsed" href="#" data-bs-toggle="collapse"
-									data-bs-target="#pagesCollapseAuth" aria-expanded="false"
-									aria-controls="pagesCollapseAuth">
-									Empresas
-									<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-								</a>
-								<div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne"
-									data-bs-parent="#sidenavAccordionPages">
-									<nav class="sb-sidenav-menu-nested nav">
-
-										<a class="nav-link text-dark" th:href="@{/empresas/registrar}"
-											th:if="${empresa == null}">Registrar</a>
-										<a class="nav-link text-dark"
-											th:href="@{/empresas/registrar/} + ${empresa.id_empresa}"
-											th:if="${empresa != null}">Modificar</a>
-
-									</nav>
-								</div>
-								<a class="nav-link text-dark collapsed" href="#" data-bs-toggle="collapse"
+							<nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages" >
+								<a class="nav-link text-dark collapsed" href="#" data-bs-toggle="collapse" 
 									data-bs-target="#pagesCollapseError" aria-expanded="false"
-									aria-controls="pagesCollapseError">
+									aria-controls="pagesCollapseError" th:if="${empresa != null}">
 									Sucursales
 									<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
 								</a>
 								<div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne"
 									data-bs-parent="#sidenavAccordionPages">
 									<nav class="sb-sidenav-menu-nested nav">
-										<a class="nav-link text-dark" th:href="@{/sucursales/registrar}">Registrar</a>
+										<a class="nav-link text-dark" th:href="@{/sucursales/registrar}"
+										sec:authorize="hasAuthority('Admin')">Registrar</a>
 										<a class="nav-link text-dark" th:href="@{/sucursales/listar}">Listar</a>
 									</nav>
 								</div>
 								<a class="nav-link text-dark collapsed" href="#" data-bs-toggle="collapse"
-									data-bs-target="#clientes" aria-expanded="false" aria-controls="clientes">
+									data-bs-target="#clientes" aria-expanded="false" aria-controls="clientes"
+									th:if="${empresa != null}">
 									Clientes
 									<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
 								</a>
 								<div class="collapse" id="clientes" aria-labelledby="headingOne"
-									data-bs-parent="#sidenavAccordionPages">
+									data-bs-parent="#sidenavAccordionPages" th:if="${empresa != null}">
 									<nav class="sb-sidenav-menu-nested nav">
 										<a class="nav-link text-dark" th:href="@{/clientes/registrar}">Registrar</a>
 										<a class="nav-link text-dark" th:href="@{/clientes/listar}">Listar</a>
 									</nav>
 								</div>
 								<a class="nav-link text-dark collapsed" href="#" data-bs-toggle="collapse"
-									data-bs-target="#proveedores" aria-expanded="false" aria-controls="proveedores">
+									data-bs-target="#proveedores" aria-expanded="false" aria-controls="proveedores"
+									th:if="${empresa != null}">
 									Proveedores
 									<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
 								</a>
 								<div class="collapse" id="proveedores" aria-labelledby="headingOne"
-									data-bs-parent="#sidenavAccordionPages">
+									data-bs-parent="#sidenavAccordionPages" th:if="${empresa != null}">
 									<nav class="sb-sidenav-menu-nested nav">
-										<a class="nav-link text-dark" th:href="@{/proveedores/registrar}">Registrar</a>
+										<a class="nav-link text-dark" th:href="@{/proveedores/registrar}"
+										sec:authorize="hasAuthority('Admin')">Registrar</a>
 										<a class="nav-link text-dark" th:href="@{/proveedores/listar}">Listar</a>
 									</nav>
 								</div>
 							</nav>
 						</div>
-						<div class="sb-sidenav-menu-heading">Administración</div>
-						<a class="nav-link text-dark disabled" href="charts.html">
-							<div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-							Pagos
-						</a>
-						<a class="nav-link text-dark" th:href="@{/planes_pagos/simular_cuotas}">
+						<div class="sb-sidenav-menu-heading" th:if="${empresa != null}">Administración</div>
+					
+						<a class="nav-link text-dark" th:href="@{/planes_pagos/simular_cuotas}" th:if="${empresa != null}">
 							<div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
 							Desarrollo Plan de Pago
 						</a>

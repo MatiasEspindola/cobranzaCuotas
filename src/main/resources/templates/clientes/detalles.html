@@ -31,6 +31,14 @@
 		</div>
 		<div id="layoutSidenav_content">
 			<main>
+			
+				<div class="alert alert-danger alert-dismissible fade show" role="alert"
+										style="margin:15px;" th:if="${error != null}">
+										<span th:text="${error}"></span>
+										<button type="button" class="btn-close" data-bs-dismiss="alert"
+											aria-label="Close"></button>
+									</div>
+
 
 				<div class="container-fluid px-4">
 					<h1 class="mt-4">Detalles Cliente</h1>

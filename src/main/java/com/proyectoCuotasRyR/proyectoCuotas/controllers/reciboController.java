@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.context.WebContext;
 
 import com.itextpdf.html2pdf.ConverterProperties;
@@ -42,6 +43,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Historial_Recibo_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_ReciboPdf_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Recibo_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.PdfGenerateService;
 
@@ -60,6 +62,9 @@ public class reciboController {
 	
 	@Autowired
 	private I_Empresa_Service empresaService;
+	
+	@Autowired
+	private I_Sucursal_Service sucursalService;
 	
 	@Autowired
 	private I_Historial_Recibo_Service historialRecibo;
@@ -89,11 +94,24 @@ public class reciboController {
     }
 
 	@GetMapping("/ver/{id_recibo}")
-	public String ver(@PathVariable long id_recibo, HttpServletResponse response, Map map) throws IOException {
+	public String ver(@PathVariable long id_recibo, HttpServletResponse response, Map map,
+			RedirectAttributes redirectAttrs) throws IOException {
 
 		if(!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
 		}
+		
+		if(reciboService.buscarPorId(id_recibo) == null) {
+			redirectAttrs.addFlashAttribute("error", "No existe un recibo con este ID");
+			return "redirect:/";
+		}
+		
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
+		}
+		
 		
 		Usuario usuario = obtenerUsuario();
 		Historial_Recibo historial = historialRecibo.buscarPorRecibo(reciboService.buscarPorId(id_recibo));
@@ -150,5 +168,7 @@ public class reciboController {
 
 		return usuarioRepo.findByUsername(userDetail.getUsername());
 	}
+	
+
 
 }

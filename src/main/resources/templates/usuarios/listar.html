@@ -59,7 +59,7 @@
 										<th>Usuario</th>
 										<th>Rol</th>
 										<th>Activo</th>
-										
+										<th>Actividad</th>
 									</tr>
 								</thead>
 								<tfoot>
@@ -68,6 +68,7 @@
 										<th>Usuario</th>
 										<th>Rol</th>
 										<th>Activo</th>
+										<th>Actividad</th>
 									</tr>
 								</tfoot>
 								<tbody>
@@ -81,6 +82,10 @@
 										<td>
 										<a th:if="${us.id_usuario != usuario.id_usuario}" th:href="@{/usuarios/deshabilitar/} + ${us.id_usuario}" th:text="${us.activo ? 'Si':'No'}"
 										 th:classappend="${us.activo ? 'text-success':'text-danger'}"></a>
+										</td>
+										<td>
+										<a th:if="${us.id_usuario != usuario.id_usuario and us.usuarios_sucursales.size() > 0}" th:href="@{/actividades/actividad/} + ${us.id_usuario}" 
+										>Actividad</a>
 										</td>
 									
 										

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,6 +37,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Localidad;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Plan_Pago;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Proveedor;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Provincia;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.ClienteService;
@@ -45,10 +48,10 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_CtaCteCliente_Serv
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_GeoService;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Responsable_Iva_Service;
-
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Tipo_Documento_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
-
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Usuario_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.Plan_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.ProveedorService;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.Tipo_DocumentoService;
@@ -86,6 +89,9 @@ public class clienteController {
 
 	@Autowired
 	private I_Empresa_Service empresaService;
+	
+	@Autowired
+	private I_Usuario_Sucursal_Service usuarioSucursalService;
 
 	private boolean editar;
 
@@ -103,7 +109,11 @@ public class clienteController {
 
 	@Autowired
 	private I_Responsable_Iva_Service responsableIvaService;
-
+	
+	@Autowired
+	private I_Sucursal_Service sucursalService;
+	
+	
 	@GetMapping(value = "/provincias", produces = { "application/json" })
 	public @ResponseBody List<Provincia> provincias() {
 		return geoService.provincias();
@@ -125,16 +135,24 @@ public class clienteController {
 	}
 
 	@GetMapping("/detalles/{id_cliente}")
-	public String detalle(Model model, @PathVariable("id_cliente") long id_cliente) {
+	public String detalle(Model model, @PathVariable("id_cliente") long id_cliente, RedirectAttributes redirectAttrs) {
 		
 		if(!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
 		}
-
-		if (empresaService.listar_todo().size() == 0) {
-
-			return "redirect:/empresas/registrar";
+		
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
 		}
+		
+		if(cliente_Service.buscarPorId(id_cliente) == null) {
+			redirectAttrs.addFlashAttribute("error", "Cliente con ese ID no existe");
+			
+			return "redirect:/";
+		}
+				
 
 		model.addAttribute("cliente", cliente_Service.buscarPorId(id_cliente));
 		Usuario usuario = obtenerUsuario();
@@ -149,16 +167,18 @@ public class clienteController {
 	}
 
 	@GetMapping("/listar")
-	public String listar(Model model) {
+	public String listar(Model model, RedirectAttributes redirectAttrs) {
 		
 		if(!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
 		}
-
-		if (empresaService.listar_todo().size() == 0) {
-
-			return "redirect:/empresas/registrar";
+		
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
 		}
+				
 
 		model.addAttribute("clientes", cliente_Service.listarTodo());
 		model.addAttribute("usuario", obtenerUsuario());
@@ -168,16 +188,24 @@ public class clienteController {
 	}
 
 	@GetMapping("/registrar/{id}")
-	public String formulario(Model model, @PathVariable(name = "id") long id_cliente) {
+	public String formulario(Model model, @PathVariable(name = "id") long id_cliente, RedirectAttributes redirectAttrs) {
 		
 		if(!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
 		}
-
-		if (empresaService.listar_todo().size() == 0) {
-
-			return "redirect:/empresas/registrar";
+		
+		if(cliente_Service.buscarPorId(id_cliente) == null) {
+			redirectAttrs.addFlashAttribute("error", "Cliente con ese ID no existe");
+			
+			return "redirect:/";
 		}
+
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
+		}
+				
 
 		model.addAttribute("cliente", cliente_Service.buscarPorId(id_cliente));
 		model.addAttribute("tipos_documentos", tipo_documento_Service.listarTodo());
@@ -189,19 +217,29 @@ public class clienteController {
 
 		return "clientes/registrar";
 	}
-
+	
+	
+	@PreAuthorize("hasAuthority('Admin')")
 	@GetMapping("/deshabilitar/{id}")
-	public String deshabilitar(Model model, @PathVariable(name = "id") long id_cliente) {
-
-		if (empresaService.listar_todo().size() == 0) {
-
-			return "redirect:/empresas/registrar";
+	public String deshabilitar(Model model, @PathVariable(name = "id") long id_cliente, RedirectAttributes redirectAttrs) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
 		}
 		
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("Usuario"))) {
-			return "redirect:/401";
+		if(cliente_Service.buscarPorId(id_cliente) == null) {
+			redirectAttrs.addFlashAttribute("error", "Cliente con ese ID no existe");
+			
+			return "redirect:/";
 		}
+
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
+		}
+				
+	
 
 		Cliente cliente = cliente_Service.buscarPorId(id_cliente);
 
@@ -209,7 +247,7 @@ public class clienteController {
 
 		actividad.setFecha(new Date());
 		actividad.setHora(new Date());
-		actividad.setUsuario(obtenerUsuario());
+		actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
 
 		if (cliente.isActivo()) {
 			cliente_Service.deshabilitar(cliente, false);
@@ -227,16 +265,18 @@ public class clienteController {
 	}
 
 	@GetMapping("/registrar")
-	public String formulario(Model model) {
+	public String formulario(Model model, RedirectAttributes redirectAttrs) {
 		
 		if(!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
 		}
 
-		if (empresaService.listar_todo().size() == 0) {
-
-			return "redirect:/empresas/registrar";
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
 		}
+				
 
 		Cliente cliente = new Cliente();
 
@@ -254,8 +294,23 @@ public class clienteController {
 	}
 
 	@PostMapping("/registrar")
-	public String guardar(@Valid Cliente cliente, RedirectAttributes redirAttrs) {
+	public String guardar(@Valid Cliente cliente, RedirectAttributes redirectAttrs) {
+		
+		
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+		
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
+		}
+				
+		
 
+		
 		if (!cliente_Service.existente(cliente, editar)) {
 
 			if (!editar) {
@@ -273,7 +328,7 @@ public class clienteController {
 
 				actividad.setFecha(new Date());
 				actividad.setHora(new Date());
-				actividad.setUsuario(obtenerUsuario());
+				actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
 				actividad.setDescripcion(
 						"Alta Cliente " + cliente.getId_cliente() + " por usuario: " + obtenerUsuario().getUsername());
 
@@ -290,6 +345,9 @@ public class clienteController {
 				cliente_Service.guardar(cliente, cliente.isActivo());
 			}
 
+		} else {
+			redirectAttrs.addFlashAttribute("error", "Se están repitiendo los datos con un cliente que ya existe en el Sistema.");
+			
 		}
 
 		return "redirect:/clientes/listar";
@@ -313,5 +371,8 @@ public class clienteController {
 
 		return num + "/" + (fecha.getYear() - 100);
 	}
+	
+
+
 
 }
