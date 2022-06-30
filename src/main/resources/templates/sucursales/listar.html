@@ -63,6 +63,7 @@
 										<th>Pto.</th>
 										<th>Contacto</th>
 										<th>¿Activo?</th>
+											<th>Detalles</th>
 									</tr>
 								</thead>
 								<tfoot>
@@ -75,6 +76,7 @@
 										<th>Pto.</th>
 										<th>Contacto</th>
 										<th>¿Activo?</th>
+										<th>Detalles</th>
 									</tr>
 								</tfoot>
 								<tbody>
@@ -94,6 +96,10 @@
 										<td >
 										<a th:text="${sucursal.activo ? 'Si':'No'}" th:classappend="${sucursal.activo ? 'text-success':'text-danger'}"
 										th:href="@{/sucursales/deshabilitar/} + ${sucursal.id_sucursal}"> </a>
+										</td>
+										<td >
+										<a 
+										th:href="@{/sucursales/detalles/} + ${sucursal.id_sucursal}"> Detalles </a>
 										</td>
 									</tr>
 

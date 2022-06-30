@@ -1,6 +1,7 @@
 package com.proyectoCuotasRyR.proyectoCuotas.controllers;
 
 import java.net.MalformedURLException;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,12 +22,14 @@ import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.SessionFlashMapManager;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cuota;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Empresa;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario_Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Sucursal_Repo;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Cuota_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
@@ -45,6 +48,9 @@ public class indexController {
 
 	@Autowired
 	private I_Sucursal_Service sucursalService;
+	
+	@Autowired
+	private I_Cuota_Service cuotaService;
 
 	@GetMapping(value = "/uploads/{filename:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
@@ -85,6 +91,30 @@ public class indexController {
 
 		model.addAttribute("empresa", empresa);
 		model.addAttribute("usuario", obtenerUsuario());
+		
+		if(cuotaService.listarTodo().size() > 0) {
+			
+			for(Cuota cuota : cuotaService.listarTodo()) {
+				if(!cuota.isPagado()) {
+					if(!cuota.isVencida()) {
+						Date hoy = new Date();
+						Date vencimiento_cuota = cuota.getFecha();
+						
+						if(hoy.after(vencimiento_cuota)) {
+							cuota.setVencida(true);
+							cuotaService.guardar(cuota);
+							System.out.println("Hoy: " + hoy);
+							System.out.println("Vencimiento cuota: " + vencimiento_cuota);
+							System.out.println("Cuota ID: " + cuota.getId_cuota());
+							System.out.println("Plan Pago ID: " + cuota.getId_plan_pago().getId_plan_pago());
+						}
+						
+						
+					}
+				}
+			}
+			
+		}
 
 		return "index";
 	}

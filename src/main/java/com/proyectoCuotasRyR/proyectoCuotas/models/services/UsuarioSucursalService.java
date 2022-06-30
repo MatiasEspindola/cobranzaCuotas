@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario_Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Sucursal_Repo;
@@ -34,9 +35,15 @@ public class UsuarioSucursalService implements I_Usuario_Sucursal_Service {
 	}
 
 	@Override
-	public Usuario_Sucursal buscarPorUsuario(Usuario usuario) {
+	public List<Usuario_Sucursal>  buscarPorUsuario(Usuario usuario) {
 		// TODO Auto-generated method stub
 		return repo.buscarPorUsuario(usuario);
+	}
+
+	@Override
+	public List<Usuario_Sucursal>  buscarPorSucursal(Sucursal sucursal) {
+		// TODO Auto-generated method stub
+		return repo.buscarPorSucursal(sucursal);
 	}
 
 }

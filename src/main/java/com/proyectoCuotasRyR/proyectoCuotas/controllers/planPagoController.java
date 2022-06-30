@@ -175,6 +175,9 @@ public class planPagoController {
 		float pagado = 0;
 		float pendiente = 0;
 		
+		int vencidas = 0;
+		int pagadas = 0;
+		
 		for(Cuota cuota : plan_pago.getCuotas()) {
 			if(cuota.getImportes().size() > 0) {
 				for(Importe importe : cuota.getImportes()) {
@@ -184,11 +187,18 @@ public class planPagoController {
 			
 			if(!cuota.isPagado()) {
 				pendiente += cuota.getPendiente();
+				if(cuota.isVencida()) {
+					vencidas++;
+				}
+			}else {
+				pagadas++;
 			}
 		}
 		
 		model.addAttribute("pagado", pagado);
 		model.addAttribute("pendiente", pendiente);
+		model.addAttribute("vencidas", vencidas);
+		model.addAttribute("pagadas", pagadas);
 		
 		
 		Usuario usuario = obtenerUsuario();
@@ -432,7 +442,7 @@ public class planPagoController {
 		Actividad_Usuario actividad = new Actividad_Usuario();
 		actividad.setFecha(new Date());
 		actividad.setHora(new Date());
-		actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
+		actividad.setUsuario(obtenerUsuario().getUsuarios_sucursales().get(0));
 		actividad.setDescripcion(
 				"Alta Cliente " + c.getId_cliente() + " por usuario: " + obtenerUsuario().getUsername());
 		
@@ -449,7 +459,7 @@ public class planPagoController {
 		Actividad_Usuario actividad2 = new Actividad_Usuario();
 		actividad2.setFecha(new Date());
 		actividad2.setHora(new Date());
-		actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
+		actividad2.setUsuario(obtenerUsuario().getUsuarios_sucursales().get(0));
 		actividad2.setDescripcion(
 				"Alta plan de pago " + plan_pago.getId_plan_pago() + " por usuario: " + obtenerUsuario().getUsername());
 		
@@ -575,7 +585,7 @@ public class planPagoController {
 		Actividad_Usuario actividad = new Actividad_Usuario();
 		
 		actividad.setFecha(new Date());
-		actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
+		actividad.setUsuario(obtenerUsuario().getUsuarios_sucursales().get(0));
 		actividad.setHora(new Date());
 		actividad.setDescripcion("Alta plan de pago " + plan_pago.getId_plan_pago() + " por usuario: " + obtenerUsuario().getUsername());
 		

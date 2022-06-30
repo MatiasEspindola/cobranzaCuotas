@@ -144,7 +144,7 @@
 													th:text="'Inicio: ' + ${#dates.format(historial.plan_pago.fecha_inicio,'dd/M/yyyy')}">
 													List
 													group item heading</h5>
-												<small
+												<small class="text-primary"
 													th:text="'Legajo Plan Pago: ' + ${historial.plan_pago.id_plan_pago}">3
 													days ago</small>
 											</div>
@@ -156,10 +156,10 @@
 											</p>
 											<p class="mb-1" th:text="'Cuotas: ' + ${historial.plan_pago.nro_cuotas}">
 											</p>
-											<p class="mb-1"
+											<p class="mb-1 text-info"
 												th:text="'Total: ' + '$ ' + ${#numbers.formatDecimal(historial.plan_pago.total, 0, 'POINT', 2, 'COMMA')}">
 											</p>
-											<p class="mb-1"
+											<p class="mb-1 text-primary"
 												th:text="'Valor Cuota: ' + '$ ' + ${#numbers.formatDecimal(historial.plan_pago.valor_cuota, 0, 'POINT', 2, 'COMMA')}">
 											</p>
 											<p class="mb-1"
@@ -167,6 +167,8 @@
 											</p>
 											<p class="mb-1"
 												th:text="'Abogado Parte Actora: ' + ${historial.plan_pago.pactora}"></p>
+													<p class="mb-1 text-primary"
+												th:text="'Plan de Pago generado en: ' + ${historial.actividad_usuario.usuario.sucursal.nombre_sucursal}"></p>
 											<small class="text-success"
 												th:text="${historial.plan_pago.activo ? 'Activo':'Inactivo'}"></small>
 										</a>

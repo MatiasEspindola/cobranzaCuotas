@@ -68,19 +68,19 @@
 					</ol>
 					<div class="row" th:if="${empresa != null}">
 						<div class="col-xl-3 col-md-3">
-							<div class="card bg-primary text-white mb-4">
+							<div class="card bg-primary text-white mb-4" sec:authorize="hasAuthority('Admin')">
 								<div class="card-body">Planes de Pagos</div>
 								<div class="card-footer d-flex align-items-center justify-content-between">
-									<a class="small text-white stretched-link disabled" href="#">Detalles</a>
+									<a class="small text-white stretched-link disabled" th:href="@{/planes_pagos}">Ver</a>
 									<div class="small text-white"><i class="fas fa-angle-right"></i></div>
 								</div>
 							</div>
 						</div>
 						<div class="col-xl-3 col-md-3">
-							<div class="card bg-danger text-white mb-4">
+							<div class="card bg-danger text-white mb-4" sec:authorize="hasAuthority('Admin')">
 								<div class="card-body">Deudas</div>
 								<div class="card-footer d-flex align-items-center justify-content-between">
-									<a class="small text-white stretched-link disabled" href="#">Detalles</a>
+									<a class="small text-white stretched-link disabled"  th:href="@{/deudas}">Ver</a>
 									<div class="small text-white"><i class="fas fa-angle-right"></i></div>
 								</div>
 							</div>
@@ -89,7 +89,7 @@
 							<div class="card bg-warning text-white mb-4" sec:authorize="hasAuthority('Admin')">
 								<div class="card-body">Informes</div>
 								<div class="card-footer d-flex align-items-center justify-content-between">
-									<a class="small text-white stretched-link disabled" th:href="@{/informes}">Detalles</a>
+									<a class="small text-white stretched-link disabled" th:href="@{/informes}">Ver</a>
 									<div class="small text-white"><i class="fas fa-angle-right"></i></div>
 								</div>
 							</div>
@@ -98,7 +98,7 @@
 							<div class="card bg-success text-white mb-4" sec:authorize="hasAuthority('Admin')">
 								<div class="card-body">Recibos</div>
 								<div class="card-footer d-flex align-items-center justify-content-between">
-									<a class="small text-white stretched-link disabled" href="#">Detalles</a>
+									<a class="small text-white stretched-link disabled" th:href="@{/recibos}">Ver</a>
 									<div class="small text-white"><i class="fas fa-angle-right"></i></div>
 								</div>
 							</div>

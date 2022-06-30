@@ -140,7 +140,7 @@ public class proveedorController {
 
 		actividad.setFecha(new Date());
 		actividad.setHora(new Date());
-		actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
+		actividad.setUsuario(obtenerUsuario().getUsuarios_sucursales().get(0));
 
 		if (proveedor.isActivo()) {
 			proveedor_Service.deshabilitar(proveedor, false);
@@ -230,7 +230,8 @@ public class proveedorController {
 				Actividad_Usuario actividad = new Actividad_Usuario();
 				actividad.setFecha(new Date());
 				actividad.setHora(new Date());
-				actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
+				actividad.setUsuario(obtenerUsuario().getUsuarios_sucursales().get(0));
+
 				actividad.setDescripcion("Alta proveedor " + proveedor.getId_proveedor() + " por usuario: "
 						+ obtenerUsuario().getUsername());
 

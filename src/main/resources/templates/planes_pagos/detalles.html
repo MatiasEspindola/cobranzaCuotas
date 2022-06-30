@@ -31,22 +31,23 @@
 		</div>
 		<div id="layoutSidenav_content">
 			<main>
-				<div class="alert alert-danger alert-dismissible fade show" role="alert"
-										style="margin:15px;" th:if="${error != null}">
-										<span th:text="${error}"></span>
-										<button type="button" class="btn-close" data-bs-dismiss="alert"
-											aria-label="Close"></button>
-									</div>
+				<div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin:15px;"
+					th:if="${error != null}">
+					<span th:text="${error}"></span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
 
 				<div class="container-fluid px-4">
 					<h1 class="mt-4">Detalles Plan de Pago</h1>
 					<ol class="breadcrumb mb-4">
-						<li class="breadcrumb-item"><a th:href="@{/clientes/detalles/} + ${cliente.id_cliente}">Detalles Cliente</a></li>
+						<li class="breadcrumb-item"><a th:href="@{/clientes/detalles/} + ${cliente.id_cliente}">Detalles
+								Cliente</a></li>
 						<li class="breadcrumb-item active">Detalles Plan de Pago</li>
 					</ol>
 					<div class="card mb-4">
 						<div class="card-body">
-							Aquí se detalla el plan de pago del cliente <span th:text="${cliente.cliente}"></span>. Puede consultar el Manual del Usuario en:
+							Aquí se detalla el plan de pago del cliente <span th:text="${cliente.cliente}"></span>.
+							Puede consultar el Manual del Usuario en:
 							<a target="_blank" href="https://datatables.net/">Manual del Usuario</a>
 							.
 						</div>
@@ -110,8 +111,8 @@
 
 								<div class="col-md-6 col-lg-3 col-sm-12">
 									<br>
-									<div class="card text-white bg-success mb-3">
-										<div class="card-header"><b>Pagado</b></div>
+									<div class="card text-dark bg-ligth mb-3">
+										<div class="card-header"><b>Abonado</b></div>
 										<div class="card-body">
 											<h5 class="card-title"
 												th:text="'$ ' + ${#numbers.formatDecimal(pagado, 1, 'POINT', 2, 'COMMA')}">
@@ -123,8 +124,23 @@
 
 							</div>
 
+						
+								<ul class="list-group">
+								<li class="list-group-item d-flex justify-content-between align-items-center text-success">
+										Cuotas Canceladas
+										<span class="badge bg-success rounded-pill" th:text="${pagadas}">14</span>
+									</li>
+									<li class="list-group-item d-flex justify-content-between align-items-center text-danger">
+										Cuotas Vencidas
+										<span class="badge bg-danger rounded-pill" th:text="${vencidas}">14</span>
+									</li>
+								</ul>
+								
+								<br>
+						
+
 							<form style="font-size: 12px;" th:action="@{/pagos/generar_pago}" method="post">
-							
+
 								<div class="table-responsive">
 									<table class="table table-sm text-center" style="max-width: 100%;">
 										<thead class="bg-dark text-white">
@@ -140,7 +156,7 @@
 												<th class="border-white" scope="col">IVA Honorarios</th>
 												<th class="border-white" scope="col">Gastos</th>
 												<th class="border-white bg-primary text-white" scope="col">Valor</th>
-												<th class="border-white bg-secondary text-white" scope="col">Pendiente
+												<th class="border-white"  scope="col">Estado
 												</th>
 												<th class="border-white bg-dark text-white" scope="col">Pagar</th>
 											</tr>
@@ -148,42 +164,51 @@
 										<tbody>
 											<tr th:each="cuota : ${plan_pago.cuotas}">
 
-												<td th:class="${cuota.pagado ? 'bg-success text-white':''}"
+												<td 
 													th:text=" ${cuota.nro_cuota}">1,001</td>
-												<td th:class="${cuota.pagado ? 'bg-success text-white':''}"
+												<td 
 													th:text="${#dates.format(cuota.fecha,'dd/M/yyyy')}">1,001</td>
-												<td th:class="${cuota.pagado ? 'bg-success text-white':''}"
+												<td
 													th:text=" '$ ' + ${#numbers.formatDecimal(cuota.deuda_nominal, 0, 'POINT', 2, 'COMMA')} ">
 													1,001</td>
-												<td th:class="${cuota.pagado ? 'bg-success text-white':''}"
+												<td 
 													th:text=" '$ ' + ${#numbers.formatDecimal(cuota.cuota_nominal, 0, 'POINT', 2, 'COMMA')} ">
 													1,001</td>
-												<td th:class="${cuota.pagado ? 'bg-success text-white':''}"
+												<td 
 													th:text=" '$ ' + ${#numbers.formatDecimal(cuota.honorarios, 0, 'POINT', 2, 'COMMA')}">
 													1,001</td>
-												<td th:class="${cuota.pagado ? 'bg-success text-white':''}"
+												<td 
 													th:text=" '$ ' + ${#numbers.formatDecimal(cuota.interes, 0, 'POINT', 2, 'COMMA')}">
 													1,001</td>
-												<td th:class="${cuota.pagado ? 'bg-success text-white':''}"
+												<td
 													th:text=" ${#numbers.formatDecimal(cuota.iva_interes, 1, 'POINT', 2, 'COMMA')} + '%'">
 													1,001</td>
-												<td th:class="${cuota.pagado ? 'bg-success text-white':''}"
+												<td 
 													th:text=" ${#numbers.formatDecimal(cuota.iva_honorarios, 1, 'POINT', 2, 'COMMA')} + '%'">
 													1,001</td>
-												<td th:class="${cuota.pagado ? 'bg-success text-white':''}"
+												<td 
 													th:text=" '$ ' + ${#numbers.formatDecimal(plan_pago.gasto, 0, 'POINT', 2, 'COMMA')}">
 													1,001</td>
-												<td th:class="${cuota.pagado ? 'bg-success text-white':'bg-primary text-white'}"
+												<td class="bg-primary text-white"
 													th:id="'valor_cuota_txt_'+${cuota.nro_cuota}"
 													th:text=" '$ ' + ${#numbers.formatDecimal(cuota.valor, 0, 'POINT', 2, 'COMMA')}">
 													1,001</td>
 												<td class="d-none" th:id="'valor_cuota_'+${cuota.nro_cuota}"
 													th:text="${cuota.valor}">
 													1,001</td>
-												<td th:class="${cuota.pagado ? 'bg-success text-white':'bg-secondary text-white'}"
-													th:text="'$ ' + ${#numbers.formatDecimal(cuota.pendiente, 1, 'POINT', 2, 'COMMA')}">
-													1,001</td>
-												<td th:class="${cuota.pagado ? 'bg-success text-white':''}">
+												<td 
+													>
+													
+													<span
+													th:text="'$ ' + ${#numbers.formatDecimal(cuota.pendiente, 1, 'POINT', 2, 'COMMA')}"
+													></span>
+													<br>
+													<small class="text-success" th:if="${cuota.pagado}">(*) Pagado </small>
+													<small class="text-primary" th:if="${!cuota.pagado and !cuota.vencida}">(*) Al día</small>
+													<small class="text-danger" th:if="${cuota.vencida}">(*) Vencida</small>
+													
+													</td>
+												<td >
 													<input class="form-check-input" type="checkbox"
 														th:value="${cuota.id_cuota}" name="cuotas[]" id=""
 														th:if="${!cuota.pagado}">
@@ -217,7 +242,8 @@
 																			<div
 																				class="card text-white bg-secondary mb-3">
 																				<div class="card-header">
-																					<b>Pendiente</b></div>
+																					<b>Pendiente</b>
+																				</div>
 																				<div class="card-body">
 
 																					<h5 class="card-title"
@@ -302,8 +328,9 @@
 										</tbody>
 									</table>
 
-									<input class="d-none" th:value="${plan_pago.id_plan_pago}" name="id_plan_pago" id="">
-										<input class="d-none" th:value="${cliente.id_cliente}" name="id_cliente" id="">
+									<input class="d-none" th:value="${plan_pago.id_plan_pago}" name="id_plan_pago"
+										id="">
+									<input class="d-none" th:value="${cliente.id_cliente}" name="id_cliente" id="">
 
 									<button type="submit" class="btn btn-primary">
 										Generar Pago

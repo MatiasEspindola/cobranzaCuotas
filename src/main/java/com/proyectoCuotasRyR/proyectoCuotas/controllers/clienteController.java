@@ -247,7 +247,7 @@ public class clienteController {
 
 		actividad.setFecha(new Date());
 		actividad.setHora(new Date());
-		actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
+		actividad.setUsuario(obtenerUsuario().getUsuarios_sucursales().get(0));
 
 		if (cliente.isActivo()) {
 			cliente_Service.deshabilitar(cliente, false);
@@ -328,7 +328,7 @@ public class clienteController {
 
 				actividad.setFecha(new Date());
 				actividad.setHora(new Date());
-				actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
+				actividad.setUsuario(obtenerUsuario().getUsuarios_sucursales().get(0));
 				actividad.setDescripcion(
 						"Alta Cliente " + cliente.getId_cliente() + " por usuario: " + obtenerUsuario().getUsername());
 

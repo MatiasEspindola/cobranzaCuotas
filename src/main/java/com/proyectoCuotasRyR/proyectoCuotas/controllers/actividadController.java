@@ -62,7 +62,7 @@ public class actividadController {
 		
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 		
-		model.addAttribute("actividades", usuarioSucursalService.buscarPorUsuario(obtenerUsuario()).getActividades()); 
+		model.addAttribute("actividades", usuarioSucursalService.buscarPorUsuario(obtenerUsuario()).get(0).getActividades()); 
 		
 		return "actividades/actividad";
 	}
@@ -92,7 +92,7 @@ public class actividadController {
 		
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 		
-		model.addAttribute("actividades", usuarioSucursalService.buscarPorUsuario(usuario).getActividades()); 
+		model.addAttribute("actividades", usuarioSucursalService.buscarPorUsuario(usuario).get(0).getActividades()); 
 		
 		model.addAttribute("usuario", obtenerUsuario());
 		

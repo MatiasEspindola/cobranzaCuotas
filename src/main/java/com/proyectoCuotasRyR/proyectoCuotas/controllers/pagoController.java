@@ -359,7 +359,7 @@ public class pagoController {
 		Actividad_Usuario actividad = new Actividad_Usuario();
 		actividad.setFecha(new Date());
 		actividad.setHora(new Date());
-		actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
+		actividad.setUsuario(obtenerUsuario().getUsuarios_sucursales().get(0));
 		actividad.setDescripcion("Recibo ID: " + recibo.getId_recibo() + ", generado con éxito");
 		
 		actividadService.guardar_actividad(actividad);

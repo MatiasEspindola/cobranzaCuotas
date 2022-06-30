@@ -412,15 +412,17 @@
 
 
 				var mes = (fecha_inicio.getMonth());
+			
 
 
 
 				for (var i = 1; i <= nro_cuotas; i++) {
 
 
-					fecha_inicio = new Date();
+						fecha_inicio = parseDate(document.getElementById("fecha_inicio").value);
 					fecha_inicio.setDate(dia);
 					fecha_inicio.setMonth((mes + i));
+				
 
 
 					var cuota = new Cuota(
@@ -474,6 +476,7 @@
 
 				var mes = (fecha_inicio.getMonth());
 				var dia = (fecha_inicio.getDate());
+				
 
 
 
@@ -486,9 +489,10 @@
 
 
 
-					fecha_inicio = new Date();
+					fecha_inicio = parseDate(document.getElementById("fecha_inicio").value);
 					fecha_inicio.setDate(dia);
 					fecha_inicio.setMonth((mes + i));
+					
 
 
 					var cuota = new Cuota(

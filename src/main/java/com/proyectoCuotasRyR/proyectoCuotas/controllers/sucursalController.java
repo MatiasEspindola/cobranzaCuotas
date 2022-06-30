@@ -119,6 +119,42 @@ public class sucursalController {
 
 		return "sucursales/registrar";
 	}
+	
+	@PreAuthorize("hasAuthority('Admin')")
+	@GetMapping("/detalles/{id_sucursal}")
+	public String detalles(Model model, @PathVariable long id_sucursal, RedirectAttributes redirectAttrs) {
+
+		if (!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+
+		if (sucursalService.buscarPorId(id_sucursal) == null) {
+			redirectAttrs.addFlashAttribute("error", "Sucursal con ese ID no existe");
+
+			return "redirect:/";
+		}
+
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0) {
+
+			redirectAttrs.addFlashAttribute("error", "No hay empresa o sucursales registradas");
+
+			return "redirect:/";
+		}
+		
+		Sucursal sucursal = sucursalService.buscarPorId(id_sucursal);
+
+		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+		model.addAttribute("usuario", obtenerUsuario());
+		model.addAttribute("sucursal", sucursal);
+		
+		//Usuario_Sucursal usuario_sucursal = usuarioSucursalService.buscarPorSucursal(sucursal);
+		
+		//for(Actividad_Usuario)
+
+
+
+		return "sucursales/detalles";
+	}
 
 	@PreAuthorize("hasAuthority('Admin')")
 	@GetMapping("/registrar/{id_sucursal}")
@@ -186,34 +222,41 @@ public class sucursalController {
 
 			if (!editar) {
 
-				boolean casa_central = false;
+				boolean existe_casa_central = false;
 
 				for (Sucursal suc : sucursalService.listar()) {
 					if (suc.isEs_casa_central()) {
-						casa_central = true;
+						existe_casa_central = true;
 						break;
 					}
 				}
 
 				sucursal.setEmpresa(empresaService.listar_todo().get(0));
-				sucursal.setEs_casa_central(!casa_central);
+				
+				if(existe_casa_central) {
+					sucursal.setEs_casa_central(false);
+				}else {
+					sucursal.setEs_casa_central(true);
+				}
+				
+			
 				sucursalService.guardar(sucursal, true);
 
 				Actividad_Usuario actividad = new Actividad_Usuario();
-
-				if (!casa_central) {
+				
+				if(sucursal.isEs_casa_central()) {
 					Usuario_Sucursal usuario_sucursal = new Usuario_Sucursal();
-
-					usuario_sucursal.setUsuario(obtenerUsuario());
 					usuario_sucursal.setSucursal(sucursal);
-
+					usuario_sucursal.setUsuario(obtenerUsuario());
 					usuarioSucursalService.guardar(usuario_sucursal);
-
+					
 					actividad.setUsuario(usuario_sucursal);
 				} else {
-					actividad.setUsuario(usuarioSucursalService.buscarPorUsuario(obtenerUsuario()));
+					actividad.setUsuario(obtenerUsuario().getUsuarios_sucursales().get(0));
 				}
 
+			
+				
 				actividad.setFecha(new Date());
 				actividad.setHora(new Date());
 				actividad.setDescripcion("Alta Sucursal " + sucursal.getId_sucursal() + " por usuario: "

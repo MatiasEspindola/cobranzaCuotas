@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="layout :: head">
+
+</head>
+
+<body class="sb-nav-fixed">
+	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+		<div th:replace="layout :: brand"></div>
+		<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+
+		</form>
+
+		<ul th:replace="layout :: navbar">
+
+		</ul>
+	</nav>
+	<div id="layoutSidenav">
+		<div id="layoutSidenav_nav">
+			<nav class="sb-sidenav accordion text-dark" id="sidenavAccordion">
+				<div class="sb-sidenav-menu">
+					<div class="nav" th:replace="layout :: sidenav">
+
+					</div>
+				</div>
+				<div th:replace="layout :: user">
+
+				</div>
+			</nav>
+		</div>
+		<div id="layoutSidenav_content">
+			<main>
+			
+				<div class="alert alert-danger alert-dismissible fade show" role="alert"
+										style="margin:15px;" th:if="${error != null}">
+										<span th:text="${error}"></span>
+										<button type="button" class="btn-close" data-bs-dismiss="alert"
+											aria-label="Close"></button>
+									</div>
+
+
+				<div class="container-fluid px-4">
+					<h1 class="mt-4">Detalles Sucursal</h1>
+					<ol class="breadcrumb mb-4">
+						<li class="breadcrumb-item"><a th:href="@{/sucursales/listar}">Listar Sucursales</a></li>
+						<li class="breadcrumb-item active">Detalles Sucursales</li>
+					</ol>
+					<div class="card mb-4">
+						<div class="card-body">
+							<span>Detalles de la Sucursal: <span th:text="${sucursal.nombre_sucursal}"></span> </span>
+						</div>
+					</div>
+					<div class="card mb-4">
+						<div class="card-header">
+							<i class="fas fa-table me-1"></i>
+							Detalles Sucursal
+						</div>
+						<div class="card-body">
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingOne">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne"
+     >
+        Accordion Item #1
+      </button>
+    </h2>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingTwo">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+        Accordion Item #2
+      </button>
+    </h2>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+        Accordion Item #3
+      </button>
+    </h2>
+    <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+    </div>
+  </div>
+</div>
+
+						</div>
+					</div>
+				</div>
+
+			</main>
+			<footer th:replace="layout :: footer">
+
+			</footer>
+		</div>
+	</div>
+	<div th:replace="layout :: script">
+
+	</div>
+</body>
+
+</html>
