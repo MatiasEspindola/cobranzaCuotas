@@ -151,10 +151,17 @@ public class planPagoController {
 			redirectAttrs.addFlashAttribute("error", "No existe un cliente con ese ID");
 			return "redirect:/";
 		}
+		
+		if(!planPagoService.buscarPorId(id).isActivo()) {
+			redirectAttrs.addFlashAttribute("error", "Plan de Pago deshabilitado");
+			return "redirect:/clientes/detalles/" + id_cliente;
+		}
 
 		Plan_Pago plan_pago = planPagoService.buscarPorId(id);
 		
 		Cliente cliente = clienteService.buscarPorId(id_cliente);
+		
+		this.cliente = cliente;
 		
 		model.addAttribute("cliente", cliente);
 		
@@ -177,6 +184,29 @@ public class planPagoController {
 		
 		int vencidas = 0;
 		int pagadas = 0;
+		int saldo_pendiente = 0;
+		int al_dia = 0;
+		
+		
+		for(Cuota cuota : plan_pago.getCuotas()) {
+			if(!cuota.isPagado()) {
+				if(!cuota.isVencida()) {
+					Date hoy = new Date();
+					Date vencimiento_cuota = cuota.getFecha();
+					
+					if(hoy.after(vencimiento_cuota)) {
+						cuota.setVencida(true);
+						cuotaService.guardar(cuota);
+						System.out.println("Hoy: " + hoy);
+						System.out.println("Vencimiento cuota: " + vencimiento_cuota);
+						System.out.println("Cuota ID: " + cuota.getId_cuota());
+						System.out.println("Plan Pago ID: " + cuota.getId_plan_pago().getId_plan_pago());
+					}
+					
+					
+				}
+			}
+		}
 		
 		for(Cuota cuota : plan_pago.getCuotas()) {
 			if(cuota.getImportes().size() > 0) {
@@ -188,7 +218,15 @@ public class planPagoController {
 			if(!cuota.isPagado()) {
 				pendiente += cuota.getPendiente();
 				if(cuota.isVencida()) {
+				
 					vencidas++;
+				}else {
+					if(cuota.getPendiente() > 0 && cuota.getPendiente() < cuota.getValor()) {
+						saldo_pendiente++;
+						
+					}else {
+						al_dia++;
+					}
 				}
 			}else {
 				pagadas++;
@@ -199,6 +237,8 @@ public class planPagoController {
 		model.addAttribute("pendiente", pendiente);
 		model.addAttribute("vencidas", vencidas);
 		model.addAttribute("pagadas", pagadas);
+		model.addAttribute("al_dia", al_dia);
+		model.addAttribute("saldo_pendiente", saldo_pendiente);
 		
 		
 		Usuario usuario = obtenerUsuario();
@@ -295,22 +335,7 @@ public class planPagoController {
 		return "planes_pagos/clientes/simular_cuotas";
 	}
 
-	@GetMapping("/deshabilitar/{id_plan_pago}")
-	public String eliminar(Model model, @PathVariable(name = "id_plan_pago") long id_plan_pago) {
-
-		if(!obtenerUsuario().isActivo()) {
-			return "redirect:/inactivo";
-		}
-		
-		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
-
-			return "redirect:/";
-		}
-		
-		planPagoService.eliminar(planPagoService.buscarPorId(id_plan_pago));
-
-		return "redirect:/planes_pagos/simular_cuotas";
-	}
+	
 
 	@PostMapping("/simular_cuotas")
 	public String simular_cuotas(@Valid Plan_Pago plan_pago,

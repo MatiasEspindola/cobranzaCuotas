@@ -98,7 +98,7 @@
 										th:href="@{/sucursales/deshabilitar/} + ${sucursal.id_sucursal}"> </a>
 										</td>
 										<td >
-										<a 
+										<a th:if="${sucursal.usuarios_sucursales.size() > 0 and sucursal.activo}"
 										th:href="@{/sucursales/detalles/} + ${sucursal.id_sucursal}"> Detalles </a>
 										</td>
 									</tr>

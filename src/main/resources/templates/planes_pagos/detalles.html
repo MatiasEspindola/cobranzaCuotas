@@ -134,6 +134,14 @@
 										Cuotas Vencidas
 										<span class="badge bg-danger rounded-pill" th:text="${vencidas}">14</span>
 									</li>
+									<li class="list-group-item d-flex justify-content-between align-items-center text-warning">
+										Cuotas con Saldo Pendiente
+										<span class="badge bg-warning rounded-pill" th:text="${saldo_pendiente}">14</span>
+									</li>
+										<li class="list-group-item d-flex justify-content-between align-items-center text-primary">
+										Cuotas al día
+										<span class="badge bg-primary rounded-pill" th:text="${al_dia}">14</span>
+									</li>
 								</ul>
 								
 								<br>
@@ -204,7 +212,8 @@
 													></span>
 													<br>
 													<small class="text-success" th:if="${cuota.pagado}">(*) Pagado </small>
-													<small class="text-primary" th:if="${!cuota.pagado and !cuota.vencida}">(*) Al día</small>
+													<small class="text-warning" th:if="${cuota.pendiente > 0 and (cuota.pendiente < cuota.valor)}">(*) Saldo Pendiente</small>
+													<small class="text-primary" th:if="${!cuota.vencida and (!cuota.pagado and cuota.pendiente == cuota.valor) }">(*) Al día</small>
 													<small class="text-danger" th:if="${cuota.vencida}">(*) Vencida</small>
 													
 													</td>

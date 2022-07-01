@@ -92,6 +92,12 @@ public class Sucursal {
 	@JsonIgnore
 	private List<Historial_Sucursal> historiales;
 	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "fk_sucursal")
+	@JsonManagedReference
+	@JsonIgnore
+	private List<Usuario_Sucursal> usuarios_sucursales;
+	
 	
 	
 	public List<Historial_Sucursal> getHistoriales() {
@@ -198,5 +204,15 @@ public class Sucursal {
 	public void setEs_casa_central(boolean es_casa_central) {
 		this.es_casa_central = es_casa_central;
 	}
+
+	public List<Usuario_Sucursal> getUsuarios_sucursales() {
+		return usuarios_sucursales;
+	}
+
+	public void setUsuarios_sucursales(List<Usuario_Sucursal> usuarios_sucursales) {
+		this.usuarios_sucursales = usuarios_sucursales;
+	}
+	
+	
 
 }

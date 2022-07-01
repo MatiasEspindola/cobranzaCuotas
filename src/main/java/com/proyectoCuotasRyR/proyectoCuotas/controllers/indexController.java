@@ -92,29 +92,7 @@ public class indexController {
 		model.addAttribute("empresa", empresa);
 		model.addAttribute("usuario", obtenerUsuario());
 		
-		if(cuotaService.listarTodo().size() > 0) {
-			
-			for(Cuota cuota : cuotaService.listarTodo()) {
-				if(!cuota.isPagado()) {
-					if(!cuota.isVencida()) {
-						Date hoy = new Date();
-						Date vencimiento_cuota = cuota.getFecha();
-						
-						if(hoy.after(vencimiento_cuota)) {
-							cuota.setVencida(true);
-							cuotaService.guardar(cuota);
-							System.out.println("Hoy: " + hoy);
-							System.out.println("Vencimiento cuota: " + vencimiento_cuota);
-							System.out.println("Cuota ID: " + cuota.getId_cuota());
-							System.out.println("Plan Pago ID: " + cuota.getId_plan_pago().getId_plan_pago());
-						}
-						
-						
-					}
-				}
-			}
-			
-		}
+	
 
 		return "index";
 	}

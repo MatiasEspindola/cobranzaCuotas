@@ -35,11 +35,11 @@
 					<h1 class="mt-4"> </h1>
 					<ol class="breadcrumb mb-4">
 						<li class="breadcrumb-item"><a th:href="@{/}">Tablero</a></li>
-						<li class="breadcrumb-item active"></li>Planes Pagos
+						<li class="breadcrumb-item active"></li>Informes Planes de Pagos
 					</ol>
 					<div class="card mb-4">
 						<div class="card-body">
-							Aquí puede ver los planes de pagos. Puede consultar el Manual del Usuario en:
+							Aquí puede ver los informes de planes de pagos. Puede consultar el Manual del Usuario en:
 							<a target="_blank" href="https://datatables.net/">Manual del Usuario</a>
 							.
 						</div>
@@ -47,7 +47,7 @@
 					<div class="card mb-4">
 						<div class="card-header">
 							<i class="fas fa-table me-1"></i>
-							Planes de Pagos
+							Informes Planes de Pagos
 						</div>
 						<div class="card-body">
 						
@@ -60,7 +60,7 @@
 										<th>Proveedor</th>
 										<th>Fecha de Inicio</th>
 										<th>Sucursal</th>
-									
+										<th>¿Activo?</th>
 										<th>Detalles</th>
 									</tr>
 								</thead>
@@ -71,7 +71,7 @@
 										<th>Proveedor</th>
 										<th>Fecha de Inicio</th>
 										<th>Sucursal</th>
-									
+										<th>¿Activo?</th>
 										<th>Detalles</th>
 									</tr>
 								</tfoot>
@@ -84,6 +84,11 @@
 										<td th:text=${historial.plan_pago.id_proveedor.razon_social}></td>
 										<td th:text=${historial.plan_pago.fecha_inicio}></td>
 										<td th:text=${historial.actividad_usuario.usuario.sucursal.nombre_sucursal}></td>
+										<td>
+											<a th:href="@{/deshabilitar/} + ${historial.plan_pago.id_plan_pago}"
+											th:text="${historial.plan_pago.activo ? 'Si':'No'}"
+											th:classappend="${historial.plan_pago.activo ? 'text-success':'text-danger'}">Activo</a>
+										</td>
 										<td>
 											<a th:href="@{/planes_pagos/detalles/} + ${historial.plan_pago.id_plan_pago} + '/' + ${historial.ctactecliente.cliente.id_cliente}">Detalles</a>
 										</td>

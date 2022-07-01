@@ -49,6 +49,10 @@
 					<div class="card mb-4">
 						<div class="card-body">
 							<span>Detalles del Cliente: <span th:text="${cliente.cliente}"></span> </span>
+							<br>
+							<span>Documento del Cliente: <span th:text="${cliente.nro_documento}"></span> </span>
+							<br>
+							<span>Tipo Documento: <span th:text="${cliente.tipo_documento.tipo_documento}"></span> </span>
 						</div>
 					</div>
 					<div class="card mb-4">
@@ -169,9 +173,10 @@
 												th:text="'Abogado Parte Actora: ' + ${historial.plan_pago.pactora}"></p>
 													<p class="mb-1 text-primary"
 												th:text="'Plan de Pago generado en: ' + ${historial.actividad_usuario.usuario.sucursal.nombre_sucursal}"></p>
-											<small class="text-success"
-												th:text="${historial.plan_pago.activo ? 'Activo':'Inactivo'}"></small>
+											
 										</a>
+										
+									
 									</div>
 									<br>
 								</div>

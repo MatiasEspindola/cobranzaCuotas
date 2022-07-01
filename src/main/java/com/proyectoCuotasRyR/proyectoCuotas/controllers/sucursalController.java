@@ -147,7 +147,12 @@ public class sucursalController {
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("sucursal", sucursal);
 		
-		//Usuario_Sucursal usuario_sucursal = usuarioSucursalService.buscarPorSucursal(sucursal);
+		
+		List<Usuario_Sucursal> usuario_sucursal = usuarioSucursalService.buscarPorSucursal(sucursal);
+		
+		model.addAttribute("us", usuario_sucursal.get(0));
+		
+		System.out.println(usuario_sucursal.size());
 		
 		//for(Actividad_Usuario)
 

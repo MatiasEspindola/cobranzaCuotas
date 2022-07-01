@@ -88,6 +88,44 @@ public class Plan_Pago {
 	private boolean activo;
 	private boolean completado;
 	private boolean irrecuperable;
+	private boolean normal;
+	private boolean riesgo_bajo;
+	private boolean riesgo_medio;
+	private boolean riesgo_alto;
+	
+	
+
+	public boolean isNormal() {
+		return normal;
+	}
+
+	public void setNormal(boolean normal) {
+		this.normal = normal;
+	}
+
+	public boolean isRiesgo_bajo() {
+		return riesgo_bajo;
+	}
+
+	public void setRiesgo_bajo(boolean riesgo_bajo) {
+		this.riesgo_bajo = riesgo_bajo;
+	}
+
+	public boolean isRiesgo_medio() {
+		return riesgo_medio;
+	}
+
+	public void setRiesgo_medio(boolean riesgo_medio) {
+		this.riesgo_medio = riesgo_medio;
+	}
+
+	public boolean isRiesgo_alto() {
+		return riesgo_alto;
+	}
+
+	public void setRiesgo_alto(boolean riesgo_alto) {
+		this.riesgo_alto = riesgo_alto;
+	}
 
 	public long getId_plan_pago() {
 		return id_plan_pago;
