@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Plan_Pago;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Plan_Pago;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
@@ -19,6 +20,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Actividad_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Historial_Plan_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Historial_Recibo_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Historial_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Recibo_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Usuario_Sucursal_Service;
@@ -59,6 +61,9 @@ public class consultasController {
 	@Autowired
 	private I_Historial_Recibo_Service historialReciboService;
 	
+	@Autowired
+	private I_Historial_Sucursal_Service historialSucursalService;
+	
 
 	@Autowired
 	private I_Actividad_Service actividadService;
@@ -80,7 +85,9 @@ public class consultasController {
 		Usuario usuario = obtenerUsuario();
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 		model.addAttribute("usuario", usuario);
-		model.addAttribute("historial_plan_pago", historialPlanPagoService.listar());
+		model.addAttribute("historial_sucursal", historialSucursalService.listarTodo());
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 		
 		
 		
@@ -106,6 +113,42 @@ public class consultasController {
 		model.addAttribute("usuario", usuario);
 		model.addAttribute("historial_plan_pago", historialPlanPagoService.listar());
 		
+		int completado = 0;
+		int normal = 0;
+		int riesgo_bajo = 0;
+		int riesgo_medio = 0;
+		int riesgo_alto = 0;
+		int irrecuperable = 0;
+		
+		if(historialPlanPagoService.listar().size() > 0) {
+			for(Historial_Plan_Pago historial : historialPlanPagoService.listar()) {
+				Plan_Pago plan_pago = historial.getPlan_pago();
+				
+				if(plan_pago.isCompletado()) {
+					completado++;
+				}else if(plan_pago.isNormal()) {
+					normal++;
+				}else if(plan_pago.isRiesgo_bajo()) {
+					riesgo_bajo++;
+				}else if(plan_pago.isRiesgo_medio()) {
+					riesgo_medio++;
+				}else if(plan_pago.isRiesgo_alto()) {
+					riesgo_alto++;
+				}else if(plan_pago.isIrrecuperable()) {
+					irrecuperable++;
+				}
+				
+			}
+		}
+		
+		model.addAttribute("completado", completado);
+		model.addAttribute("normal", normal);
+		model.addAttribute("riesgo_bajo", riesgo_bajo);
+		model.addAttribute("riesgo_medio", riesgo_medio);
+		model.addAttribute("riesgo_alto", riesgo_alto);
+		model.addAttribute("irrecuperable", irrecuperable);
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 		
 		
 		return "informes_planes_pagos";
@@ -195,7 +238,7 @@ public class consultasController {
 			plan_pago.setActivo(true);
 		}
 		
-	
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 		
 		planPagoService.guardar(planPagoService.buscarPorId(id_plan_pago));
 

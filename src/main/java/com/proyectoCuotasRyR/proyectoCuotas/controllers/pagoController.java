@@ -129,6 +129,8 @@ public class pagoController {
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("planes_pagos", planPagoService.listarTodo());
 		model.addAttribute("clientes", clienteService.listarTodo());
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		return "pagos/listar";
 	}
@@ -183,6 +185,8 @@ public class pagoController {
 		}
 
 		model.addAttribute("total", total);
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		return "pagos/generar_pago";
 	}
@@ -293,6 +297,9 @@ public class pagoController {
 							importe_limite -= cuota.getPendiente();
 							importe.setImporte(cuota.getPendiente());
 							cuota.setPendiente(0);
+							cuota.setVencida(false);
+						
+							
 							cuota.setPagado(true);
 							detalles = "Cancela cuota nro: " + cuota.getNro_cuota();
 						}else {
@@ -301,6 +308,7 @@ public class pagoController {
 								detalles = "Cancela cuota nro: " + cuota.getNro_cuota();
 								cuota.setPendiente(0);
 								cuota.setPagado(true);
+								cuota.setVencida(false);
 							}else {
 								cuota.setPagado(false);
 								detalles = "Abona parcialmente cuota nro: " + cuota.getNro_cuota();

@@ -36,6 +36,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_GeoService;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Responsable_Iva_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
@@ -62,6 +63,9 @@ public class empresaController {
 
 	@Autowired
 	private I_UploadFile_Service upl;
+	
+	@Autowired
+	private I_Plan_Pago_Service planPagoService;
 
 	private boolean editar;
 
@@ -105,6 +109,8 @@ public class empresaController {
 		model.addAttribute("empresa", empresa);
 
 		model.addAttribute("usuario", obtenerUsuario());
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		return "empresas/registrar";
 	}
@@ -132,6 +138,8 @@ public class empresaController {
 		model.addAttribute("empresa", empresa);
 
 		model.addAttribute("usuario", obtenerUsuario());
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		return "empresas/registrar";
 	}

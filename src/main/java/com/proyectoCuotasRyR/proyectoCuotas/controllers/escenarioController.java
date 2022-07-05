@@ -70,6 +70,8 @@ public class escenarioController {
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("plan_pago", plan_pago_Service.buscarPorId(id_plan_pago));
 		
+		model.addAttribute("notificaciones", plan_pago_Service.listarTodo());
+		
 		return "escenarios/seleccionar_opcion";
 	}
 	
@@ -88,6 +90,8 @@ public class escenarioController {
 		model.addAttribute("usuario", obtenerUsuario());
 		
 		model.addAttribute("cliente", cliente);
+		
+		model.addAttribute("notificaciones", plan_pago_Service.listarTodo());
 		
 		return "escenarios/clientes/formulario";
 	}

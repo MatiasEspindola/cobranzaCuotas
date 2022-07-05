@@ -48,12 +48,7 @@
 											aria-label="Close"></button>
 									</div>
 
-									<div class="alert alert-success alert-dismissible fade show" role="alert"
-										style="margin:15px;" th:if="${success != null}">
-										<span th:text="${success}"></span>
-										<button type="button" class="btn-close" data-bs-dismiss="alert"
-											aria-label="Close"></button>
-									</div>
+								
 
 									<div class="alert alert-primary alert-dismissible fade show" role="alert"
 										style="margin:15px;" th:if="${info != null}">
@@ -61,6 +56,22 @@
 										<button type="button" class="btn-close" data-bs-dismiss="alert"
 											aria-label="Close"></button>
 									</div>
+									
+									<div class="toast-container position-fixed bottom-0 end-0 p-3"
+									style="z-index: 1;">
+  <div th:if="${success != null}" id="liveToast" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+     
+      <strong class="me-auto text-success">¡Bienvenido!</strong>
+    
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body text-success" th:text="${success}">
+      Hello, world! This is a toast message.
+    </div>
+  </div>
+</div>
+
 				
 					<h1 class="mt-4">Tablero</h1>
 					<ol class="breadcrumb mb-4">

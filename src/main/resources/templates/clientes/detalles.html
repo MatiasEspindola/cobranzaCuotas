@@ -98,7 +98,15 @@
 													
 													<div class="ms-2 me-auto">
 													
-														<span class="fw-bold text-center" th:text="${i.index + 1} + ') ' + ${'Debe: ' + cta_cte.debe + ' - Haber: ' + cta_cte.haber + ' - Saldo: ' + cta_cte.saldo}"></span>
+														<span class="fw-bold text-center"
+														>
+														
+														<span th:text="'Debe: ' + ${#numbers.formatDecimal(cta_cte.debe, 1, 'POINT', 2, 'COMMA')}"></span>
+														<span th:text="'Haber: ' + ${#numbers.formatDecimal(cta_cte.haber, 1, 'POINT', 2, 'COMMA')}"></span>
+														<span th:text="'Saldo: ' + ${#numbers.formatDecimal(cta_cte.saldo, 1, 'POINT', 2, 'COMMA')}"></span>
+	
+														
+														</span>
 													
 														<div th:each="historial: ${cta_cte.historiales_altas_clientes}">
 															<a th:text="${historial.concepto}" th:href="@{/clientes/detalles/} + ${historial.ctactecliente.cliente.id_cliente}">
@@ -116,7 +124,6 @@
 																A list item</a>
 														</div>
 													
-														
 													
 													</div>
 													
@@ -173,6 +180,65 @@
 												th:text="'Abogado Parte Actora: ' + ${historial.plan_pago.pactora}"></p>
 													<p class="mb-1 text-primary"
 												th:text="'Plan de Pago generado en: ' + ${historial.actividad_usuario.usuario.sucursal.nombre_sucursal}"></p>
+											<p class="list-group-item bg-success text-white"
+											th:if="${historial.plan_pago.completado}"
+										
+											>
+											
+											Plan de Pago Completado
+											
+											
+											</p>
+											
+											<p class="list-group-item bg-danger text-white"
+											th:if="${historial.plan_pago.irrecuperable}"
+										
+											>
+											
+											Plan de Pago Irrecuperable
+											
+											
+											</p>
+											
+											<p class="list-group-item bg-ligth text-dark"
+											th:if="${historial.plan_pago.riesgo_bajo}"
+										
+											>
+											
+											Plan de Pago con Riesgo Bajo
+											
+											
+											</p>
+											
+											<p class="list-group-item bg-primary text-white"
+											th:if="${historial.plan_pago.normal}"
+										
+											>
+											
+											Plan de Pago con Estado Normal
+											
+											
+											</p>
+											
+											<p class="list-group-item bg-warning text-dark"
+											th:if="${historial.plan_pago.riesgo_medio}"
+										
+											>
+											
+											Plan de Pago con Riesgo Medio
+											
+											
+											</p>
+											
+											<p class="list-group-item bg-danger text-white"
+											th:if="${historial.plan_pago.riesgo_alto}"
+										
+											>
+											
+											Plan de Pago con Riesgo Alto
+											
+											
+											</p>
 											
 										</a>
 										

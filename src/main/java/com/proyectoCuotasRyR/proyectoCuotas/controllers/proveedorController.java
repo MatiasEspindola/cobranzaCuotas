@@ -33,6 +33,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Actividad_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_GeoService;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Proveedor_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Tipo_Documento_Service;
@@ -69,6 +70,9 @@ public class proveedorController {
 	
 	@Autowired
 	private I_Usuario_Sucursal_Service usuarioSucursalService;
+	
+	@Autowired
+	private I_Plan_Pago_Service planPagoService;
 
 	@GetMapping(value = "/cargar_proveedor/{term}", produces = { "application/json" })
 	public @ResponseBody List<Proveedor> autocompleteProveedor(String term) {
@@ -109,6 +113,8 @@ public class proveedorController {
 		model.addAttribute("usuario", obtenerUsuario());
 
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		editar = true;
 
@@ -153,6 +159,8 @@ public class proveedorController {
 		}
 
 		actividadService.guardar_actividad(actividad);
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		return "redirect:/proveedores/listar";
 	}
@@ -175,6 +183,8 @@ public class proveedorController {
 		model.addAttribute("usuario", obtenerUsuario());
 
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		return "proveedores/listar";
 	}
@@ -202,6 +212,8 @@ public class proveedorController {
 		model.addAttribute("usuario", obtenerUsuario());
 
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		editar = false;
 

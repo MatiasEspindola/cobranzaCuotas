@@ -18,6 +18,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario_Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Usuario_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.UsuarioService;
@@ -42,6 +43,9 @@ public class actividadController {
 	@Autowired
 	private I_Sucursal_Service sucursalService;
 	
+	@Autowired
+	private I_Plan_Pago_Service planPagoService;
+	
 
 	@GetMapping("/actividad")
 	public String actividad(Model model,
@@ -63,6 +67,8 @@ public class actividadController {
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 		
 		model.addAttribute("actividades", usuarioSucursalService.buscarPorUsuario(obtenerUsuario()).get(0).getActividades()); 
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 		
 		return "actividades/actividad";
 	}
@@ -95,6 +101,8 @@ public class actividadController {
 		model.addAttribute("actividades", usuarioSucursalService.buscarPorUsuario(usuario).get(0).getActividades()); 
 		
 		model.addAttribute("usuario", obtenerUsuario());
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 		
 		return "actividades/actividad";
 	}

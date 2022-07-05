@@ -72,8 +72,8 @@
 
 									<tr th:each="actividad : ${actividades}">
 										
-										<td th:text="${actividad.fecha}"></td>
-										<td th:text="${actividad.hora}"></td>
+										<td th:text="${#dates.format(actividad.fecha,'dd/M/yyyy')}"></td>
+										<td th:text="${#dates.format(actividad.hora,'HH:mm')}"></td>
 											<td th:text="${actividad.descripcion}"></td>
 									</tr>
 

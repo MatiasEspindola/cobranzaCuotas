@@ -24,6 +24,7 @@ import org.springframework.web.servlet.support.SessionFlashMapManager;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cuota;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Empresa;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Plan_Pago;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario_Sucursal;
@@ -31,6 +32,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Sucursal_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Cuota_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
 
@@ -48,6 +50,10 @@ public class indexController {
 
 	@Autowired
 	private I_Sucursal_Service sucursalService;
+	
+	@Autowired
+	private I_Plan_Pago_Service planPagoService;
+	
 	
 	@Autowired
 	private I_Cuota_Service cuotaService;
@@ -78,6 +84,11 @@ public class indexController {
 	@GetMapping({ "/", "/index" })
 	public String index(Model model, @RequestParam(value = "logout", required = false) String logout,
 			RedirectAttributes redirectAttrs) {
+		
+		if(obtenerUsuario() == null) {
+			
+			return "redirect:/logout";
+		}
 
 		if(!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
@@ -85,6 +96,13 @@ public class indexController {
 		
 		
 		Empresa empresa = null;
+		
+		
+		if(empresaService.listar_todo().size() == 0) {
+			
+			return "redirect:/empresas/registrar";
+		}
+		
 		if(empresaService.listar_todo().size() > 0) {
 			empresa	= empresaService.listar_todo().get(0);
 		}
@@ -92,8 +110,8 @@ public class indexController {
 		model.addAttribute("empresa", empresa);
 		model.addAttribute("usuario", obtenerUsuario());
 		
-	
-
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
+		
 		return "index";
 	}
 

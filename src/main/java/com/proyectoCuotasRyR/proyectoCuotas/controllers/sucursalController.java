@@ -37,6 +37,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Actividad_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_GeoService;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Usuario_Sucursal_Service;
@@ -66,6 +67,9 @@ public class sucursalController {
 
 	@Autowired
 	private I_Usuario_Sucursal_Service usuarioSucursalService;
+	
+	@Autowired
+	private I_Plan_Pago_Service planPagoService;
 
 	private boolean editar;
 
@@ -115,6 +119,8 @@ public class sucursalController {
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("sucursal", new Sucursal());
 
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
+		
 		editar = false;
 
 		return "sucursales/registrar";
@@ -146,6 +152,8 @@ public class sucursalController {
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("sucursal", sucursal);
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 		
 		
 		List<Usuario_Sucursal> usuario_sucursal = usuarioSucursalService.buscarPorSucursal(sucursal);
@@ -185,6 +193,8 @@ public class sucursalController {
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("sucursal", sucursalService.buscarPorId(id_sucursal));
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		editar = true;
 
@@ -208,6 +218,8 @@ public class sucursalController {
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("sucursales", sucursalService.listar());
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		return "sucursales/listar";
 	}
@@ -290,7 +302,7 @@ public class sucursalController {
 
 	@PreAuthorize("hasAuthority('Admin')")
 	@GetMapping("/deshabilitar/{id_sucursal}")
-	public String deshabilitar(@PathVariable long id_sucursal, RedirectAttributes redirectAttrs) {
+	public String deshabilitar(@PathVariable long id_sucursal, RedirectAttributes redirectAttrs, Model model) {
 
 		if (sucursalService.buscarPorId(id_sucursal) == null) {
 			redirectAttrs.addFlashAttribute("error", "Sucursal con ese ID no existe");
@@ -335,6 +347,8 @@ public class sucursalController {
 		}
 
 		actividadService.guardar_actividad(actividad);
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		return "redirect:/sucursales/listar";
 	}

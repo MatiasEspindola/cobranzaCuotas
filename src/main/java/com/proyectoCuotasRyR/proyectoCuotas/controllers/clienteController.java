@@ -162,6 +162,8 @@ public class clienteController {
 		List<CtaCteCliente> ctas_ctes = ctacteclienteService.buscarPorCliente(cliente_Service.buscarPorId(id_cliente));
 		
 		model.addAttribute("ctas_ctes", ctas_ctes);
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		return "clientes/detalles";
 	}
@@ -183,6 +185,8 @@ public class clienteController {
 		model.addAttribute("clientes", cliente_Service.listarTodo());
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		return "clientes/listar";
 	}
@@ -212,6 +216,8 @@ public class clienteController {
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("responsables_iva", responsableIvaService.listar_todo());
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		editar = true;
 
@@ -260,6 +266,8 @@ public class clienteController {
 		}
 
 		actividadService.guardar_actividad(actividad);
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		return "redirect:/clientes/listar";
 	}
@@ -289,6 +297,8 @@ public class clienteController {
 		model.addAttribute("cliente", cliente);
 
 		editar = false;
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 
 		return "clientes/registrar";
 	}

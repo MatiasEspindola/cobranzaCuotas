@@ -30,6 +30,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario_Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Usuario_Sucursal_Service;
@@ -39,90 +40,99 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.services.PreguntaService;
 @RequestMapping("/configuraciones")
 @SessionAttributes("usuario_sucursal")
 public class configuracionController {
-	
+
 	@Autowired
 	private I_Empresa_Service empresaService;
-	
+
 	@Autowired
 	private I_Usuario_Repo usuarioRepo;
-	
+
 	@Autowired
-    private I_UploadFile_Service upl;
-	
+	private I_UploadFile_Service upl;
+
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private I_Usuario_Sucursal_Service usuarioSucursalService;
-	
+
 	@Autowired
 	private I_Sucursal_Service sucursalService;
-	
+
 	@Autowired
 	private PreguntaService preguntaService;
 	
+	@Autowired
+	private I_Plan_Pago_Service planPagoService;
+
 	@GetMapping(value = "/uploads/{filename:.+}")
-    public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
+	public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
 
-        Resource recurso = null;
+		Resource recurso = null;
 
-        try {
-            recurso = upl.load(filename);
-        } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+		try {
+			recurso = upl.load(filename);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
-                .body(recurso);
-    }
-	
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
+				.body(recurso);
+	}
+
 	@GetMapping("/configuracion")
 	public String configuracion(Model model) {
-	
+
 		Empresa empresa = null;
-		
-		if(empresaService.listar_todo().size() > 0) {
-			 empresa = empresaService.listar_todo().get(0);
-			 
-				Usuario_Sucursal usuario_sucursal = new Usuario_Sucursal();
-				model.addAttribute("usuario_sucursal", usuario_sucursal);
-				model.addAttribute("sucursales", sucursalService.listar());
+
+		if (empresaService.listar_todo().size() > 0) {
+			empresa = empresaService.listar_todo().get(0);
+
+			Usuario_Sucursal usuario_sucursal = new Usuario_Sucursal();
+			model.addAttribute("usuario_sucursal", usuario_sucursal);
+			model.addAttribute("sucursales", sucursalService.listar());
 		}
-		
+
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
+
 		model.addAttribute("empresa", empresa);
-		
+
 		Usuario usuario = obtenerUsuario();
-		
+
 		model.addAttribute("usuario", usuario);
-		
+
 		model.addAttribute("preguntas", preguntaService.listar());
 		
-	
-	
-	
-		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
+
 		return "configuraciones/configuracion";
 	}
-	
+
 	@PostMapping("/configuracion")
-	public String guardar(@RequestParam(name="pass_nue") String pass_nue, @RequestParam(name="pass_ant") String pass_ant,
-			@RequestParam(name="pregunta") Pregunta pregunta,
-			@RequestParam(name="pass_ant") String respuesta,
-			RedirectAttributes redirectAttrs) {
-		
-		
+	public String guardar(@RequestParam(name = "pass_nue") String pass_nue,
+			@RequestParam(name = "pass_ant") String pass_ant, @RequestParam(name = "pregunta") Pregunta pregunta,
+			@RequestParam(name = "pass_ant") String respuesta, RedirectAttributes redirectAttrs) {
+
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
+
 		Usuario usuario = obtenerUsuario();
-		
-		if(!usuario.getPass2().equals(pass_ant)) {
+
+		if (!usuario.getPass2().equals(pass_ant)) {
 			redirectAttrs.addFlashAttribute("error", "La antigüa contraseña ingresada es incorrecta");
 			return "redirect:/configuraciones/configuracion";
-			
-		}else {
+
+		} else {
 			redirectAttrs.addFlashAttribute("success", "Los datos de su usuario han sido modificado con éxito");
 			usuario.setPass2(pass_nue);
-			
+
 			String bcryptPassword = passwordEncoder.encode(pass_nue);
 			System.out.println(bcryptPassword);
 			usuario.setPassword(bcryptPassword);
@@ -130,38 +140,35 @@ public class configuracionController {
 			usuario.setRespuesta(respuesta);
 			usuarioRepo.save(usuario);
 		}
-		
+
 		return "redirect:/";
 	}
-	
-	
-	
+
 	@PostMapping("/asignar_sucursal")
 	public String guardar(@Valid Usuario_Sucursal usuario_sucursal) {
-		
-		
-	
+
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
+
 		usuario_sucursal.setUsuario(obtenerUsuario());
-		
+
 		usuarioSucursalService.guardar(usuario_sucursal);
-		
+
 		return "redirect:/";
-		
+
 	}
-	
+
 	private Usuario obtenerUsuario() {
 
-		Authentication auth = SecurityContextHolder
-		            .getContext()
-		            .getAuthentication();
-		   
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
 		UserDetails userDetail = (UserDetails) auth.getPrincipal();
-  
+
 		System.out.println(userDetail.getUsername());
-		
+
 		return usuarioRepo.findByUsername(userDetail.getUsername());
 	}
-	
-	
 
 }

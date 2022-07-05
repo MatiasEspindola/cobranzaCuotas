@@ -23,6 +23,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
 
@@ -42,6 +43,9 @@ public class usuarioController {
 	
 	@Autowired
 	private I_Sucursal_Service sucursalService;
+	
+	@Autowired
+	private I_Plan_Pago_Service planPagoService;
 	
 	@GetMapping(value = "/uploads/{filename:.+}")
     public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
@@ -74,6 +78,8 @@ public class usuarioController {
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("usuarios", usuarioRepo.findAll());
 		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
+		
 		return "usuarios/listar";
 	}
 	
@@ -86,7 +92,7 @@ public class usuarioController {
 			return "redirect:/";
 		}
 	
-
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
 		
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 		

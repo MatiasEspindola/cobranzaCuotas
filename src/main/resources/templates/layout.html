@@ -19,8 +19,8 @@
 	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
 		<div th:fragment="brand">
 			<!-- Navbar Brand-->
-			<a class="navbar-brand ps-3" th:href="@{/}" th:text="${empresa.razon_social}"
-				th:if="${empresa != null}"></a>
+			<a class="navbar-brand ps-3" th:href="@{/}" 
+				th:if="${empresa != null}" th:text="${empresa.razon_social}"></a>
 			<a class="navbar-brand ps-3" th:href="@{/}" th:if="${empresa == null}">Nombre Empresa</a>
 			<!-- Sidebar Toggle-->
 			<button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
@@ -32,9 +32,24 @@
 		</form>
 		<!-- Navbar-->
 		<ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4" th:fragment="navbar">
+			<li class="nav-item dropdown" th:if="${notificaciones.size > 0}">
+				<a class="nav-link dropdown-toggle text-warning" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
+					aria-expanded="false"><i class="text-warning fas fa-bell fa-fw"></i>
+					 <span class="badge bg-warning text-dark rounded-pill" th:with="filtered=${notificaciones.?[deuda() != 0]}" th:text="${filtered.size()}">0</span></a>
+				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+					<li th:each="notificacion : ${notificaciones}" class="text-danger">
+						<a class="dropdown-item text-danger" th:if="${notificacion.deuda() != 0}"
+						th:href="@{/planes_pagos/detalles/} + ${notificacion.id_plan_pago} + '/' + ${notificacion.historiales.get(0).ctactecliente.cliente.id_cliente}"
+						>Deuda Registrada: Plan de Pago <span th:text="${notificacion.id_plan_pago} + ', ' + ${notificacion.historiales.get(0).ctactecliente.cliente.cliente}"></span></a>
+					</li>
+					
+					
+				</ul>
+			</li>
+
 			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
-					aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+				<a class="nav-link dropdown-toggle text-success" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
+					aria-expanded="false"><i class="text-success fas fa-user fa-fw"></i></a>
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 					<li ><a class="dropdown-item" th:href="@{/configuraciones/configuracion}">Configuración</a></li>
 					<li th:if="${empresa != null}"><a class="dropdown-item" th:href="@{/actividades/actividad}">Actividad</a></li>
@@ -163,6 +178,7 @@
 		<script th:src="@{/js/scripts.js}"></script>
 		<script th:src="@{/js/simple-datatable.js}" crossorigin="anonymous"></script>
 		<script th:src="@{/js/datatables-simple-demo.js}"></script>
+		<script th:src="@{/js/datatables-demo.js}"></script>
 		<script th:src="@{/js/html5.image.preview.min.js}" type="text/javascript"></script>
 	
 		

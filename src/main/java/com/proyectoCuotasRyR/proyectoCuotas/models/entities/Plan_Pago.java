@@ -292,6 +292,64 @@ public class Plan_Pago {
 		this.historiales = historiales;
 	}
 	
+	public long deuda() {
+		
+		if(cuotas != null) {
+			
+			for(Cuota cuota : cuotas) {
+				if(cuota.isVencida()) {
+					
+					return cuota.getId_plan_pago().id_plan_pago;
+				}
+			}
+			
+			return 0;
+		}else {
+			
+			return 0;
+		}
+		
+	}
+	
+	public int estado_deudor() {
+		
+		int dias = 0;
+		int nro_cuota = 0;
+		
+		if(cuotas != null) {
+			
+			for(Cuota cuota : cuotas) {
+				
+				if(!cuota.isPagado()) {
+					if(cuota.isVencida()) {
+						nro_cuota = (int) cuota.getNro_cuota();
+						break;
+					} else {
+						nro_cuota = (int) cuota.getNro_cuota();
+					}
+				}
+				
+			}
+			
+			Cuota primer_cuota = cuotas.get(nro_cuota - 1);
+			
+			System.out.println("Index cuota: " + primer_cuota.getNro_cuota());
+			System.out.println("Plan de Pago: " + primer_cuota.getId_plan_pago().getId_plan_pago());
+			
+			Date fechaInicio      = primer_cuota.getFecha();
+			Date fechaactual = new Date(System.currentTimeMillis());
+			
+			int milisecondsByDay = 86400000;
+		    dias = (int) ((fechaactual.getTime()-fechaInicio.getTime()) / milisecondsByDay);
+				
+			
+		}
+		
+	
+		
+		return dias;
+	}
+	
 	
 
 }

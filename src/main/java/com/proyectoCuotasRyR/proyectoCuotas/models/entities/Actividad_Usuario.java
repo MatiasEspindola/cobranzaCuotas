@@ -66,6 +66,13 @@ public class Actividad_Usuario {
 	@JsonManagedReference
 	@JsonIgnore
 	private List<Historial_Plan_Pago> historial_planes_pagos;
+	
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@JoinColumn(name = "id_actividad_sucursal")
+	@JsonManagedReference
+	@JsonIgnore
+	private List<Historial_Sucursal> historial_sucursales;
 
 	
 
@@ -134,6 +141,16 @@ public class Actividad_Usuario {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
+
+	public List<Historial_Sucursal> getHistorial_sucursales() {
+		return historial_sucursales;
+	}
+
+	public void setHistorial_sucursales(List<Historial_Sucursal> historial_sucursales) {
+		this.historial_sucursales = historial_sucursales;
+	}
+	
+	
 	
 	
 
