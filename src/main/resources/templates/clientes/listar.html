@@ -66,8 +66,8 @@
 										<th>Cliente</th>
 										<th>Dirección</th>
 										<th>Localidad</th>
-										<th>Contacto</th>
-										<th>Resp. IVA.</th>
+										<th>Doc</th>
+										
 										<th>¿Activo?</th>
 										<th>Detalles</th>
 									</tr>
@@ -78,8 +78,7 @@
 										<th>Cliente</th>
 										<th>Dirección</th>
 										<th>Localidad</th>
-										<th>Contacto</th>
-										<th>Resp. IVA.</th>
+										<th>Doc</th>
 										<th>¿Activo?</th>
 										<th>Detalles</th>
 									</tr>
@@ -95,10 +94,9 @@
 										<td th:text="${cliente.direccion}"></td>
 										<td th:text="${cliente.id_localidad1.localidad + ', ' + cliente.id_localidad1.provincia.prov}">Software Engineer</td>
 							
-										<td th:text="${cliente.cel + '  ' + cliente.cel2 + '  ' + cliente.tel_fijo + '  '
-										+ cliente.tel_fijo2 + '  ' + cliente.mail + '  ' + cliente.mail2}"></td>
+										<td th:text="${cliente.tipo_documento.tipo_documento}+ ' - ' + ${cliente.nro_documento}"></td>
 									
-										<td th:text="${cliente.id_responsable.responsable}"></td>
+									
 										<td>
 										<a th:text="${cliente.activo ? 'Si':'No'}" th:classappend="${cliente.activo ? 'text-success':'text-danger'}"
 										th:href="@{/clientes/deshabilitar/} + ${cliente.id_cliente}"> </a>

@@ -150,11 +150,15 @@ public class clienteController {
 		if(cliente_Service.buscarPorId(id_cliente) == null) {
 			redirectAttrs.addFlashAttribute("error", "Cliente con ese ID no existe");
 			
+			
+			
 			return "redirect:/";
 		}
+		
+		Cliente cliente = cliente_Service.buscarPorId(id_cliente);
 				
 
-		model.addAttribute("cliente", cliente_Service.buscarPorId(id_cliente));
+		model.addAttribute("cliente", cliente);
 		Usuario usuario = obtenerUsuario();
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 		model.addAttribute("usuario", usuario);
@@ -164,7 +168,18 @@ public class clienteController {
 		model.addAttribute("ctas_ctes", ctas_ctes);
 		
 		model.addAttribute("notificaciones", planPagoService.listarTodo());
-
+		
+		double saldo_pendiente = 0;
+		
+		if(ctas_ctes.size() > 0) {
+			for(CtaCteCliente cta_cte : ctas_ctes) {
+				saldo_pendiente = cta_cte.getSaldo();
+			}
+		}
+		
+		model.addAttribute("saldo_pendiente", saldo_pendiente);
+		
+		
 		return "clientes/detalles";
 	}
 

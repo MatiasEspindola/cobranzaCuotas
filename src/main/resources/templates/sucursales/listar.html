@@ -61,7 +61,7 @@
 										<th>Localidad</th>
 										<th>¿Central?</th>
 										<th>Pto.</th>
-										<th>Contacto</th>
+										
 										<th>¿Activo?</th>
 											<th>Detalles</th>
 									</tr>
@@ -74,7 +74,7 @@
 										<th>Localidad</th>
 										<th>¿Central?</th>
 										<th>Pto.</th>
-										<th>Contacto</th>
+									
 										<th>¿Activo?</th>
 										<th>Detalles</th>
 									</tr>
@@ -91,8 +91,7 @@
 										<td th:text="${sucursal.id_localidad2.localidad + ', ' + sucursal.id_localidad2.provincia.prov}">Software Engineer</td>
 										<td th:text="${sucursal.es_casa_central ? 'Si':'No'}" th:classappend="${sucursal.es_casa_central ? 'text-success':'text-primary'}"></td>
 										<td th:text="${sucursal.puntoventaafip}"></td>
-										<td th:text="${sucursal.cel + '  ' + sucursal.cel2 + '  ' + sucursal.tel_fijo + '  '
-										+ sucursal.tel_fijo2 + '  ' + sucursal.mail + '  ' + sucursal.mail2}"></td>
+										
 										<td >
 										<a th:text="${sucursal.activo ? 'Si':'No'}" th:classappend="${sucursal.activo ? 'text-success':'text-danger'}"
 										th:href="@{/sucursales/deshabilitar/} + ${sucursal.id_sucursal}"> </a>

@@ -583,13 +583,20 @@
 					linea = linea.replace(/{HONORARIOS}/g, honorarios_c.toFixed(2));
 					linea = linea.replace(/{IVA_HONORARIOS}/g, iva_s_honorarios.toFixed(2));
 					linea = linea.replace(/{GASTOS_ADMINISTRATIVOS}/g, gastos.toFixed(2));
-					linea = linea.replace(/{VALOR_CUOTA}/g, (cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos).toFixed(2));
+					
+					var valor_cuota = cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos;
+					
+					Math.round(valor_cuota * 100) / 100;
+					
+					linea = linea.replace(/{VALOR_CUOTA}/g, valor_cuota);
 
 					$("#cargarCuotas tbody").append(linea);
 
 					aux = aux - cuota_nominal;
+					
+					
 
-					total += cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos;
+					total += valor_cuota;
 
 				}
 
@@ -649,7 +656,12 @@
 					linea = linea.replace(/{HONORARIOS}/g, honorarios_c.toFixed(2));
 					linea = linea.replace(/{IVA_HONORARIOS}/g, iva_s_honorarios.toFixed(2));
 					linea = linea.replace(/{GASTOS_ADMINISTRATIVOS}/g, gastos.toFixed(2));
-					linea = linea.replace(/{VALOR_CUOTA}/g, (cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos).toFixed(2));
+				
+					var valor_cuota = cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos;
+					
+					Math.round(valor_cuota * 100) / 100;
+					
+					linea = linea.replace(/{VALOR_CUOTA}/g, valor_cuota);
 
 					$("#cargarCuotas tbody").append(linea);
 
@@ -657,7 +669,7 @@
 
 					aux = aux - cuota_nominal;
 
-					total += cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos;
+					total += valor_cuota;
 
 				}
 

@@ -144,6 +144,10 @@
 							<div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
 							Desarrollo Plan de Pago
 						</a>
+						<!--<a class="nav-link text-dark" th:href="@{/caja}" sec:authorize="hasAuthority('Admin')" th:if="${empresa != null}">
+							<div class="sb-nav-link-icon"><i class="fas fa-cash-register"></i></div>
+							Caja
+						</a>-->
 					</div>
 				</div>
 				<div class="sb-sidenav-footer sb-sidenav-dark text-white" th:fragment="user">

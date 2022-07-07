@@ -104,7 +104,7 @@ public class registrarController {
 
 		Authority authority = new Authority();
 
-		authority.setId_rol_auth(rolService.buscarPorId(3));
+		authority.setId_rol_auth(rolService.buscarPorId(2));
 		authority.setId_usuario_auth(usuario);
 
 		authorityService.guardar(authority);

@@ -54,7 +54,8 @@
 							<div class="list-group">
 								<a th:each="historial : ${historial_sucursal}"
 									th:href="@{/sucursales/detalles/} + ${historial.sucursal.id_sucursal}"
-									class="list-group-item list-group-item-action" aria-current="true">
+									class="list-group-item list-group-item-action" aria-current="true"
+									th:classappend="${historial.sucursal.usuarios_sucursales.size > 0 ? '':'disabled'}">
 									<div class="d-flex w-100 justify-content-between">
 										<h5 class="mb-1" th:text="${historial.sucursal.nombre_sucursal}">List group item
 											heading</h5>

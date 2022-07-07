@@ -25,16 +25,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Empresa;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Pregunta;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Rol;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario_Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Rol_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Usuario_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.PreguntaService;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.UsuarioService;
 
 @Controller
 @RequestMapping("/configuraciones")
@@ -64,6 +67,9 @@ public class configuracionController {
 	
 	@Autowired
 	private I_Plan_Pago_Service planPagoService;
+	
+	@Autowired
+	private I_Rol_Service rolService;
 
 	@GetMapping(value = "/uploads/{filename:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
@@ -93,6 +99,7 @@ public class configuracionController {
 			Usuario_Sucursal usuario_sucursal = new Usuario_Sucursal();
 			model.addAttribute("usuario_sucursal", usuario_sucursal);
 			model.addAttribute("sucursales", sucursalService.listar());
+		
 		}
 
 		if (empresaService.listar_todo().size() == 0) {
@@ -109,6 +116,7 @@ public class configuracionController {
 		model.addAttribute("preguntas", preguntaService.listar());
 		
 		model.addAttribute("notificaciones", planPagoService.listarTodo());
+		model.addAttribute("roles", rolService.listarTodo());
 
 		return "configuraciones/configuracion";
 	}
@@ -116,7 +124,9 @@ public class configuracionController {
 	@PostMapping("/configuracion")
 	public String guardar(@RequestParam(name = "pass_nue") String pass_nue,
 			@RequestParam(name = "pass_ant") String pass_ant, @RequestParam(name = "pregunta") Pregunta pregunta,
-			@RequestParam(name = "pass_ant") String respuesta, RedirectAttributes redirectAttrs) {
+			@RequestParam(name = "respuesta") String respuesta,
+		
+			RedirectAttributes redirectAttrs) {
 
 		if (empresaService.listar_todo().size() == 0) {
 
@@ -138,6 +148,11 @@ public class configuracionController {
 			usuario.setPassword(bcryptPassword);
 			usuario.setId_pregunta(pregunta);
 			usuario.setRespuesta(respuesta);
+			
+		
+			
+			// usuario.getAuthorities().get(0).setId_rol_auth(rolService.listarTodo().get(1));
+			
 			usuarioRepo.save(usuario);
 		}
 

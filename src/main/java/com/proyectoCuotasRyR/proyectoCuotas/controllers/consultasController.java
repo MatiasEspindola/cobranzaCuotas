@@ -69,6 +69,29 @@ public class consultasController {
 	private I_Actividad_Service actividadService;
 	
 	@PreAuthorize("hasAuthority('Admin')")
+	@GetMapping("/caja")
+	public String caja(Model model, RedirectAttributes redirectAttrs) {
+		
+		if(!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+		
+		if (empresaService.listar_todo().size() == 0 || sucursalService.listar().size() == 0 || obtenerUsuario().getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Para comenzar a operar en el Sistema debe 1) Tener una empresa registrada, 2) Tener una sucursal central registrada y 3) Tener su usuario asignado a una sucursal."
+					+ " Consulte Manual del Usuario ubicado en la parte inferior de la página.");
+			return "redirect:/";
+		}
+		
+		Usuario usuario = obtenerUsuario();
+		model.addAttribute("empresa", empresaService.listar_todo().get(0));
+		model.addAttribute("usuario", usuario);
+		
+		model.addAttribute("notificaciones", planPagoService.listarTodo());
+		
+		return "caja";
+	}
+	
+	@PreAuthorize("hasAuthority('Admin')")
 	@GetMapping("/informes_sucursales")
 	public String informes(Model model, RedirectAttributes redirectAttrs) {
 		

@@ -31,13 +31,12 @@
 		</div>
 		<div id="layoutSidenav_content">
 			<main>
-			
-				<div class="alert alert-danger alert-dismissible fade show" role="alert"
-										style="margin:15px;" th:if="${error != null}">
-										<span th:text="${error}"></span>
-										<button type="button" class="btn-close" data-bs-dismiss="alert"
-											aria-label="Close"></button>
-									</div>
+
+				<div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin:15px;"
+					th:if="${error != null}">
+					<span th:text="${error}"></span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
 
 
 				<div class="container-fluid px-4">
@@ -50,10 +49,27 @@
 						<div class="card-body">
 							<span>Detalles del Cliente: <span th:text="${cliente.cliente}"></span> </span>
 							<br>
-							<span>Documento del Cliente: <span th:text="${cliente.nro_documento}"></span> </span>
+							<span>Localidad: <span
+									th:text="${cliente.id_localidad1.localidad + ', ' + cliente.id_localidad1.provincia.prov}"></span></span>
 							<br>
-							<span>Tipo Documento: <span th:text="${cliente.tipo_documento.tipo_documento}"></span> </span>
+							<span>Documento: <span th:text="${cliente.nro_documento}"></span> </span>
+							<br>
+							<span>Tipo Documento: <span th:text="${cliente.tipo_documento.tipo_documento}"></span>
+							</span>
+							<br>
+							<span>Contacto: <span th:text="${cliente.cel + '  ' + cliente.cel2 + '  ' + cliente.tel_fijo + '  '
+										+ cliente.tel_fijo2 + '  ' + cliente.mail + '  ' + cliente.mail2}"></span> </span>
+							<br>
+							<span> Responsable IVA: <span th:text="${cliente.id_responsable.responsable}"></span></span>
 						</div>
+
+						<div class="card-footer bg-info text-dark">
+							<span>Saldo Pendiente: <span
+									th:text="'$ '+ ${#numbers.formatDecimal(saldo_pendiente, 1, 'POINT', 2, 'COMMA')}"></span></span>
+						</div>
+
+
+
 					</div>
 					<div class="card mb-4">
 						<div class="card-header">
@@ -76,6 +92,41 @@
 								Detalles Cuentas Corrientes
 							</button>
 
+							<button type="button" class="btn btn-dark" data-bs-toggle="modal"
+								data-bs-target="#exampleModal1">
+								Situación Crediticia
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel"
+								aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel">Situación Crediticia</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal"
+												aria-label="Close"></button>
+										</div>
+										<div class="modal-body">
+											
+											<!--<span th:if="${cliente}"></span>-->
+											<div th:each="ctactecliente : ${cliente.ctasctesclientes}">
+												<div th:each="historial : ${ctactecliente.historiales_planes_pagos}">
+													<span th:text="${historial.plan_pago.total}">
+												</div>
+											</div>
+											
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary"
+												data-bs-dismiss="modal">Cerrar</button>
+										
+										</div>
+									</div>
+								</div>
+							</div>
+
+
 							<!-- Modal -->
 							<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
 								aria-hidden="true">
@@ -91,43 +142,48 @@
 
 
 											<ol class="list-group list-group" th:each="cta_cte, i : ${ctas_ctes}">
-											
+
 												<li
 													class="list-group-item d-flex justify-content-between align-items-start">
-													
-													
+
+
 													<div class="ms-2 me-auto">
-													
-														<span class="fw-bold text-center"
-														>
-														
-														<span th:text="'Debe: ' + ${#numbers.formatDecimal(cta_cte.debe, 1, 'POINT', 2, 'COMMA')}"></span>
-														<span th:text="'Haber: ' + ${#numbers.formatDecimal(cta_cte.haber, 1, 'POINT', 2, 'COMMA')}"></span>
-														<span th:text="'Saldo: ' + ${#numbers.formatDecimal(cta_cte.saldo, 1, 'POINT', 2, 'COMMA')}"></span>
-	
-														
+
+														<span class="fw-bold text-center">
+
+															<span
+																th:text="'Debe: ' + ${#numbers.formatDecimal(cta_cte.debe, 1, 'POINT', 2, 'COMMA')}"></span>
+															<span
+																th:text="'Haber: ' + ${#numbers.formatDecimal(cta_cte.haber, 1, 'POINT', 2, 'COMMA')}"></span>
+															<span
+																th:text="'Saldo: ' + ${#numbers.formatDecimal(cta_cte.saldo, 1, 'POINT', 2, 'COMMA')}"></span>
+
+
 														</span>
-													
+
 														<div th:each="historial: ${cta_cte.historiales_altas_clientes}">
-															<a th:text="${historial.concepto}" th:href="@{/clientes/detalles/} + ${historial.ctactecliente.cliente.id_cliente}">
+															<a th:text="${historial.concepto}"
+																th:href="@{/clientes/detalles/} + ${historial.ctactecliente.cliente.id_cliente}">
 																A list item</a>
 														</div>
-														
+
 														<div th:each="historial: ${cta_cte.historiales_planes_pagos}">
-															<a th:text="${historial.concepto}" th:href="@{/planes_pagos/detalles} + '/' + ${historial.plan_pago.id_plan_pago} +'/' + ${historial.ctactecliente.cliente.id_cliente}">
+															<a th:text="${historial.concepto}"
+																th:href="@{/planes_pagos/detalles} + '/' + ${historial.plan_pago.id_plan_pago} +'/' + ${historial.ctactecliente.cliente.id_cliente}">
 																A list item</a>
 														</div>
-														
+
 														<div th:each="historial: ${cta_cte.historiales_recibos}">
-															<a th:text="${historial.concepto}" th:href="@{/recibos/ver/} + ${historial.recibo.id_recibo}"
-															target="_blank">
+															<a th:text="${historial.concepto}"
+																th:href="@{/recibos/ver/} + ${historial.recibo.id_recibo}"
+																target="_blank">
 																A list item</a>
 														</div>
-													
-													
+
+
 													</div>
-													
-													
+
+
 												</li>
 
 											</ol>
@@ -178,71 +234,60 @@
 											</p>
 											<p class="mb-1"
 												th:text="'Abogado Parte Actora: ' + ${historial.plan_pago.pactora}"></p>
-													<p class="mb-1 text-primary"
-												th:text="'Plan de Pago generado en: ' + ${historial.actividad_usuario.usuario.sucursal.nombre_sucursal}"></p>
+											<p class="mb-1 text-primary"
+												th:text="'Plan de Pago generado en: ' + ${historial.actividad_usuario.usuario.sucursal.nombre_sucursal}">
+											</p>
 											<p class="list-group-item bg-success text-white"
-											th:if="${historial.plan_pago.completado}"
-										
-											>
-											
-											Plan de Pago Completado
-											
-											
+												th:if="${historial.plan_pago.completado}">
+
+												Plan de Pago Completado
+
+
 											</p>
-											
+
 											<p class="list-group-item bg-danger text-white"
-											th:if="${historial.plan_pago.irrecuperable}"
-										
-											>
-											
-											Plan de Pago Irrecuperable
-											
-											
+												th:if="${historial.plan_pago.irrecuperable}">
+
+												Plan de Pago Irrecuperable
+
+
 											</p>
-											
+
 											<p class="list-group-item bg-ligth text-dark"
-											th:if="${historial.plan_pago.riesgo_bajo}"
-										
-											>
-											
-											Plan de Pago con Riesgo Bajo
-											
-											
+												th:if="${historial.plan_pago.riesgo_bajo}">
+
+												Plan de Pago con Riesgo Bajo
+
+
 											</p>
-											
+
 											<p class="list-group-item bg-primary text-white"
-											th:if="${historial.plan_pago.normal}"
-										
-											>
-											
-											Plan de Pago con Estado Normal
-											
-											
+												th:if="${historial.plan_pago.normal}">
+
+												Plan de Pago con Estado Normal
+
+
 											</p>
-											
+
 											<p class="list-group-item bg-warning text-dark"
-											th:if="${historial.plan_pago.riesgo_medio}"
-										
-											>
-											
-											Plan de Pago con Riesgo Medio
-											
-											
+												th:if="${historial.plan_pago.riesgo_medio}">
+
+												Plan de Pago con Riesgo Medio
+
+
 											</p>
-											
+
 											<p class="list-group-item bg-danger text-white"
-											th:if="${historial.plan_pago.riesgo_alto}"
-										
-											>
-											
-											Plan de Pago con Riesgo Alto
-											
-											
+												th:if="${historial.plan_pago.riesgo_alto}">
+
+												Plan de Pago con Riesgo Alto
+
+
 											</p>
-											
+
 										</a>
-										
-									
+
+
 									</div>
 									<br>
 								</div>

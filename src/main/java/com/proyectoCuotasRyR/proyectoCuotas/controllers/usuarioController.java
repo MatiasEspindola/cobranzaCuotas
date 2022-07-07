@@ -2,6 +2,8 @@ package com.proyectoCuotasRyR.proyectoCuotas.controllers;
 
 import java.net.MalformedURLException;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -15,15 +17,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Rol;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario_Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Rol_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
 
@@ -46,6 +53,9 @@ public class usuarioController {
 	
 	@Autowired
 	private I_Plan_Pago_Service planPagoService;
+	
+	@Autowired
+	private I_Rol_Service rolService;
 	
 	@GetMapping(value = "/uploads/{filename:.+}")
     public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
@@ -78,9 +88,28 @@ public class usuarioController {
 		model.addAttribute("usuario", obtenerUsuario());
 		model.addAttribute("usuarios", usuarioRepo.findAll());
 		
+		model.addAttribute("roles", rolService.listarTodo());
+		
 		model.addAttribute("notificaciones", planPagoService.listarTodo());
 		
 		return "usuarios/listar";
+	}
+	
+	@PreAuthorize("hasAuthority('Admin')")
+	@PostMapping("/asignar_rol")
+	public String asignar_rol(@RequestParam(name="rol") Rol rol, @RequestParam(name="usuario") Usuario usuario, RedirectAttributes redirectAttrs) {
+
+		if (empresaService.listar_todo().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Debe primero registrar una empresa");
+			return "redirect:/";
+		}
+	
+		usuario.getAuthorities().get(0).setId_rol_auth(rol);
+		usuarioRepo.save(usuario);
+		
+
+		return "redirect:/";
+
 	}
 	
 	@PreAuthorize("hasAuthority('Admin')")
@@ -108,6 +137,8 @@ public class usuarioController {
 		
 		return "redirect:/usuarios/listar";
 	}
+	
+	
 	
 	private Usuario obtenerUsuario() {
 

@@ -148,6 +148,12 @@ public class sucursalController {
 		}
 		
 		Sucursal sucursal = sucursalService.buscarPorId(id_sucursal);
+		
+		if(sucursal.getUsuarios_sucursales().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Aún esta sucursal no tiene actividades registradas");
+
+			return "redirect:/";
+		}
 
 		model.addAttribute("empresa", empresaService.listar_todo().get(0));
 		model.addAttribute("usuario", obtenerUsuario());
