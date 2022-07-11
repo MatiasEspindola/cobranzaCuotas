@@ -33,6 +33,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.CtaCteCliente;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Cuota;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Alta_Cliente;
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Historial_Plan_Pago;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Localidad;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Plan_Pago;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Proveedor;
@@ -171,9 +172,23 @@ public class clienteController {
 		
 		double saldo_pendiente = 0;
 		
+		//saldo_pendiente = cta_cte.getSaldo();
+		
 		if(ctas_ctes.size() > 0) {
 			for(CtaCteCliente cta_cte : ctas_ctes) {
-				saldo_pendiente = cta_cte.getSaldo();
+				
+				if(cta_cte.getHistoriales_planes_pagos().size() > 0) {
+					for(Historial_Plan_Pago historial : cta_cte.getHistoriales_planes_pagos()) {
+						float pendiente = 0;
+						for(Cuota cuota : historial.getPlan_pago().getCuotas()) {
+							if(!cuota.isPagado()) {
+								saldo_pendiente += cuota.getPendiente();
+							}
+						}
+					}
+				}
+				
+				
 			}
 		}
 		

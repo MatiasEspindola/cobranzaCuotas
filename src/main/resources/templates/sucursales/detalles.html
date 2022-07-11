@@ -195,7 +195,7 @@
 																<td
 																	th:text=${historial.plan_pago.id_proveedor.razon_social}>
 																</td>
-																<td th:text=${historial.plan_pago.fecha_inicio}></td>
+															<td th:text="${#dates.format(historial.plan_pago.fecha_inicio,'dd/M/yyyy')}"></td>
 																<td
 																	th:text=${historial.actividad_usuario.usuario.sucursal.nombre_sucursal}>
 																</td>

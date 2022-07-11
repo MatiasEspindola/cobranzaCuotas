@@ -93,7 +93,7 @@
 							</button>
 
 							<button type="button" class="btn btn-dark" data-bs-toggle="modal"
-								data-bs-target="#exampleModal1">
+								data-bs-target="#exampleModal1" th:if="${saldo_pendiente > 0}">
 								Situación Crediticia
 							</button>
 
@@ -108,19 +108,32 @@
 												aria-label="Close"></button>
 										</div>
 										<div class="modal-body">
-											
+
+											El Cliente <span th:text="${cliente.cliente}"></span>
+											con (<span th:text="${cliente.tipo_documento.tipo_documento}"> </span>)
+											<span th:text="${cliente.nro_documento}"> </span> <br>
+											<b
+												th:text="'Tiene un saldo pendiente de: ' + '$ '+ ${#numbers.formatDecimal(saldo_pendiente, 1, 'POINT', 2, 'COMMA')}">
+											</b>
+											<br><br>
+											<b><span>Mantiene deuda con:</span></b>
 											<!--<span th:if="${cliente}"></span>-->
 											<div th:each="ctactecliente : ${cliente.ctasctesclientes}">
-												<div th:each="historial : ${ctactecliente.historiales_planes_pagos}">
-													<span th:text="${historial.plan_pago.total}">
-												</div>
-											</div>
+												
+
+													<ul class="list-group" th:each="historial : ${ctactecliente.historiales_planes_pagos}">
+														<li th:if="${historial.plan_pago.completado == false}" class="list-group-item" th:text="${historial.plan_pago.id_proveedor.razon_social}
+														+ ', (' + ${historial.plan_pago.id_proveedor.id_localidad4.localidad} + ', ' + ${historial.plan_pago.id_proveedor.id_localidad4.provincia.prov} + ')'">An item</li>									
+													</ul>
+
 											
+											</div>
+
 										</div>
 										<div class="modal-footer">
 											<button type="button" class="btn btn-secondary"
 												data-bs-dismiss="modal">Cerrar</button>
-										
+
 										</div>
 									</div>
 								</div>
