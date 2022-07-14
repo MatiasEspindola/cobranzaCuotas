@@ -6,7 +6,7 @@
 </head>
 
 <body class="sb-nav-fixed">
-	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark" >
+		<nav class="sb-topnav navbar navbar-expand navbar-dark bg-primary">
 		<div th:replace="layout :: brand"></div>
 		<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
 			
@@ -47,7 +47,7 @@
 					<div class="card mb-4">
 						<div class="card-header">
 							<i class="fas fa-table me-1"></i>
-							Caja
+							Recibos
 						</div>
 						<div class="card-body">
 						
@@ -82,15 +82,17 @@
 
 									<tr th:each="historial : ${historial_recibos}">
 										
-										<td th:text=${historial.recibo.id_recibo}></td>
+										<td th:text="${historial.recibo.id_recibo}"></td>
 									
-										<td th:text=${historial.ctactecliente.cliente.cliente}></td>
-										<td th:text=${historial.actividad_usuario.fecha}></td>
-											<td th:text=${historial.actividad_usuario.hora}></td>
-										<td th:text=${historial.actividad_usuario.usuario.sucursal.nombre_sucursal}></td>
+										<td th:text="${historial.ctactecliente.cliente.cliente}"></td>
+										<td th:text="${#dates.format(historial.actividad_usuario.fecha,'dd/M/yyyy')}"></td>
+										<td th:text="${#dates.format(historial.actividad_usuario.hora,'HH:mm')}"></td>
+										<td th:text="${historial.actividad_usuario.usuario.sucursal.nombre_sucursal}"></td>
 									
-											<td>
-											<a th:href="@{/planes_pagos/detalles/} + ${historial.ctactecliente.historiales_planes_pagos.size()}">Plan de Pago</a>
+										<td>
+											<a th:href="@{/planes_pagos/detalles/} + ${historial.recibo.detalles_recibos.get(0).importe.cuota.id_plan_pago.id_plan_pago}
+											+ '/' + ${historial.ctactecliente.cliente.id_cliente}"
+											th:text="${historial.recibo.detalles_recibos.get(0).importe.cuota.id_plan_pago.id_plan_pago}">Plan de Pago</a>
 										</td>
 										<td>
 											<a th:href="@{/recibos/ver/} + ${historial.recibo.id_recibo}">Ver</a>

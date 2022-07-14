@@ -43,6 +43,8 @@ public class Usuario {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fecha_alta;
 	
+	private boolean user_principal;
+	
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
 	@JoinColumn(name = "id_usuario_auth")
@@ -151,6 +153,14 @@ public class Usuario {
 
 	public void setUsuarios_sucursales(List<Usuario_Sucursal> usuarios_sucursales) {
 		this.usuarios_sucursales = usuarios_sucursales;
+	}
+
+	public boolean isUser_principal() {
+		return user_principal;
+	}
+
+	public void setUser_principal(boolean user_principal) {
+		this.user_principal = user_principal;
 	}
 
 	

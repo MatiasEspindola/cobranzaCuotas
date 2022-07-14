@@ -177,7 +177,7 @@ public class consultasController {
 		return "informes_planes_pagos";
 	}
 	
-	/*
+
 	@PreAuthorize("hasAuthority('Admin')")
 	@GetMapping("/recibos")
 	public String recibos(Model model, RedirectAttributes redirectAttrs) {
@@ -197,11 +197,12 @@ public class consultasController {
 		model.addAttribute("usuario", usuario);
 		model.addAttribute("recibos", reciboService.listar());
 		model.addAttribute("historial_recibos", historialReciboService.listarTodo());
+		model.addAttribute("notificaciones", planPagoService.listarTodo());	
 		
 		
 		return "recibos";
 	}
-	
+	/*
 	@PreAuthorize("hasAuthority('Admin')")
 	@GetMapping("/deudas")
 	public String deudas(Model model, RedirectAttributes redirectAttrs) {

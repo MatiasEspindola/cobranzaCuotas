@@ -23,11 +23,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Authority;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Rol;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario;
 import com.proyectoCuotasRyR.proyectoCuotas.models.entities.Usuario_Sucursal;
 import com.proyectoCuotasRyR.proyectoCuotas.models.repo.I_Usuario_Repo;
+import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Authority_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Empresa_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Plan_Pago_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Rol_Service;
@@ -56,6 +58,9 @@ public class usuarioController {
 	
 	@Autowired
 	private I_Rol_Service rolService;
+	
+	@Autowired
+	private I_Authority_Service authorityService;
 	
 	@GetMapping(value = "/uploads/{filename:.+}")
     public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
@@ -120,6 +125,11 @@ public class usuarioController {
 			redirectAttrs.addFlashAttribute("error", "Debe primero registrar una empresa");
 			return "redirect:/";
 		}
+		
+		if(usuarioRepo.findById(id_usuario) == null) {
+			redirectAttrs.addFlashAttribute("error", "No existe usuario con ese ID");
+			return "redirect:/";
+		}
 	
 		model.addAttribute("notificaciones", planPagoService.listarTodo());
 		
@@ -133,6 +143,39 @@ public class usuarioController {
 		}
 		
 		usuarioRepo.save(usuarioRepo.findById(id_usuario).get());
+		
+		
+		return "redirect:/usuarios/listar";
+	}
+	
+	@PreAuthorize("hasAuthority('Admin')")
+	@GetMapping("/cambiar_rol/{id_usuario}")
+	public String cambiar_rol(Model model, @PathVariable long id_usuario, RedirectAttributes redirectAttrs) {
+		
+		if (empresaService.listar_todo().size() == 0) {
+			redirectAttrs.addFlashAttribute("error", "Debe primero registrar una empresa");
+			return "redirect:/";
+		}
+		
+		if(usuarioRepo.findById(id_usuario) == null) {
+			redirectAttrs.addFlashAttribute("error", "No existe usuario con ese ID");
+			return "redirect:/";
+		}
+	
+		Usuario usuario = usuarioRepo.findById(id_usuario).get();
+		
+		
+		if(usuario.getAuthorities().get(0).getId_rol_auth().getId_rol() == 1) {
+			Authority authority = authorityService.buscarPorUsuario(usuario);
+			authority.setId_rol_auth(rolService.buscarPorId(2));
+			authorityService.guardar(authority);
+		} else {
+			Authority authority = authorityService.buscarPorUsuario(usuario);
+			authority.setId_rol_auth(rolService.buscarPorId(1));
+			authorityService.guardar(authority);
+		}
+		
+	
 		
 		
 		return "redirect:/usuarios/listar";

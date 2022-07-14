@@ -6,7 +6,7 @@
 </head>
 
 <body class="sb-nav-fixed">
-	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+		<nav class="sb-topnav navbar navbar-expand navbar-dark bg-primary">
 		<div th:replace="layout :: brand"></div>
 		<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
 
@@ -18,7 +18,7 @@
 	</nav>
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
-			<nav class="sb-sidenav accordion text-dark" id="sidenavAccordion">
+			<nav class="sb-sidenav accordion text-white" id="sidenavAccordion">
 				<div class="sb-sidenav-menu">
 					<div class="nav" th:replace="layout :: sidenav">
 
@@ -107,7 +107,7 @@
 						<div class="card-body">
 
 							<div class="row">
-								<div class="col-sm-12 col-md-12 col-lg-12">
+								<div class="col-sm-12 col-md-12 col-lg-6">
 									<div class="card bg-light text-dark mb-4" 	sec:authorize="hasAuthority('Admin')">
 										<div class="card-body">Empresas</div>
 										<div class="card-footer d-flex align-items-center justify-content-between">
@@ -119,7 +119,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-sm-12 col-md-12 col-lg-12" th:if="${empresa != null}">
+								<div class="col-sm-12 col-md-12 col-lg-6" th:if="${empresa != null}">
 									<div class="card bg-light text-dark mb-4" 	sec:authorize="hasAuthority('Admin')">
 										<div class="card-body">Sucursales</div>
 										<div class="card-footer d-flex align-items-center justify-content-between">
@@ -128,7 +128,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-sm-12 col-md-12 col-lg-12" th:if="${empresa != null}">
+								<div class="col-sm-12 col-md-12 col-lg-6" th:if="${empresa != null}">
 									<div class="card bg-light text-dark mb-4">
 										<div class="card-body">Clientes</div>
 										<div class="card-footer d-flex align-items-center justify-content-between">
@@ -137,11 +137,20 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-sm-12 col-md-12 col-lg-12" th:if="${empresa != null}">
+								<div class="col-sm-12 col-md-12 col-lg-6" th:if="${empresa != null}">
 									<div class="card bg-success text-white mb-4">
 										<div class="card-body">Desarrollo Plan de Pago</div>
 										<div class="card-footer d-flex align-items-center justify-content-between">
 											<a class="small text-white stretched-link" th:href="@{/planes_pagos/simular_cuotas}">Simular</a>
+											<div class="small text-white"><i class="fas fa-angle-right"></i></div>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 col-md-12 col-lg-6" th:if="${empresa != null}">
+									<div class="card bg-primary text-white mb-4 " sec:authorize="hasAuthority('Admin')">
+										<div class="card-body">Recibos</div>
+										<div class="card-footer d-flex align-items-center justify-content-between">
+											<a class="small text-white stretched-link" th:href="@{/recibos}">Ver</a>
 											<div class="small text-white"><i class="fas fa-angle-right"></i></div>
 										</div>
 									</div>

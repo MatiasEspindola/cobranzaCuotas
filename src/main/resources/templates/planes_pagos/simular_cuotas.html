@@ -6,7 +6,7 @@
 </head>
 
 <body class="sb-nav-fixed">
-	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+		<nav class="sb-topnav navbar navbar-expand navbar-dark bg-primary">
 		<div th:replace="layout :: brand"></div>
 		<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
 
@@ -382,7 +382,7 @@
 												class="form-label">Proveedor:</label>
 											<select class="form-select" aria-label="Default select example"
 												id="ingresar_proveedor" name="ingresar_proveedor"
-												th:field="*{id_proveedor}">
+												th:field="*{id_proveedor}" required>
 												<option th:each="proveedor : ${proveedores}"
 													th:text="${proveedor.razon_social} + ', (' + ${proveedor.id_localidad4.localidad} + ', ' + ${proveedor.id_localidad4.provincia.prov} + ')'"
 													th:value="${proveedor.id_proveedor}"></option>
@@ -498,6 +498,10 @@
 			this.valor = valor;
 
 		};
+		
+		function round(value, decimals) {
+			return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+		};
 
 		function parseDate(input) {
 
@@ -536,7 +540,7 @@
 
 				var aux = deuda_nominal;
 
-				var total = 0;
+				var totalC = 0;
 				var cuota = 0;
 
 				var fecha_inicio = parseDate(document.getElementById("fecha_inicio").value);
@@ -576,19 +580,19 @@
 
 					linea = linea.replace(/{FECHA}/g, fecha_inicio.getDate() + "/" + (fecha_inicio.getMonth() + 1) + "/" + fecha_inicio.getFullYear());
 					linea = linea.replace(/{NRO_CUOTA}/g, i);
-					linea = linea.replace(/{CUOTA_NOMINAL}/g, cuota_nominal.toFixed(2));
-					linea = linea.replace(/{INTERES_CUOTA}/g, interes.toFixed(2));
-					linea = linea.replace(/{SALDO_CAPITAL}/g, aux.toFixed(2));
-					linea = linea.replace(/{IVA_INTERES}/g, iva_s_interes.toFixed(2));
-					linea = linea.replace(/{HONORARIOS}/g, honorarios_c.toFixed(2));
-					linea = linea.replace(/{IVA_HONORARIOS}/g, iva_s_honorarios.toFixed(2));
-					linea = linea.replace(/{GASTOS_ADMINISTRATIVOS}/g, gastos.toFixed(2));
-					
+					linea = linea.replace(/{CUOTA_NOMINAL}/g, round(cuota_nominal, 2));
+					linea = linea.replace(/{INTERES_CUOTA}/g, round(interes, 2));
+					linea = linea.replace(/{SALDO_CAPITAL}/g, round(aux, 2));
+					linea = linea.replace(/{IVA_INTERES}/g, round(iva_s_interes, 2));
+					linea = linea.replace(/{HONORARIOS}/g, round(honorarios, 2));
+					linea = linea.replace(/{IVA_HONORARIOS}/g, round(iva_s_honorarios, 2));
+					linea = linea.replace(/{GASTOS_ADMINISTRATIVOS}/g, round(gastos,2));
+
 					var valor_cuota = cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos;
-					
-					Math.round(valor_cuota * 100) / 100;
-					
-					linea = linea.replace(/{VALOR_CUOTA}/g, valor_cuota);
+
+
+
+					linea = linea.replace(/{VALOR_CUOTA}/g, round(valor_cuota, 2));
 
 					$("#cargarCuotas tbody").append(linea);
 
@@ -596,20 +600,20 @@
 					
 					
 
-					total += valor_cuota;
+						totalC += round(valor_cuota, 2);
 
 				}
 
-				cuota = total / nro_cuotas;
+				cuota = totalC / nro_cuotas;
 
-				$("#total").val(total.toFixed(2));
-				$("#cuota").val(cuota.toFixed(2));
+				$("#total").val(totalC);
+				$("#cuota").val(round(cuota, 2));
 
 			} else {
 
 				var aux = deuda_nominal;
 
-				var total = 0;
+				var totalC = 0;
 				var cuota = 0;
 
 				var fecha_inicio = parseDate(document.getElementById("fecha_inicio").value);
@@ -647,21 +651,22 @@
 
 					linea = $("#plantillaCuotas").html();
 
-					linea = linea.replace(/{FECHA}/g, fecha_inicio.getDate() + "/" + (fecha_inicio.getMonth() + 1) + "/" + fecha_inicio.getFullYear());
+						linea = linea.replace(/{FECHA}/g, fecha_inicio.getDate() + "/" + (fecha_inicio.getMonth() + 1) + "/" + fecha_inicio.getFullYear());
 					linea = linea.replace(/{NRO_CUOTA}/g, i);
-					linea = linea.replace(/{CUOTA_NOMINAL}/g, cuota_nominal.toFixed(2));
-					linea = linea.replace(/{INTERES_CUOTA}/g, interes.toFixed(2));
-					linea = linea.replace(/{SALDO_CAPITAL}/g, aux.toFixed(2));
-					linea = linea.replace(/{IVA_INTERES}/g, iva_s_interes.toFixed(2));
-					linea = linea.replace(/{HONORARIOS}/g, honorarios_c.toFixed(2));
-					linea = linea.replace(/{IVA_HONORARIOS}/g, iva_s_honorarios.toFixed(2));
-					linea = linea.replace(/{GASTOS_ADMINISTRATIVOS}/g, gastos.toFixed(2));
-				
+					linea = linea.replace(/{CUOTA_NOMINAL}/g, round(cuota_nominal, 2));
+					linea = linea.replace(/{INTERES_CUOTA}/g, round(interes, 2));
+					linea = linea.replace(/{SALDO_CAPITAL}/g, round(aux, 2));
+					linea = linea.replace(/{IVA_INTERES}/g, round(iva_s_interes, 2));
+					linea = linea.replace(/{HONORARIOS}/g, round(honorarios, 2));
+					linea = linea.replace(/{IVA_HONORARIOS}/g, round(iva_s_honorarios, 2));
+					linea = linea.replace(/{GASTOS_ADMINISTRATIVOS}/g, round(gastos,2));
+
 					var valor_cuota = cuota_nominal + interes + iva_s_interes + honorarios_c + iva_s_honorarios + gastos;
-					
-					Math.round(valor_cuota * 100) / 100;
-					
-					linea = linea.replace(/{VALOR_CUOTA}/g, valor_cuota);
+
+
+
+					linea = linea.replace(/{VALOR_CUOTA}/g, round(valor_cuota, 2));
+
 
 					$("#cargarCuotas tbody").append(linea);
 
@@ -669,14 +674,14 @@
 
 					aux = aux - cuota_nominal;
 
-					total += valor_cuota;
+					totalC += round(valor_cuota, 2);
 
 				}
 
-				cuota = total / nro_cuotas;
+				cuota = totalC / nro_cuotas;
 
-				$("#total").val(total.toFixed(2));
-				$("#cuota").val(cuota.toFixed(2));
+				$("#total").val(totalC);
+				$("#cuota").val(round(cuota, 2));
 
 			}
 

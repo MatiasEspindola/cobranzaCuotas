@@ -6,7 +6,7 @@
 </head>
 
 <body class="sb-nav-fixed">
-	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-primary">
 		<div th:replace="layout :: brand"></div>
 		<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
 
@@ -46,21 +46,21 @@
 						<li class="breadcrumb-item active">Detalles Cliente</li>
 					</ol>
 					<div class="card mb-4">
-						<div class="card-body">
-							<span>Detalles del Cliente: <span th:text="${cliente.cliente}"></span> </span>
+						<div class="card-body" th:object="${cliente}">
+							<span>Detalles del Cliente: <span th:text="*{cliente}"></span> </span>
 							<br>
 							<span>Localidad: <span
-									th:text="${cliente.id_localidad1.localidad + ', ' + cliente.id_localidad1.provincia.prov}"></span></span>
+									th:text="*{id_localidad1.localidad + ', ' + id_localidad1.provincia.prov}"></span></span>
 							<br>
-							<span>Documento: <span th:text="${cliente.nro_documento}"></span> </span>
+							<span>Documento: <span th:text="*{nro_documento}"></span> </span>
 							<br>
-							<span>Tipo Documento: <span th:text="${cliente.tipo_documento.tipo_documento}"></span>
+							<span>Tipo Documento: <span th:text="*{tipo_documento.tipo_documento}"></span>
 							</span>
 							<br>
-							<span>Contacto: <span th:text="${cliente.cel + '  ' + cliente.cel2 + '  ' + cliente.tel_fijo + '  '
-										+ cliente.tel_fijo2 + '  ' + cliente.mail + '  ' + cliente.mail2}"></span> </span>
+							<span>Contacto: <span th:text="*{cel + '  ' + cel2 + '  ' + tel_fijo + '  '
+										+ tel_fijo2 + '  ' + mail + '  ' + mail2}"></span> </span>
 							<br>
-							<span> Responsable IVA: <span th:text="${cliente.id_responsable.responsable}"></span></span>
+							<span> Responsable IVA: <span th:text="*{id_responsable.responsable}"></span></span>
 						</div>
 
 						<div class="card-footer bg-info text-dark">

@@ -240,7 +240,7 @@ public class pagoController {
 
 	@PostMapping("/generar_importes")
 	public String generar_importes(@RequestParam(name = "plan_pago", required = true) long id_plan_pago,
-			@RequestParam(name = "importes[]", required = true) Float[] importes,
+			@RequestParam(name = "importes[]", required = true) float[] importes,
 			@RequestParam(name = "medios_pagos[]", required = false) String[] medios_pagos,
 			RedirectAttributes redirectAttrs) {
 

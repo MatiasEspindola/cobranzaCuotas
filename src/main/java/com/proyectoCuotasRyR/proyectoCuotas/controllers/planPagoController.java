@@ -3,6 +3,8 @@ package com.proyectoCuotasRyR.proyectoCuotas.controllers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.validation.Valid;
 
@@ -122,6 +124,8 @@ public class planPagoController {
 	}
 
 	private boolean editar;
+	
+	Logger logger = Logger.getLogger(planPagoController.class.getName());
 
 	@GetMapping("/detalles/{id}/{id_cliente}")
 	public String detalle_plan_pago(@PathVariable Long id, @PathVariable Long id_cliente, Model model,
@@ -393,8 +397,8 @@ public class planPagoController {
 			@RequestParam(name = "iva_honorarios[]", required = true) String[] iva_honorarios,
 			@RequestParam(name = "gastos_administrativos[]", required = true) String[] gastos_administrativos,
 			@RequestParam(name = "v_cuota[]", required = true) String[] valor_cuota,
-			@RequestParam(name = "total", required = true) Float total,
-			@RequestParam(name = "vcuota", required = true) Float vcuota,
+			@RequestParam(name = "total", required = true) float total,
+			@RequestParam(name = "vcuota", required = true) float vcuota,
 			@RequestParam(name = "cliente", required = true) String cliente,
 			@RequestParam(name = "nro_documento", required = true) String nro_documento,
 			@RequestParam(name = "tipo_documento", required = true) Tipo_Documento tipo_documento,
@@ -439,8 +443,8 @@ public class planPagoController {
 				cuota.setHonorarios(Float.valueOf(honorarios[i]));
 				cuota.setIva_honorarios(Float.valueOf(iva_honorarios[i]));
 				cuota.setGastos(Float.valueOf(gastos_administrativos[i]));
-				cuota.setValor((float) (Math.round(Float.valueOf(valor_cuota[i]) * 100d) / 100d));
-				cuota.setPendiente((float) (Math.round(Float.valueOf(valor_cuota[i]) * 100d) / 100d));
+				cuota.setValor(Float.valueOf(valor_cuota[i]));
+				cuota.setPendiente(Float.valueOf(valor_cuota[i]));
 
 				Date fecha = new Date();
 				fecha.setDate(plan_pago.getFecha_inicio().getDate());
@@ -482,8 +486,11 @@ public class planPagoController {
 		plan_pago.setActivo(true);
 
 		plan_pago.setCuotas(cuotas);
-		plan_pago.setTotal((float) (Math.round(total * 100d) / 100d));
-		plan_pago.setValor_cuota((float) (Math.round(vcuota * 100d) / 100d));
+		
+		logger.log(Level.INFO, "El total es: " + total);
+		
+		plan_pago.setTotal(total);
+		plan_pago.setValor_cuota(vcuota);
 		plan_pago.setNro_expediente(generadorNroExpediente());
 
 		planPagoService.guardar(plan_pago);
@@ -497,9 +504,9 @@ public class planPagoController {
 
 		CtaCteCliente ctactecliente2 = new CtaCteCliente();
 
-		ctactecliente2.setDebe((float) (Math.round(Float.valueOf(total) * 100d) / 100d));
+		ctactecliente2.setDebe(total);
 		ctactecliente2.setHaber(0);
-		ctactecliente2.setSaldo((float) (Math.round(Float.valueOf(total) * 100d) / 100d));
+		ctactecliente2.setSaldo(total);
 		ctactecliente2.setCliente(c);
 
 		ctacteclienteService.guardar(ctactecliente1);
@@ -517,7 +524,7 @@ public class planPagoController {
 		Historial_Alta_Cliente historial = new Historial_Alta_Cliente();
 
 		historial.setCtactecliente(ctactecliente1);
-		historial.setConcepto("TRANSPORTE CLI/" + c.getId_cliente());
+		historial.setConcepto("TRANSPORTE CLI /" + c.getId_cliente());
 		historial.setActividad_usuario(actividad);
 
 		clienteService.guardar_historial(historial);
@@ -555,8 +562,8 @@ public class planPagoController {
 			@RequestParam(name = "iva_honorarios[]", required = true) String[] iva_honorarios,
 			@RequestParam(name = "gastos_administrativos[]", required = true) String[] gastos_administrativos,
 			@RequestParam(name = "v_cuota[]", required = true) String[] valor_cuota,
-			@RequestParam(name = "total", required = true) Float total,
-			@RequestParam(name = "vcuota", required = true) Float vcuota, RedirectAttributes redirectAttrs
+			@RequestParam(name = "total", required = true) float total,
+			@RequestParam(name = "vcuota", required = true) float vcuota, RedirectAttributes redirectAttrs
 
 	) {
 
@@ -596,6 +603,8 @@ public class planPagoController {
 
 		for (int i = 0; i < n_cuota.length; i++) {
 			if (i > 0) {
+				
+				
 
 				Cuota cuota = new Cuota();
 				cuota.setNro_cuota(Integer.valueOf(n_cuota[i]));
@@ -606,8 +615,8 @@ public class planPagoController {
 				cuota.setHonorarios(Float.valueOf(honorarios[i]));
 				cuota.setIva_honorarios(Float.valueOf(iva_honorarios[i]));
 				cuota.setGastos(Float.valueOf(gastos_administrativos[i]));
-				cuota.setValor((float) (Math.round(Float.valueOf(valor_cuota[i]) * 100d) / 100d));
-				cuota.setPendiente((float) (Math.round(Float.valueOf(valor_cuota[i]) * 100d) / 100d));
+				cuota.setValor(Float.valueOf(valor_cuota[i]));
+				cuota.setPendiente(Float.valueOf(valor_cuota[i]));
 
 				Date fecha = new Date();
 				fecha.setDate(plan_pago.getFecha_inicio().getDate());
@@ -625,8 +634,13 @@ public class planPagoController {
 		plan_pago.setActivo(true);
 
 		plan_pago.setCuotas(cuotas);
-		plan_pago.setTotal((float) (Math.round(total * 100d) / 100d));
-		plan_pago.setValor_cuota((float) (Math.round(vcuota * 100d) / 100d));
+		
+		
+		
+		System.out.println("Total: " + total);
+		
+		plan_pago.setTotal(total);
+		plan_pago.setValor_cuota(vcuota);
 		plan_pago.setNro_expediente(generadorNroExpediente());
 
 		System.out.println(cliente.toString());
@@ -640,9 +654,9 @@ public class planPagoController {
 		planPagoService.guardar(plan_pago);
 
 		CtaCteCliente ctactecliente = new CtaCteCliente();
-		ctactecliente.setDebe((float) (Math.round(Float.valueOf(total) * 100d) / 100d));
-		ctactecliente.setSaldo((float) (Math.round(Float.valueOf(saldo_cta_cte) * 100d) / 100d)
-				+ (float) (Math.round(Float.valueOf(total) * 100d) / 100d));
+		ctactecliente.setDebe(total);
+		ctactecliente.setSaldo(saldo_cta_cte
+				+ total);
 		ctactecliente.setHaber(0);
 		ctactecliente.setCliente(cliente);
 
