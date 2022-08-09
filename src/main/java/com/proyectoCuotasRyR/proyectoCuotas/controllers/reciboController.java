@@ -45,7 +45,7 @@ import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_ReciboPdf_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Recibo_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_Sucursal_Service;
 import com.proyectoCuotasRyR.proyectoCuotas.models.services.I_UploadFile_Service;
-import com.proyectoCuotasRyR.proyectoCuotas.models.services.PdfGenerateService;
+
 
 @Controller
 @RequestMapping("recibos")
@@ -69,8 +69,7 @@ public class reciboController {
 	@Autowired
 	private I_Historial_Recibo_Service historialRecibo;
 
-	 @Autowired
-	    private PdfGenerateService pdfGenerateService;
+	
 
 	@Autowired
     private I_UploadFile_Service upl;

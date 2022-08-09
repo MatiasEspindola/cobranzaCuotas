@@ -21,7 +21,7 @@ public class UploadFileService implements I_UploadFile_Service {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final static String UPLOADS_FOLDER = "uploads";
+    private final static String UPLOADS_FOLDER = "http://10.0.0.125:8080/uploads/";
 
     @Override
     public Resource load(String filename) throws MalformedURLException {

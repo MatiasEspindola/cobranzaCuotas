@@ -50,11 +50,10 @@ public class indexController {
 
 	@Autowired
 	private I_Sucursal_Service sucursalService;
-	
+
 	@Autowired
 	private I_Plan_Pago_Service planPagoService;
-	
-	
+
 	@Autowired
 	private I_Cuota_Service cuotaService;
 
@@ -81,41 +80,130 @@ public class indexController {
 		return "inactivo";
 	}
 
-	@GetMapping({ "/", "/index" })
-	public String index(Model model, @RequestParam(value = "logout", required = false) String logout,
-			RedirectAttributes redirectAttrs) {
-		
-		if(obtenerUsuario() == null) {
-			
+	@GetMapping("/actualizar")
+	public String actualizar() {
+
+		if (obtenerUsuario() == null) {
+
 			return "redirect:/logout";
 		}
 
-		if(!obtenerUsuario().isActivo()) {
+		if (!obtenerUsuario().isActivo()) {
 			return "redirect:/inactivo";
 		}
-		
-		
-		Empresa empresa = null;
-		
-		
-		if(empresaService.listar_todo().size() == 0) {
-			
+
+		if (empresaService.listar_todo().size() == 0) {
+
 			return "redirect:/empresas/registrar";
 		}
 		
-		if(empresaService.listar_todo().size() > 0) {
-			empresa	= empresaService.listar_todo().get(0);
+		if(planPagoService.listarTodo().size() > 0) {
+			
+			for(Plan_Pago plan_pago : planPagoService.listarTodo()) {
+				
+				for (Cuota cuota : plan_pago.getCuotas()) {
+					if (!cuota.isPagado()) {
+						if (!cuota.isVencida()) {
+							Date hoy = new Date();
+							Date vencimiento_cuota = cuota.getFecha();
+
+							if (hoy.after(vencimiento_cuota)) {
+								cuota.setVencida(true);
+								cuotaService.guardar(cuota);
+								System.out.println("Hoy: " + hoy);
+								System.out.println("Vencimiento cuota: " + vencimiento_cuota);
+								System.out.println("Cuota ID: " + cuota.getId_cuota());
+								System.out.println("Plan Pago ID: " + cuota.getId_plan_pago().getId_plan_pago());
+							}
+
+						}
+					}
+				}
+				
+				if (!plan_pago.isCompletado()) {
+					
+
+						int dias = plan_pago.estado_deudor();
+						if (dias <= 31) {
+							plan_pago.setNormal(true);
+							plan_pago.setRiesgo_bajo(false);
+							plan_pago.setRiesgo_medio(false);
+							plan_pago.setRiesgo_alto(false);
+							plan_pago.setIrrecuperable(false);
+							planPagoService.guardar(plan_pago);
+						} else if (dias > 31 && dias <= 90) {
+							plan_pago.setNormal(false);
+							plan_pago.setRiesgo_bajo(true);
+							plan_pago.setRiesgo_medio(false);
+							plan_pago.setRiesgo_alto(false);
+							plan_pago.setIrrecuperable(false);
+							planPagoService.guardar(plan_pago);
+						} else if (dias > 90 && dias <= 180) {
+							plan_pago.setNormal(false);
+							plan_pago.setRiesgo_bajo(false);
+							plan_pago.setRiesgo_medio(true);
+							plan_pago.setRiesgo_alto(false);
+							plan_pago.setIrrecuperable(false);
+							planPagoService.guardar(plan_pago);
+						} else if (dias > 180 && dias <= 365) {
+							plan_pago.setNormal(false);
+							plan_pago.setRiesgo_bajo(false);
+							plan_pago.setRiesgo_medio(false);
+							plan_pago.setRiesgo_alto(true);
+							plan_pago.setIrrecuperable(false);
+							planPagoService.guardar(plan_pago);
+						} else {
+							plan_pago.setNormal(false);
+							plan_pago.setRiesgo_bajo(false);
+							plan_pago.setRiesgo_medio(false);
+							plan_pago.setRiesgo_alto(false);
+							plan_pago.setIrrecuperable(true);
+							planPagoService.guardar(plan_pago);
+						}
+						
+						
+				}
+				
+				
+				
+			}
+			
+		}
+
+		return "redirect:/";
+	}
+
+	@GetMapping({ "/", "/index" })
+	public String index(Model model, @RequestParam(value = "logout", required = false) String logout,
+			RedirectAttributes redirectAttrs) {
+
+		if (obtenerUsuario() == null) {
+
+			return "redirect:/logout";
+		}
+
+		if (!obtenerUsuario().isActivo()) {
+			return "redirect:/inactivo";
+		}
+
+		Empresa empresa = null;
+
+		if (empresaService.listar_todo().size() == 0) {
+
+			return "redirect:/empresas/registrar";
+		}
+
+		if (empresaService.listar_todo().size() > 0) {
+			empresa = empresaService.listar_todo().get(0);
 		}
 
 		model.addAttribute("empresa", empresa);
 		model.addAttribute("usuario", obtenerUsuario());
-		
+
 		model.addAttribute("notificaciones", planPagoService.listarTodo());
-		
+
 		return "index";
 	}
-
-	
 
 	private Usuario obtenerUsuario() {
 
@@ -127,7 +215,5 @@ public class indexController {
 
 		return usuarioRepo.findByUsername(userDetail.getUsername());
 	}
-	
-	
 
 }

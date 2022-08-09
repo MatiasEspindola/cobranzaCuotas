@@ -356,11 +356,21 @@ public class pagoController {
 		1).getSaldo();
 
 		CtaCteCliente ctactecliente = new CtaCteCliente();
+		
+		float saldo = saldo_cta_cte - total;
+		
+		if(saldo < 0.25) {
+			ctactecliente.setSaldo(0);
+			ctactecliente.setHaber(total);
+			ctactecliente.setDebe(0);
+			ctactecliente.setCliente(cliente);
+		}else {
+			ctactecliente.setSaldo(saldo_cta_cte - total);
+			ctactecliente.setHaber(total);
+			ctactecliente.setDebe(0);
+			ctactecliente.setCliente(cliente);
+		}
 
-		ctactecliente.setSaldo(saldo_cta_cte - total);
-		ctactecliente.setHaber(total);
-		ctactecliente.setDebe(0);
-		ctactecliente.setCliente(cliente);
 		
 		ctacteclienteService.guardar(ctactecliente);
 		

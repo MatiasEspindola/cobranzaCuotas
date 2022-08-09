@@ -10,9 +10,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.proyectoCuotasRyR</groupId>
-	<artifactId>proyectoCuotas</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>proyectoCuotas</name>
+	<artifactId>cobranzacuotas</artifactId>
+	
+	<name>cobranzacuotas</name>
 	<description>Demo project for Spring Boot</description>
 	<packaging>war</packaging>
 
@@ -20,6 +20,12 @@
 		<java.version>8</java.version>
 	</properties>
 	<dependencies>
+		<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-tomcat</artifactId>
+   <!--  <scope>embibed</scope> -->
+</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -33,12 +39,12 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<dependency>
+<!-- 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -116,6 +122,11 @@
 		</dependency>
 
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 
 	<build>
